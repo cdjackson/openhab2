@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zwave-index:manufacturers bindingId="zwave"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:zwave-index="http://eclipse.org/smarthome/schemas/zwave-product-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-product-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-product-description/1.0.0">
+
+	<manufacturer id="0000" name="Sigma Designs" folder="sigma">
+		<!-- UZB: ZWave Plus Stick -->
+		<product uid="sigma_uzb_00_000">
+			<reference type="0001" id="0001"/>
+		</product>
+	</manufacturer>
+
+	<manufacturer id="010F" name="Fibaro System" folder="fibaro">
+		<!-- FGMS001: Motion Sensor -->
+		<product uid="fibaro_fgms001_00_000">
+			<reference type="0800" id="1001"/>
+			<reference type="0800" id="2001"/>
+			<reference type="0800" id="3001"/>
+		</product>
+
+		<!-- FDG211: Dimmer -->
+		<product uid="fibaro_fgms001_01_008" versionMax="1.8">
+			<reference type="0100" id="0104"/>
+		</product>
+
+		<product uid="fibaro_fgms001_01_009" versionMin="1.9" versionMax="1.11">
+			<reference type="0800" id="2001"/>
+		</product>
+
+		<product uid="fibaro_fgms001_02_001"  versionMin="2.1">
+			<reference type="0800" id="2001"/>
+		</product>
+	</manufacturer>
+</zwave-index:manufacturers>
+
