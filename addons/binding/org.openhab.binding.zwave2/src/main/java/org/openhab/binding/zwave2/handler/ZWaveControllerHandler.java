@@ -9,6 +9,7 @@ package org.openhab.binding.zwave2.handler;
 
 import static org.openhab.binding.zwave2.ZWaveBindingConstants.*;
 
+import java.util.Collection;
 import java.util.Hashtable;
 
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
@@ -233,7 +234,12 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
         if (controller == null) {
             return null;
         }
+
         return controller.getNode(node);
+    }
+
+    public Collection<ZWaveNode> getNodes() {
+        return controller.getNodes();
     }
 
     public void sendData(SerialMessage message) {

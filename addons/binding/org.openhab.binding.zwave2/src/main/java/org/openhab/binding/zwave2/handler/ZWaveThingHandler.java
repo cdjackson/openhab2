@@ -29,13 +29,14 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.zwave2.ZWaveBindingConstants;
 import org.openhab.binding.zwave2.internal.converter.ZWaveCommandClassConverter;
-import org.openhab.binding.zwave2.internal.protocol.ConfigurationParameter;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveConfigurationParameter;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
+import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveNodeStatusEvent;
@@ -127,10 +128,12 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
 
             String[] cfg = configurationParameter.getKey().split("_");
-            if (cfg.length != 2) {
-                logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
-            }
             if ("config".equals(cfg[0])) {
+                if (cfg.length < 3) {
+                    logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
+                    continue;
+                }
+
                 ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
                         .getCommandClass(CommandClass.CONFIGURATION);
                 if (configurationCommandClass == null) {
@@ -138,17 +141,32 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                     continue;
                 }
 
+                // Get the size
+                int size = Integer.parseInt(cfg[2]);
+                if (size == 0 || size > 4) {
+                    logger.error("NODE {}: Size error ({}) from {}", nodeId, size, configurationParameter.getKey());
+                    continue;
+                }
+
                 // Convert to integer
                 Integer value;
-                if (configurationParameter.getValue() instanceof Integer) {
-                    value = (Integer) configurationParameter.getValue();
+                if (configurationParameter.getValue() instanceof BigDecimal) {
+                    value = ((BigDecimal) configurationParameter.getValue()).intValue();
                 } else if (configurationParameter.getValue() instanceof String) {
                     value = Integer.parseInt((String) configurationParameter.getValue());
+                } else {
+                    logger.error("NODE {}: Error converting config value from {}", nodeId,
+                            configurationParameter.getValue().getClass());
+                    continue;
                 }
 
                 Integer parameterIndex = Integer.valueOf(cfg[1]);
-                ConfigurationParameter cfgParameter = configurationCommandClass.getParameter(parameterIndex);
-                cfgParameter.setValue(value);
+                ZWaveConfigurationParameter cfgParameter = configurationCommandClass.getParameter(parameterIndex);
+                if (cfgParameter == null) {
+                    cfgParameter = new ZWaveConfigurationParameter(parameterIndex, value, size);
+                } else {
+                    cfgParameter.setValue(value);
+                }
 
                 // Set the parameter and request a read-back
                 controllerHandler.sendData(configurationCommandClass.setConfigMessage(cfgParameter));
@@ -225,6 +243,19 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                     "NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}",
                     new Object[] { event.getNodeId(), event.getEndpoint(), commandClass, event.getValue() });
 
+            // If this is a configuration parameter update, process it before the channels
+            if (event instanceof ZWaveConfigurationParameterEvent) {
+                ZWaveConfigurationParameter parameter = ((ZWaveConfigurationParameterEvent) event).getParameter();
+                if (parameter != null) {
+                    logger.debug("NODE {}: Update {} to {}", nodeId,
+                            "config_" + parameter.getIndex() + "_" + parameter.getSize(), parameter.getValue());
+                    Configuration configuration = editConfiguration();
+                    configuration.put("config_" + parameter.getIndex() + "_" + parameter.getSize(),
+                            parameter.getValue());
+                    updateConfiguration(configuration);
+                }
+            }
+
             // Process the channels to see if we're interested
             for (ZWaveThingChannel channel : thingChannels) {
                 if (channel.getEndpoint() != event.getEndpoint()) {
@@ -296,16 +327,19 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             // Set the node
             this.node = node;
 
-            // Get the endpoint
-            if (properties.containsKey(ZWaveBindingConstants.CHANNEL_CFG_ENDPOINT)) {
-                endpoint = Integer.parseInt(properties.get(ZWaveBindingConstants.CHANNEL_CFG_ENDPOINT));
-            } else {
-                endpoint = 0;
-            }
-
             // Get the command class('s)
             if (properties.containsKey(ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS)) {
-                String[] array = properties.get(ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS).split(",");
+                // See if we specify an endpoint
+                String[] array = properties.get(ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS).split(":");
+                if (array.length == 2) {
+                    endpoint = Integer.parseInt(array[0]);
+                    array[0] = array[1];
+                } else {
+                    endpoint = 0;
+                }
+
+                // Now extract the command classes
+                array = array[0].split(",");
                 commandClass = new LinkedHashSet<String>(Arrays.asList(array));
             } else {
                 logger.warn("NODE {}: No command classes defined in {}", getThing().getUID().toString());

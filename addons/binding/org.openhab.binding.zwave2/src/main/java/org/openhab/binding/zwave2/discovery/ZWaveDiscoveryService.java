@@ -70,6 +70,15 @@ public class ZWaveDiscoveryService extends AbstractDiscoveryService {
     public void startScan() {
         logger.debug("Starting ZWave inclusion scan for {}", controllerHandler.getThing().getUID());
 
+        // Add all existing devices
+        for (ZWaveNode node : controllerHandler.getNodes()) {
+            if (node.getManufacturer() == Integer.MAX_VALUE) {
+                deviceDiscovered(node.getNodeId());
+            } else {
+                deviceAdded(node);
+            }
+        }
+
         // Start the search for new devices
         controllerHandler.startDeviceDiscovery();
     }

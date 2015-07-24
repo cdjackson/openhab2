@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
+	<thing-type id="everspring_sp814_00_000">
+		<label>Everspring SP814</label>
+		<description><![CDATA[Motion Detector]]></description>
+		<channels>
+			<channel id="motion-1" typeId="motion">
+				<properties>
+					<property name="commandClass">ALARM</property>
+				</properties>
+			</channel>
+		</channels>
+		<properties>
+			<property name="vendor">Everspring</property>
+			<property name="model">SP814</property>
+			<property name="manufacturerId">0060</property>
+			<property name="manufacturerRef">0001:0002</property>
+			<property name="commandClass:ASSOCIATION:0:default">1</property>
+		</properties>
+		<config-description>
+			<parameter-group name="configuration">
+				<context>setup</context>
+				<label>Configuration Parameters</label>
+				<description></description>
+			</parameter-group>
+			<parameter-group name="association">
+				<context>link</context>
+				<label>Association Groups</label>
+				<description></description>
+			</parameter-group>
+			<parameter name="config_1_1" type="integer" groupName="configuration">
+				<label>1: Phase level on command</label>
+				<description><![CDATA[Defines which command to send when sensor triggers]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">Set OFF</option>
+					<option value="1">Set ON</option>
+					<option value="9">Set LAST Level</option>
+				</options>
+			</parameter>
+			<parameter name="config_2_1" type="integer" groupName="configuration">
+				<label>2: Enable/Disable Sleeping</label>
+				<description><![CDATA[Enables/Disables sleeping for debug purposes]]></description>
+				<default>1</default>
+				<options>
+					<option value="0">Disabled</option>
+					<option value="1">Enabled</option>
+				</options>
+			</parameter>
+			<parameter name="group_1" type="integer" multiple="true"
+				groupName="association">
+				<label>Triggered Report</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<multipleLimit>5</multipleLimit>
+			</parameter>
+		</config-description>
+	</thing-type>
+	<channel-type id="motion">
+		<item-type>Switch</item-type>
+		<label>Motion</label>
+		<description>Indications if motion is detected</description>
+		<category>Motion</category>
+	</channel-type>
+</thing:thing-descriptions>

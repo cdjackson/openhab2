@@ -273,7 +273,7 @@ public class ZWaveNode {
     /**
      * Gets the manufacturer of the node.
      *
-     * @return the manufacturer
+     * @return the manufacturer. If not set Integer.MAX_VALUE is returned.
      */
     public int getManufacturer() {
         return manufacturer;
@@ -291,7 +291,7 @@ public class ZWaveNode {
     /**
      * Gets the device id of the node.
      *
-     * @return the deviceId
+     * @return the deviceId. If not set Integer.MAX_VALUE is returned.
      */
     public int getDeviceId() {
         return deviceId;
@@ -300,16 +300,16 @@ public class ZWaveNode {
     /**
      * Sets the device id of the node.
      *
-     * @param tempDeviceId the device to set
+     * @param deviceId the device to set
      */
-    public void setDeviceId(int tempDeviceId) {
-        this.deviceId = tempDeviceId;
+    public void setDeviceId(int deviceId) {
+        this.deviceId = deviceId;
     }
 
     /**
      * Gets the device type of the node.
      *
-     * @return the deviceType
+     * @return the deviceType. If not set Integer.MAX_VALUE is returned.
      */
     public int getDeviceType() {
         return deviceType;
@@ -318,10 +318,10 @@ public class ZWaveNode {
     /**
      * Sets the device type of the node.
      *
-     * @param tempDeviceType the deviceType to set
+     * @param deviceType the deviceType to set
      */
-    public void setDeviceType(int tempDeviceType) {
-        this.deviceType = tempDeviceType;
+    public void setDeviceType(int deviceType) {
+        this.deviceType = deviceType;
     }
 
     /**

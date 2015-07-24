@@ -3,28 +3,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
-	<thing-type id="fibarosystem_fgs221_00_000">
-		<label>Fibaro System FGS221</label>
-		<description>Double Relay Switch 2x1.5kW</description>
+	<thing-type id="fibarosystem_fgk101_00_000">
+		<label>Fibaro System FGK101</label>
+		<description><![CDATA[Door Opening Sensor]]></description>
 		<channels>
-			<channel id="switch-1" typeId="switch">
-				<label>Switch 1</label>
+			<channel id="door-1" typeId="door">
 				<properties>
-					<property name="commandClass">1:SWITCH_BINARY,BASIC</property>
+					<property name="commandClass">SENSOR_BINARY,BASIC</property>
 				</properties>
 			</channel>
-			<channel id="switch-2" typeId="switch">
-				<label>Switch 2</label>
+			<channel id="temperature-1" typeId="temperature">
 				<properties>
-					<property name="commandClass">2:SWITCH_BINARY,BASIC</property>
+					<property name="commandClass">2:SENSOR_MULTILEVEL</property>
+				</properties>
+			</channel>
+			<channel id="battery-level" typeId="system.battery-level">
+				<properties>
+					<property name="commandClass">BATTERY</property>
 				</properties>
 			</channel>
 		</channels>
 		<properties>
 			<property name="vendor">Fibaro System</property>
-			<property name="model">FGS221</property>
+			<property name="model">FGK101</property>
 			<property name="manufacturerId">010F</property>
-			<property name="manufacturerRef">0200:*</property>
+			<property name="manufacturerRef">0700:*</property>
 			<property name="commandClass:ASSOCIATION:0:default">3</property>
 		</properties>
 		<config-description>
@@ -43,10 +46,10 @@
 				<description><![CDATA[Activate/Deactive ALL ON/OFF]]></description>
 				<default>255</default>
 				<options>
-					<option value="0">ALL ON disabled / ALL OFF disabled</option>
-					<option value="1">ALL ON disabled / ALL OFF active</option>
+					<option value="0">ALL ON disabled/ ALL OFF disabled</option>
+					<option value="1">ALL ON disabled/ ALL OFF active</option>
 					<option value="2">ALL ON active / ALL OFF disabled</option>
-					<option value="255">ALL ON active / ALL OFF active</option>
+					<option value="-1">ALL ON active / ALL OFF active</option>
 				</options>
 			</parameter>
 			<parameter name="config_3_1" type="integer" groupName="configuration">
@@ -56,6 +59,8 @@
 				<options>
 					<option value="0">Auto OFF disabled for both relays</option>
 					<option value="1">Auto OFF active only for relay 1</option>
+					<option value="2">Auto OFF active only for relay 2</option>
+					<option value="3">Auto OFF active for both relays</option>
 				</options>
 			</parameter>
 			<parameter name="config_4_1" type="integer" groupName="configuration">
@@ -63,10 +68,15 @@
 				<description><![CDATA[Automatic turning off relay 1 after set time, in 10ms increments (default: 200ms)]]></description>
 				<default>20</default>
 			</parameter>
+			<parameter name="config_5_1" type="integer" groupName="configuration">
+				<label>5: Relay 2: OFF-delay time (10ms steps)</label>
+				<description><![CDATA[Automatic turning off relay 2 after set time, in 10ms increments (default: 200ms)]]></description>
+				<default>20</default>
+			</parameter>
 			<parameter name="config_6_1" type="integer" groupName="configuration">
 				<label>6: Separation of association sending (key 1)</label>
 				<description><![CDATA[Activate/Deactivate association sending for group
-                1 - Also see param #16]]></description>
+				1 - Also see param #16]]></description>
 				<default>0</default>
 				<options>
 					<option value="0">Map status to all devices in group 1</option>
@@ -79,10 +89,23 @@
 						dimmers set to 100%</option>
 				</options>
 			</parameter>
+			<parameter name="config_7_1" type="integer" groupName="configuration">
+				<label>7: Control key #2 behaviour</label>
+				<description><![CDATA[Key no.2 is not represented by any physical device - only
+				devices in the association list.
+				This functionality prevents of lack of reaction on pressing key no.2
+				through polling devices
+				from association list one by one and checking their actual statuses.]]></description>
+				<default>1</default>
+				<options>
+					<option value="0">Device status is not checked</option>
+					<option value="1">Device status is checked</option>
+				</options>
+			</parameter>
 			<parameter name="config_13_1" type="integer" groupName="configuration">
 				<label>13: Inputs behaviour</label>
 				<description><![CDATA[In case of bi-stable switches, define their behaviour (toggle
-                or follow)]]></description>
+				or follow)]]></description>
 				<default>0</default>
 				<options>
 					<option value="0">Toggle</option>
@@ -101,11 +124,10 @@
 			</parameter>
 			<parameter name="config_15_1" type="integer" groupName="configuration">
 				<label>15: Dimmer/Roller shutter control</label>
-				<description>
-<![CDATA[Enable/Disable operation of dimmer or roller shutter devices associated to group 1.
-
-Available only when using mono-stable inputs (buttons) - Hold button 1 or double-tap for operation.]]>
-				</description>
+				<description><![CDATA[Enable/Disable operation of dimmer or roller shutter devices
+				associated to group 1.
+				Available only when using mono-stable inputs (buttons) - Hold button 1 or
+				double-tap for operation]]></description>
 				<default>0</default>
 				<options>
 					<option value="0">Disable Dimmer/Roller shutter control</option>
@@ -206,28 +228,111 @@ Available only when using mono-stable inputs (buttons) - Hold button 1 or double
 				<description><![CDATA[Amount of time (ms) the device keeps on flashing after receipt of Alarm Frame]]></description>
 				<default>600</default>
 			</parameter>
+			<parameter name="config_40_1" type="integer" groupName="configuration">
+				<label>40: Relay 2: Response to General Alarm</label>
+				<description><![CDATA[]]>
+				</description>
+				<default>3</default>
+				<options>
+					<option value="0">DEACTIVATION - no response to alarm frames
+					</option>
+					<option value="1">ALARM RELAY ON - relay will turn ON upon
+						receipt of alarm frame
+					</option>
+					<option value="2">ALARM RELAY OFF - relay will turn OFF upon
+						receipt of alarm frame
+					</option>
+					<option value="3">ALARM FLASHING - relay will turn ON and OFF
+						periodically (see param.39)
+					</option>
+				</options>
+			</parameter>
+			<parameter name="config_41_1" type="integer" groupName="configuration">
+				<label>41: Relay 2: Response to Water Flood Alarm</label>
+				<description><![CDATA[]]>
+				</description>
+				<default>2</default>
+				<options>
+					<option value="0">DEACTIVATION - no response to alarm frames
+					</option>
+					<option value="1">ALARM RELAY ON - relay will turn ON upon
+						receipt of alarm frame
+					</option>
+					<option value="2">ALARM RELAY OFF - relay will turn OFF upon
+						receipt of alarm frame
+					</option>
+					<option value="3">ALARM FLASHING - relay will turn ON and OFF
+						periodically (see param.39)
+					</option>
+				</options>
+			</parameter>
+			<parameter name="config_42_1" type="integer" groupName="configuration">
+				<label>42: Relay 2: Response to Smoke, CO, CO2 Alarm</label>
+				<description><![CDATA[]]>
+				</description>
+				<default>3</default>
+				<options>
+					<option value="0">DEACTIVATION - no response to alarm frames
+					</option>
+					<option value="1">ALARM RELAY ON - relay will turn ON upon
+						receipt of alarm frame
+					</option>
+					<option value="2">ALARM RELAY OFF - relay will turn OFF upon
+						receipt of alarm frame
+					</option>
+					<option value="3">ALARM FLASHING - relay will turn ON and OFF
+						periodically (see param.39)
+					</option>
+				</options>
+			</parameter>
+			<parameter name="config_43_1" type="integer" groupName="configuration">
+				<label>43: Relay 2: Response to Temperature Alarm</label>
+				<description><![CDATA[]]>
+				</description>
+				<default>1</default>
+				<options>
+					<option value="0">DEACTIVATION - no response to alarm frames
+					</option>
+					<option value="1">ALARM RELAY ON - relay will turn ON upon
+						receipt of alarm frame
+					</option>
+					<option value="2">ALARM RELAY OFF - relay will turn OFF upon
+						receipt of alarm frame
+					</option>
+					<option value="3">ALARM FLASHING - relay will turn ON and OFF
+						periodically (see param.39)
+					</option>
+				</options>
+			</parameter>
 			<parameter name="group_1" type="integer" multiple="true"
 				groupName="association">
 				<label>Switch 1</label>
-				<description>Assigned to key 1></description>
+				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
 			<parameter name="group_2" type="integer" multiple="true"
 				groupName="association">
 				<label>Switch 2</label>
-				<description>Assigned to key 2</description>
+				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
 			<parameter name="group_3" type="integer" groupName="association">
 				<label>Controller Updates</label>
-				<description>Report state changes to controller</description>
+				<description><![CDATA[***Add description here***]]></description>
 			</parameter>
 		</config-description>
 	</thing-type>
-	<channel-type id="switch">
+	<channel-type id="door">
 		<item-type>Switch</item-type>
-		<label>Switch</label>
-		<description>Switch the light on and off</description>
-		<category>Light</category>
+		<label>Door Open</label>
+		<description>Indicates if the door/window is open or closed
+		</description>
+		<category>Door</category>
+	</channel-type>
+	<channel-type id="temperature">
+		<item-type>Number</item-type>
+		<label>Temperature</label>
+		<description>Indicates the current temperature</description>
+		<category>Temperature</category>
 	</channel-type>
 </thing:thing-descriptions>

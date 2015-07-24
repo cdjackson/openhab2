@@ -9,7 +9,6 @@
 		<channels>
 			<channel id="dimmer-1" typeId="dimmer">
 				<properties>
-					<property name="endpoint">0</property>
 					<property name="commandClass">SWITCH_MULTILEVEL,BASIC</property>
 					<property name="commandClass:restoreLastValue">true</property>
 					<property name="commandClass:invertPercent">false</property>
@@ -36,9 +35,9 @@
 				<label>Association Groups</label>
 				<description></description>
 			</parameter-group>
-			<parameter name="config_1" type="integer" groupName="configuration">
+			<parameter name="config_1_1" type="integer" groupName="configuration">
 				<label>1: Local protection</label>
-				<description><![CDATA[Enables/disables local entry.<p>If activated, the module stops responding to S1 and S2 push buttons, SCENE ID and association commands will not be sent by the device. The only exception is the B-button. This means the device can only be controlled remotely.]]></description>
+				<description><![CDATA[Enables/disables local entry. If activated module stops responding to S1 and S2 push buttons, SCENE ID and association commands will not be sent. Only exception is the B-button.]]></description>
 				<default>255</default>
 				<options>
 					<option value="0">No protection. Roller Shutter responds to push
@@ -49,7 +48,7 @@
 					</option>
 				</options>
 			</parameter>
-			<parameter name="config_2" type="integer" groupName="configuration">
+			<parameter name="config_2_1" type="integer" groupName="configuration">
 				<label>2: Radio protection</label>
 				<description><![CDATA[Enables/disables RF protection. If activated device stops responding to command frames. Configuration and polling still possible.]]></description>
 				<default>0</default>
@@ -62,7 +61,7 @@
 					</option>
 				</options>
 			</parameter>
-			<parameter name="config_3" type="integer" groupName="configuration">
+			<parameter name="config_3_1" type="integer" groupName="configuration">
 				<label>3: Reports type</label>
 				<description><![CDATA[Parameters value shoud be set to 1 if the module operates in Venetian Blind mode.]]></description>
 				<default>0</default>
@@ -75,7 +74,7 @@
 					</option>
 				</options>
 			</parameter>
-			<parameter name="config_10" type="integer" groupName="configuration">
+			<parameter name="config_10_1" type="integer" groupName="configuration">
 				<label>10: Roller Shutter operating modes</label>
 				<description><![CDATA[]]>
 				</description>
@@ -89,13 +88,13 @@
 					<option value="4">Gate Mode, with positioning</option>
 				</options>
 			</parameter>
-			<parameter name="config_12" type="integer" groupName="configuration">
+			<parameter name="config_12_2" type="integer" groupName="configuration">
 				<label>12: Turning time/ delay time</label>
 				<description><![CDATA[In Venetian Blind mode (parameter 10 set to 2) the parameter determines time of full turn of the lamellas. In Gate Mode (parameter 10 set to 3 or 4) the parameter defines the delay time after which an open gate starts closing.
 Type    range]]></description>
 				<default>150</default>
 			</parameter>
-			<parameter name="config_13" type="integer" groupName="configuration">
+			<parameter name="config_13_1" type="integer" groupName="configuration">
 				<label>13: Lamellas positioning mode</label>
 				<description><![CDATA[Parameter influences the lamellas positioning in venetian blind mode (parameter 10 set to 2)]]></description>
 				<default>1</default>
@@ -114,7 +113,7 @@ Type    range]]></description>
 					</option>
 				</options>
 			</parameter>
-			<parameter name="config_14" type="integer" groupName="configuration">
+			<parameter name="config_14_1" type="integer" groupName="configuration">
 				<label>14: Switch type</label>
 				<description><![CDATA[parameter settings are relevant for Roller Blind Mode and Venetian Blind Mode (parameter 10 set to 0, 1, 2).]]></description>
 				<default>0</default>
@@ -124,22 +123,22 @@ Type    range]]></description>
 					<option value="2">Single, momentary switch.</option>
 				</options>
 			</parameter>
-			<parameter name="config_17" type="integer" groupName="configuration">
+			<parameter name="config_17_1" type="integer" groupName="configuration">
 				<label>17: Delay time after S2</label>
 				<description><![CDATA[In roller blind mode or venetian blind mode (parameter 10 set to 0, 1, 2) the parameter determines when the Roller Shutter relays are turned off after reaching a limit switch. In Gate Mode (parameter 10 set to 3 or 4) the parameter determines a time period after which a gate will start closing after a S2 contact has been disconnected.]]></description>
 				<default>10</default>
 			</parameter>
-			<parameter name="config_18" type="integer" groupName="configuration">
+			<parameter name="config_18_1" type="integer" groupName="configuration">
 				<label>18: Motor operation detection</label>
 				<description><![CDATA[Power threshold to be interpreted as reaching a limit switch.]]></description>
 				<default>10</default>
 			</parameter>
-			<parameter name="config_22" type="integer" groupName="configuration">
+			<parameter name="config_22_2" type="integer" groupName="configuration">
 				<label>22: Motor operation time</label>
 				<description><![CDATA[Time period for the motor to continue operation.]]></description>
 				<default>10</default>
 			</parameter>
-			<parameter name="config_29" type="integer" groupName="configuration">
+			<parameter name="config_29_1" type="integer" groupName="configuration">
 				<label>29: Forced Roller Shutter calibration</label>
 				<description><![CDATA[Seting the parameter to 1 Roller Shutter enters the calibration mode. Parameter is only only relevant if a Roller Shutter is set to work in positioning mode (parameter 10 set to 1, 2 or 4).]]></description>
 				<default>0</default>
@@ -148,7 +147,7 @@ Type    range]]></description>
 					<option value="1">Start calibration process</option>
 				</options>
 			</parameter>
-			<parameter name="config_30" type="integer" groupName="configuration">
+			<parameter name="config_30_1" type="integer" groupName="configuration">
 				<label>30: Response to General Alarm</label>
 				<description><![CDATA[]]>
 				</description>
@@ -159,7 +158,7 @@ Type    range]]></description>
 					<option value="2">Close Blind</option>
 				</options>
 			</parameter>
-			<parameter name="config_31" type="integer" groupName="configuration">
+			<parameter name="config_31_1" type="integer" groupName="configuration">
 				<label>31: Response to Water Flood Alarm</label>
 				<description><![CDATA[]]>
 				</description>
@@ -170,7 +169,7 @@ Type    range]]></description>
 					<option value="2">Close Blind</option>
 				</options>
 			</parameter>
-			<parameter name="config_32" type="integer" groupName="configuration">
+			<parameter name="config_32_1" type="integer" groupName="configuration">
 				<label>32: Response to Smoke, CO, CO2 Alarm</label>
 				<description><![CDATA[]]>
 				</description>
@@ -181,7 +180,7 @@ Type    range]]></description>
 					<option value="2">Close Blind</option>
 				</options>
 			</parameter>
-			<parameter name="config_33" type="integer" groupName="configuration">
+			<parameter name="config_33_1" type="integer" groupName="configuration">
 				<label>33: Response to Temperature Alarm</label>
 				<description><![CDATA[]]>
 				</description>
@@ -192,7 +191,7 @@ Type    range]]></description>
 					<option value="2">Close Blind</option>
 				</options>
 			</parameter>
-			<parameter name="config_35" type="integer" groupName="configuration">
+			<parameter name="config_35_1" type="integer" groupName="configuration">
 				<label>35: Managing lamellas in response to alarm</label>
 				<description><![CDATA[In Venetian Blind Mode (parameter 10 set to 2), the parameter determines how the lamellas will react upon alarm detection.]]></description>
 				<default>1</default>
@@ -202,25 +201,25 @@ Type    range]]></description>
 					</option>
 				</options>
 			</parameter>
-			<parameter name="config_40" type="integer" min="0" max="100"
+			<parameter name="config_40_1" type="integer" min="0" max="100"
 				groupName="configuration">
 				<label>40: Power reports</label>
 				<description><![CDATA[Power level change that will result in new power value report being sent. value is a percentage of the previous report.]]></description>
 				<default>10</default>
 			</parameter>
-			<parameter name="config_42" type="integer" min="-32767"
+			<parameter name="config_42_2" type="integer" min="-32767"
 				max="32767" groupName="configuration">
 				<label>42: Periodic power or energy reports</label>
 				<description><![CDATA[Time to the next report. Value of 0 means the reports are turned off.]]></description>
 				<default>3600</default>
 			</parameter>
-			<parameter name="config_43" type="integer" min="-126" max="127"
-				groupName="configuration">
+			<parameter name="config_43_1" type="integer" min="-126"
+				max="127" groupName="configuration">
 				<label>43: Energy reports</label>
 				<description><![CDATA[Energy level change which will result in new energy value report being sent. Value of 0 means the reports are turned off.]]></description>
 				<default>10</default>
 			</parameter>
-			<parameter name="config_44" type="integer" groupName="configuration">
+			<parameter name="config_44_1" type="integer" groupName="configuration">
 				<label>44: Self-measurement</label>
 				<description><![CDATA[Enables/disables to include the power and energy used by itself in reports to main controller.]]></description>
 				<default>0</default>
@@ -229,7 +228,7 @@ Type    range]]></description>
 					<option value="1">Activated</option>
 				</options>
 			</parameter>
-			<parameter name="config_50" type="integer" groupName="configuration">
+			<parameter name="config_50_1" type="integer" groupName="configuration">
 				<label>50: Scenes/ Associations activation</label>
 				<description><![CDATA[Parameter determines whether scenes or associations are activated by the switch keys.]]></description>
 				<default>0</default>
@@ -252,6 +251,7 @@ Type    range]]></description>
 			</parameter>
 			<parameter name="group_3" type="integer" groupName="association">
 				<label>Controller Updates</label>
+				<description><![CDATA[***Add description here***]]></description>
 			</parameter>
 		</config-description>
 	</thing-type>

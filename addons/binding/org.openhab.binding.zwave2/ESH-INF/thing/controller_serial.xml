@@ -39,7 +39,7 @@
 				groupName="port">
 				<label>Serial Port</label>
 				<description>Set the serial port used to access the ZWave stick</description>
-				<default>XXX</default>
+				<default></default>
 			</parameter>
 
 			<parameter name="master" type="boolean" required="true"
@@ -48,6 +48,10 @@
 				<description><![CDATA[This controller is the master controller in the network.<br/>
 				The binding will perform automatic configuration of the network.
 				This setting should be set to <i>true</i> unless you have another controller that is required to run the network.]]></description>
+				<options>
+					<option value="true">Yes</option>
+					<option value="false">No</option>
+				</options>
 				<default>true</default>
 				<advanced>true</advanced>
 			</parameter>
@@ -56,11 +60,15 @@
 				groupName="network">
 				<label>Controller is SUC</label>
 				<description>Controller is SUC and will receive updates from other controllers in the network</description>
+				<options>
+					<option value="true">Yes</option>
+					<option value="false">No</option>
+				</options>
 				<default>false</default>
 				<advanced>true</advanced>
 			</parameter>
 
-			<parameter name="polling" type="integer" groupName="network">
+			<parameter name="polling" type="integer" min="15" max="3600" groupName="network">
 				<label>Default Poll Period</label>
 				<description>Sets the default polling period used to poll the primary parameters</description>
 				<default>0</default>
@@ -73,7 +81,7 @@
 				<default>false</default>
 			</parameter>
 
-			<parameter name="healTime" type="integer" groupName="heal">
+			<parameter name="healTime" type="integer"  min="0" max="23" groupName="heal">
 				<label>Heal Time</label>
 				<description></description>
 				<default>2</default>

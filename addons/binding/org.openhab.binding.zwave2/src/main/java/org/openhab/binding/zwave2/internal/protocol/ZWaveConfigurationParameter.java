@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Chris Jackson
  */
 @XStreamAlias("configurationParameter")
-public class ConfigurationParameter {
+public class ZWaveConfigurationParameter {
 
     private final Integer index;
     private final Integer size;
@@ -26,13 +26,13 @@ public class ConfigurationParameter {
     private boolean writeOnly;
 
     /***
-     * Constructor. Creates a new instance of the {@link ConfigurationParameter} class.
+     * Constructor. Creates a new instance of the {@link ZWaveConfigurationParameter} class.
      * 
      * @param index. The parameter index.
      * @param value. The parameter value;
      * @throws IllegalArgumentException thrown when the index or size arguments are out of range.
      */
-    public ConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
+    public ZWaveConfigurationParameter(Integer index, Integer value, Integer size) throws IllegalArgumentException {
 
         if (size != 1 && size != 2 && size != 4) {
             throw new IllegalArgumentException("illegal parameter size");
