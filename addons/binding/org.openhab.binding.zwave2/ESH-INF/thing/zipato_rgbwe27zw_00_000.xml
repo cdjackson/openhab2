@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
+	<thing-type id="zipato_rgbwe27zw_00_000">
+		<label>Zipato RGBWE27ZW</label>
+		<description><![CDATA[RGBW bulb]]></description>
+		<channels>
+            <channel id="color-1" typeId="color">
+                <label>Light Color</label>
+                <properties>
+                    <property name="commandClass">COLOR,BASIC</property>
+                </properties>
+            </channel>
+            <channel id="color-temperature-1" typeId="color-temperature">
+                <label>Color Temperature</label>
+                <properties>
+                    <property name="commandClass">CONFIGURATION</property>
+                    <property name="parameter">1</property>
+                </properties>
+            </channel>
+		</channels>
+		<properties>
+			<property name="vendor">Zipato</property>
+			<property name="model">RGBWE27ZW</property>
+			<property name="manufacturerId">0131</property>
+			<property name="manufacturerRef">0002:0002</property>
+			<property name="commandClass:ASSOCIATION:0:default">1</property>
+			<property name="commandClass:COLOR:NO_GET"></property>
+		</properties>
+		<config-description>
+			<parameter-group name="configuration">
+				<context>setup</context>
+				<label>Configuration Parameters</label>
+			</parameter-group>
+			<parameter-group name="association">
+				<context>link</context>
+				<label>Association Groups</label>
+			</parameter-group><!-- Remove if this is not a battery device -->
+			<parameter-group name="wakeup">
+				<context>sleep</context>
+				<label>Wakeup Configuration</label>
+			</parameter-group>
+			<parameter name="config_1_1" type="integer" min="1" max="100"
+				groupName="configuration">
+				<label>1: Color temperature</label>
+				<description><![CDATA[Adjust color temperature. Values range from 0 to 100 where 0 means full cold white and 100 means full warm white.]]></description>
+				<default>50</default>
+			</parameter>
+			<parameter name="config_2_1" type="integer" min="0" max="31"
+				groupName="configuration">
+				<label>2: Shock sensor sensitivity</label>
+				<description><![CDATA[Adjust shock sensor sensitivity. Values range from 0 to 31 where 0 means minimum sensitivity and 31 means maximum sensitivity.]]></description>
+				<default>16</default>
+			</parameter>
+			<parameter name="group_1" type="integer" multiple="true"
+				groupName="association">
+				<label>Lifeline</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<multipleLimit>7</multipleLimit>
+			</parameter>
+		</config-description>
+	</thing-type>
+    <channel-type id="color">
+        <item-type>Color</item-type>
+        <label>Light Color</label>
+        <description>Set the light level and color</description>
+        <category>ColorLight</category>
+    </channel-type>
+    <channel-type id="color-temperature">
+        <item-type>Dimmer</item-type>
+        <label>Color Temperature</label>
+        <description>The color temperature channel allows to set the color
+            temperature of a light from 0 (cold) to 100 (warm).</description>
+        <category>ColorLight</category>
+    </channel-type>
+</thing:thing-descriptions>
