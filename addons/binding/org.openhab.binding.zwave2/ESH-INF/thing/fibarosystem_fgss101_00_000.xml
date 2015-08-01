@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
+	<thing-type id="fibarosystem_fgss101_00_000">
+		<label>Fibaro System FGSS101</label>
+		<description><![CDATA[Smoke Sensor]]></description>
+		<channels>
+			<channel id="smoke-1" typeId="smoke">
+				<properties>
+					<property name="commandClass">SENSOR_BINARY,BASIC</property>
+				</properties>
+			</channel>
+			<channel id="temperature-1" typeId="temperature">
+				<properties>
+					<property name="commandClass">2:SENSOR_MULTILEVEL</property>
+				</properties>
+			</channel>
+			<channel id="battery-level" typeId="system.battery-level">
+				<properties>
+					<property name="commandClass">BATTERY</property>
+				</properties>
+			</channel>
+		</channels>
+		<properties>
+			<property name="vendor">Fibaro System</property>
+			<property name="model">FGSS101</property>
+			<property name="manufacturerId">010F</property>
+			<property name="manufacturerRef">0C00:1000</property>
+			<property name="commandClass:ASSOCIATION:0:default">3</property>
+		</properties>
+		<config-description>
+			<parameter-group name="configuration">
+				<context>setup</context>
+				<label>Configuration Parameters</label>
+				<description></description>
+			</parameter-group>
+			<parameter-group name="association">
+				<context>link</context>
+				<label>Association Groups</label>
+				<description></description>
+			</parameter-group>
+			<parameter-group name="wakeup">
+				<context>sleep</context>
+				<label>Wakeup Configuration</label>
+			</parameter-group>
+			<parameter name="config_1_2" type="integer" min="0" max="3600"
+				groupName="configuration">
+				<label>1: Alarm Cancellation Delay</label>
+				<description><![CDATA[Additional delay after an alarm has ceased. The parameter allows you to specify additional time, after which the alarm is cancelled once its violation has ceased.]]></description>
+				<default>0</default>
+			</parameter>
+			<parameter name="config_2_1" type="integer" groupName="configuration">
+				<label>2: Acoustic and visual signals On / Off in case of alarm
+				</label>
+				<description><![CDATA[parameter allows for LED indicator and acoustic alarm deactivation in case of smoke detection]]></description>
+				<default>3</default>
+				<options>
+					<option value="0">acoustic and visual alarms inactive</option>
+					<option value="1">acoustic alarm inactive, visual alarm active
+					</option>
+					<option value="2">acoustic alarm active, visual alarm inactive
+					</option>
+					<option value="3">acoustic and visual alarms active</option>
+				</options>
+			</parameter>
+			<parameter name="config_5_1" type="integer" groupName="configuration">
+				<label>5: Type of alarm frame sent to 1-st association group (SMOKE)
+				</label>
+				<description><![CDATA[parameter determines a type of command frame sent by the Sensor in case smoke detection has been detected or cancelled]]></description>
+				<default>-127</default>
+				<options>
+					<option value="0">ALARM SENSOR (SMOKE)</option>
+					<option value="-127">BASIC_SET</option>
+				</options>
+			</parameter>
+			<parameter name="config_7_1" type="integer" min="1" max="255"
+				groupName="configuration">
+				<label>7: Forced Level of Dimming group 1</label>
+				<description><![CDATA[Value of the parameter specifying the forced level of dimming / opening sun blinds when comes "switch on" / "open" command to devices from association group no. 1.<BR/>
+In the case of alarm frames the alarm priority is specified. Possible parameter settings: (1 � 99) and 255. Value of 255 makes it possible to activate the device when using the Dimmer module it means activating the device and setting it to the previous stored condition, e.g. when Dimmer is set to 30%, then deactivated, and then reactivated using command 255, it will automatically be set to the previous condition, i.e. 30%.]]></description>
+				<default>255</default>
+			</parameter>
+			<parameter name="config_10_2" type="integer" min="1" max="32767"
+				groupName="configuration">
+				<label>10: Interval between successive readings of temperature
+					sensors
+				</label>
+				<description><![CDATA[Interval between successive readings of temperature from all sensors connected to the device in seconds. Note: taking temperature readings from the sensor does not result in sending a temperature condition report to the central hub.]]></description>
+				<default>300</default>
+			</parameter>
+			<parameter name="config_12_1" type="integer" min="0" max="100"
+				groupName="configuration">
+				<label>12: Insensitiveness to temperature changes.</label>
+				<description><![CDATA[]]>
+				</description>
+				<default>20</default>
+			</parameter>
+			<parameter name="config_13_1" type="integer" groupName="configuration">
+				<label>13: Transmitting the alarm or control frame broadcast mode
+				</label>
+				<description><![CDATA[Transmitting the alarm or control frame in "broadcast" mode (i.e. to all devices within range), information sent in this mode is not repeated by the mesh network.<BR/><B>NOTE:</B> If the broadcast mode of information transmission is activated for a given channel, then transmission of information in singlecast mode to devices assigned to the association group of this channel is deactivated.]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">Broadcast inactive</option>
+					<option value="1">Smoke broadcast mode active, Tamper broadcast
+						mode inactive
+					</option>
+					<option value="2">Smoke broadcast mode inactive, Tamper
+						broadcast mode active
+					</option>
+					<option value="3">Smoke and Tamper broadcast mode active
+					</option>
+				</options>
+			</parameter>
+			<parameter name="config_73_2" type="integer" min="-1000"
+				max="1000" groupName="configuration">
+				<label>73: Temperature measurement compensation</label>
+				<description><![CDATA[Temperature value to be added to or deducted from the current measured temperature<BR/>
+            -1000 0,1°C - 1000 0,1°C]]></description>
+				<default>0</default>
+			</parameter>
+			<parameter name="config_80_1" type="integer" groupName="configuration">
+				<label>80: Z-Wave range test interval</label>
+				<description><![CDATA[Time period between the consecutive Z-Wave network range tests.<BR/>
+            0 10min[10min-24h] - 17 10min[10min-24h]       ->   0 – Z-Wave network range test inactive]]></description>
+				<default>1</default>
+			</parameter>
+			<parameter name="config_81_1" type="integer" groupName="configuration">
+				<label>81: Temperature alarm threshold</label>
+				<description><![CDATA[0    ->   0 – temperature alarm inactive<BR/>
+            2 °C - 100 °C      ->  Temperature]]></description>
+				<default>54</default>
+			</parameter>
+			<parameter name="config_82_1" type="integer" groupName="configuration">
+				<label>82: Smoke Sensor sensitivity</label>
+				<description><![CDATA[There are 3 levels of sensitivity to smoke presence. Level 1 means the highest sensitivity.]]></description>
+				<default>2</default>
+				<options>
+					<option value="1">High</option>
+					<option value="2">Medium</option>
+					<option value="3">Low</option>
+				</options>
+			</parameter>
+			<parameter name="config_83_1" type="integer" groupName="configuration">
+				<label>83: Black Box sensitivity level</label>
+				<description><![CDATA[Parameter specifies temperature and smoke level after which the Black Box starts recording them.]]></description>
+				<default>0</default>
+				<options>
+					<option value="1">High</option>
+					<option value="2">Medium</option>
+					<option value="3">Low</option>
+				</options>
+			</parameter>
+			<parameter name="config_84_1" type="integer" min="-126"
+				max="127" groupName="configuration">
+				<label>84: Malfunction alarm</label>
+				<description><![CDATA[Time interval in which malfuntion alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+            -126 100ms[100ms-25,5s] - 127 100ms[100ms-25,5s]]]></description>
+				<default>10</default>
+			</parameter>
+			<parameter name="config_85_1" type="integer" min="-126"
+				max="127" groupName="configuration">
+				<label>85: Temperature alarm</label>
+				<description><![CDATA[Time interval in which temperature alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+            -126 100ms[100ms-25,5s] - 127 100ms[100ms-25,5s] -> 5 means 500ms]]></description>
+				<default>5</default>
+			</parameter>
+			<parameter name="config_86_2" type="integer" min="1" max="17280"
+				groupName="configuration">
+				<label>86: Lack of the Z-Wave range alarm</label>
+				<description><![CDATA[Time interval in which lack of the Z-Wave network alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+            1 5s [5s-24h] - 17280 5s [5s-24h]      ->   360 means 30min]]></description>
+				<default>360</default>
+			</parameter>
+			<parameter name="config_87_2" type="integer" min="1" max="17280"
+				groupName="configuration">
+				<label>87: Low battery alarm</label>
+				<description><![CDATA[Time interval in which low battery alarm, if detected, is repeated using visual and acoustic alarms.<BR/>
+            1 5s [5s-24h] - 17280 5s [5s-24h]      ->   360 means 30min]]></description>
+				<default>360</default>
+			</parameter>
+			<parameter name="config_88_1" type="integer" groupName="configuration">
+				<label>88: Temperature measurement compensation for report</label>
+				<description><![CDATA[Consider temperature measurement compensation (parameter 73) when sending temperature report.]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">Ignore temperature compensation</option>
+					<option value="1">Include temperature compensation</option>
+				</options>
+			</parameter>
+			<parameter name="config_89_1" type="integer" groupName="configuration">
+				<label>89: Tamper alarm</label>
+				<description><![CDATA[Activates/inactivates temper switch alarm]]></description>
+				<default>1</default>
+				<options>
+					<option value="0">Tamper alarm inactive</option>
+					<option value="1">Tamper alarm active, with cancellation option
+						available
+					</option>
+					<option value="2">Tamper alarm active, without cancellation
+						option
+					</option>
+				</options>
+			</parameter>
+			<parameter name="group_1" type="integer" multiple="true"
+				groupName="association">
+				<label>Fire Status</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<multipleLimit>5</multipleLimit>
+			</parameter>
+			<parameter name="group_2" type="integer" multiple="true"
+				groupName="association">
+				<label>TMP Button</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<multipleLimit>5</multipleLimit>
+			</parameter>
+			<parameter name="group_3" type="integer" groupName="association">
+				<label>Device Status</label>
+				<description><![CDATA[***Add description here***]]></description>
+			</parameter>
+			<parameter name="wakeup_interval" type="integer" groupName="wakeup">
+				<label>Wakeup Period</label>
+				<description>Set the wakeup period in seconds</description>
+			</parameter>
+			<parameter name="wakeup_node" type="integer" groupName="wakeup"
+				readOnly="true">
+				<label>Wakeup Node</label>
+				<description>The node to which wakeup messages will be sent
+				</description>
+			</parameter>
+		</config-description>
+	</thing-type>
+	<channel-type id="smoke">
+		<item-type>Switch</item-type>
+		<label>Smoke Sensor</label>
+		<description>Indicates if smoke is detected</description>
+		<category>Smoke</category>
+	</channel-type>
+	<channel-type id="temperature">
+		<item-type>Number</item-type>
+		<label>Temperature</label>
+		<description>Indicates the current temperature</description>
+		<category>Temperature</category>
+	</channel-type>
+</thing:thing-descriptions>

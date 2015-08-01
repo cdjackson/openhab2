@@ -65,7 +65,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
         ZWaveNode node = zController.getNode(lastSentMessage.getMessageNode());
         if (node == null) {
-            logger.warn("Node not found!");
+            logger.warn("Node {} not found!", lastSentMessage.getMessageNode());
             return false;
         }
 
@@ -147,6 +147,7 @@ public class SendDataMessageClass extends ZWaveCommandProcessor {
 
             if (wakeUpCommandClass != null) {
                 // It's a battery operated device, place in wake-up queue.
+                // As this message failed, we assume the device is asleep
                 wakeUpCommandClass.setAwake(false);
                 wakeUpCommandClass.processOutgoingWakeupMessage(originalMessage);
                 return false;

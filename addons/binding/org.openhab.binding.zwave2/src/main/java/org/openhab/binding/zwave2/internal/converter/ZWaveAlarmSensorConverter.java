@@ -56,6 +56,9 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter {
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveAlarmSensorCommandClass commandClass = (ZWaveAlarmSensorCommandClass) node
                 .resolveCommandClass(ZWaveCommandClass.CommandClass.SENSOR_ALARM, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         String alarmType = channel.getArguments().get("alarmType");
         logger.debug("NODE {}: Generating poll message for {}, endpoint {}, alarm {}", node.getNodeId(),

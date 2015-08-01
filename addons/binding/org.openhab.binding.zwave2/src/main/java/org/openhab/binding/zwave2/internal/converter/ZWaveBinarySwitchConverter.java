@@ -58,7 +58,10 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter {
     @Override
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveBinarySwitchCommandClass commandClass = (ZWaveBinarySwitchCommandClass) node
-                .resolveCommandClass(ZWaveCommandClass.CommandClass.SENSOR_BINARY, channel.getEndpoint());
+                .resolveCommandClass(ZWaveCommandClass.CommandClass.SWITCH_BINARY, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
                 commandClass.getCommandClass().getLabel(), channel.getEndpoint());

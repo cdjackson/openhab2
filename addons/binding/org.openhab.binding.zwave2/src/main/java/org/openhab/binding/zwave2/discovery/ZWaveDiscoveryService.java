@@ -113,6 +113,11 @@ public class ZWaveDiscoveryService extends AbstractDiscoveryService {
     }
 
     public void deviceDiscovered(int nodeId) {
+        // Don't add the controller as a thing
+        if (controllerHandler.getOwnNodeId() == nodeId) {
+            return;
+        }
+
         logger.debug("NODE {}: Device discovered", nodeId);
 
         ThingUID bridgeUID = controllerHandler.getThing().getUID();
@@ -127,6 +132,11 @@ public class ZWaveDiscoveryService extends AbstractDiscoveryService {
     }
 
     public ThingUID deviceAdded(ZWaveNode node) {
+        // Don't add the controller as a thing
+        if (controllerHandler.getOwnNodeId() == node.getNodeId()) {
+            return null;
+        }
+
         logger.debug("NODE {}: Device discovery completed", node.getNodeId());
 
         ThingUID bridgeUID = controllerHandler.getThing().getUID();

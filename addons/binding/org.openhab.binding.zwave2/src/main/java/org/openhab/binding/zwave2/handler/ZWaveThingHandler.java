@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -37,6 +39,8 @@ import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandCla
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
+import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
+import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveWakeUpCommandClass.ZWaveWakeUpEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveNodeStatusEvent;
@@ -56,6 +60,8 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
     private int nodeId;
     private List<ZWaveThingChannel> thingChannels;
+
+    private ScheduledFuture<?> pollingJob;
 
     public ZWaveThingHandler(Thing zwaveDevice) {
         super(zwaveDevice);
@@ -77,6 +83,35 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         }
 
         logger.debug("NODE {}: Initializing ZWave thing handler.", nodeId);
+
+        Runnable pollingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                logger.debug("NODE {}: Polling...", nodeId);
+                ZWaveNode node = controllerHandler.getNode(nodeId);
+                if (node == null || node.isInitializationComplete() == false) {
+                    logger.debug("NODE {}: Polling deferred until initialisation complete", nodeId);
+                    return;
+                }
+
+                List<SerialMessage> messages = new ArrayList<SerialMessage>();
+                for (ZWaveThingChannel channel : thingChannels) {
+                    logger.debug("NODE {}: Polling {}", nodeId, channel.getUID());
+                    if (channel.converter == null) {
+                        logger.debug("NODE {}: Polling aborted as no converter found for {}", nodeId, channel.getUID());
+                    } else {
+                        messages.addAll(channel.converter.executeRefresh(channel, node));
+                    }
+                }
+
+                // Send all the messages
+                for (SerialMessage message : messages) {
+                    controllerHandler.sendData(message);
+                }
+            }
+        };
+
+        pollingJob = scheduler.scheduleAtFixedRate(pollingRunnable, 60, 60, TimeUnit.SECONDS);
     }
 
     @Override
@@ -117,6 +152,8 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             }
             nodeId = 0;
         }
+
+        pollingJob.cancel(true);
     }
 
     @Override
@@ -125,8 +162,6 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
         Configuration configuration = editConfiguration();
         for (Entry<String, Object> configurationParameter : configurationParameters.entrySet()) {
-            configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
-
             String[] cfg = configurationParameter.getKey().split("_");
             if ("config".equals(cfg[0])) {
                 if (cfg.length < 3) {
@@ -171,7 +206,17 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                 // Set the parameter and request a read-back
                 controllerHandler.sendData(configurationCommandClass.setConfigMessage(cfgParameter));
                 controllerHandler.sendData(configurationCommandClass.getConfigMessage(parameterIndex));
+
+                configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
             } else if ("group".equals(cfg[0])) {
+                if (cfg.length < 2) {
+                    logger.warn("NODE{}: Association invalid {}", nodeId, configurationParameter.getKey());
+                    continue;
+                }
+
+                Object xxx = configurationParameter.getValue();
+
+                configuration.put(configurationParameter.getKey(), xxx);
             } else if ("wakeup".equals(cfg[0])) {
             } else {
                 logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
@@ -241,7 +286,7 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
             logger.debug(
                     "NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}",
-                    new Object[] { event.getNodeId(), event.getEndpoint(), commandClass, event.getValue() });
+                    event.getNodeId(), event.getEndpoint(), commandClass, event.getValue());
 
             // If this is a configuration parameter update, process it before the channels
             if (event instanceof ZWaveConfigurationParameterEvent) {
@@ -282,6 +327,28 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         // Handle transaction complete events.
         if (incomingEvent instanceof ZWaveTransactionCompletedEvent) {
 
+            return;
+        }
+
+        // Handle wakeup notification events.
+        if (incomingEvent instanceof ZWaveWakeUpEvent) {
+            if (((ZWaveWakeUpEvent) incomingEvent)
+                    .getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_CAPABILITIES_REPORT
+                    && ((ZWaveWakeUpEvent) incomingEvent)
+                            .getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_REPORT) {
+                return;
+            }
+
+            ZWaveNode node = controllerHandler.getNode(((ZWaveWakeUpEvent) incomingEvent).getNodeId());
+            if (node == null) {
+                return;
+            }
+
+            ZWaveWakeUpCommandClass commandClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
+            Configuration configuration = editConfiguration();
+            configuration.put("wakeup_interval", commandClass.getInterval());
+            configuration.put("wakeup_node", commandClass.getTargetNodeId());
+            updateConfiguration(configuration);
             return;
         }
 
@@ -369,6 +436,9 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             // Get the converter
             this.converter = ZWaveCommandClassConverter
                     .getConverter(ZWaveCommandClass.CommandClass.getCommandClass(commandClass.iterator().next()));
+            if (this.converter == null) {
+                logger.warn("NODE {}: No converter for {}", nodeId, channel.getUID());
+            }
         }
 
         public ChannelUID getUID() {

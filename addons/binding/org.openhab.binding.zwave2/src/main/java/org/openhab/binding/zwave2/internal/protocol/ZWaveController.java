@@ -90,7 +90,6 @@ public class ZWaveController {
     private final PriorityBlockingQueue<SerialMessage> recvQueue = new PriorityBlockingQueue<SerialMessage>(
             INITIAL_RX_QUEUE_SIZE, new SerialMessage.SerialMessageComparator(this));
     private ZWaveSendThread sendThread;
-    // private ZWaveReceiveThread receiveThread;
     private ZWaveInputThread inputThread;
 
     private final Semaphore sendAllowed = new Semaphore(1);
@@ -99,7 +98,7 @@ public class ZWaveController {
     private long lastMessageStartTime = 0;
     private long longestResponseTime = 0;
     private int zWaveResponseTimeout = ZWAVE_RESPONSE_TIMEOUT;
-    // private Timer watchdog;
+    private Timer watchdog;
 
     private String zWaveVersion = "Unknown";
     private String serialAPIVersion = "Unknown";
@@ -149,8 +148,8 @@ public class ZWaveController {
             zWaveResponseTimeout = timeout;
         }
         logger.info("ZWave timeout is set to {}ms. Soft reset is {}.", zWaveResponseTimeout, reset);
-        // this.watchdog = new Timer(true);
-        // this.watchdog.schedule(new WatchDogTimerTask(serialPortName), WATCHDOG_TIMER_PERIOD, WATCHDOG_TIMER_PERIOD);
+        this.watchdog = new Timer(true);
+        this.watchdog.schedule(new WatchDogTimerTask(""), WATCHDOG_TIMER_PERIOD, WATCHDOG_TIMER_PERIOD);
 
         ioHandler = handler;
 
@@ -987,16 +986,6 @@ public class ZWaveController {
     }
 
     /**
-     * Indicates a working connection to the ZWave controller stick and
-     * initialization complete
-     *
-     * @return isConnected;
-     */
-    // public boolean isConnected() {
-    // return isConnected; // && initializationComplete;
-    // }
-
-    /**
      * Returns the number of Time-Outs while sending.
      *
      * @return the timeoutCount
@@ -1031,12 +1020,16 @@ public class ZWaveController {
                     logger.debug("Receive queue TAKE: Length={}", recvQueue.size());
                     logger.debug("Process Message = {}", SerialMessage.bb2hex(recvMessage.getMessageBuffer()));
 
+                    logger.debug("Receive ---- do receive");
                     handleIncomingMessage(recvMessage);
+                    logger.debug("Receive ---- try acquire");
                     sendAllowed.tryAcquire();
+                    logger.debug("Receive ---- acquired");
                 } catch (InterruptedException e) {
+                    logger.error("Exception during ZWave thread: Input. {}", e);
                     break;
                 } catch (Exception e) {
-                    logger.error("Exception during ZWave thread: Input.", e);
+                    logger.error("Exception during ZWave thread: Input. {}", e);
                 }
             }
 
@@ -1066,6 +1059,7 @@ public class ZWaveController {
                     // To avoid sending lots of frames when we still have input frames to process, we wait here until
                     // we've processed all receive frames
                     if (!sendAllowed.tryAcquire(1, zWaveResponseTimeout, TimeUnit.MILLISECONDS)) {
+                        sendAllowed.release();
                         logger.warn("Receive queue TIMEOUT:", recvQueue.size());
                         continue;
                     }
@@ -1075,7 +1069,8 @@ public class ZWaveController {
                     try {
                         lastSentMessage = sendQueue.take();
                         logger.debug("Took message from queue for sending. Queue length = {}", sendQueue.size());
-                    } catch (InterruptedException e1) {
+                    } catch (InterruptedException e) {
+                        logger.error("Send thread aborted!!!!!!!! {}", e);
                         break;
                     }
 
@@ -1107,7 +1102,7 @@ public class ZWaveController {
                     // aware that there is no synchronization of messages between steps 2 and 3 so we can get other
                     // messages received at step 3 that are not related to our original request.
                     // 4) We ultimately receive the requested message from the device if we're requesting such a
-                    // message.
+                    // message. Again, other messages can come in during this time.
                     //
                     // A transaction is generally completed at the completion of step 4.
                     // However, for some messages, there may not be a further REQUEST so the transaction is terminated
@@ -1125,22 +1120,7 @@ public class ZWaveController {
 
                     // Send the REQUEST message TO the controller
                     ioHandler.sendPacket(lastSentMessage);
-                    /*
-                     * byte[] buffer = lastSentMessage.getMessageBuffer();
-                     * logger.debug("NODE {}: Sending REQUEST Message = {}", lastSentMessage.getMessageNode(),
-                     * SerialMessage.bb2hex(buffer));
-                     * lastMessageStartTime = System.currentTimeMillis();
-                     * try {
-                     * synchronized (serialPort.getOutputStream()) {
-                     * serialPort.getOutputStream().write(buffer);
-                     * serialPort.getOutputStream().flush();
-                     * logger.trace("Message SENT");
-                     * }
-                     * } catch (IOException e) {
-                     * logger.error("Got I/O exception {} during sending. exiting thread.", e.getLocalizedMessage());
-                     * break;
-                     * }
-                     */
+                    lastMessageStartTime = System.currentTimeMillis();
 
                     // Now wait for the RESPONSE, or REQUEST message FROM the controller
                     // This will terminate when the transactionCompleted flag gets set
@@ -1188,6 +1168,7 @@ public class ZWaveController {
                         logger.trace("Acquired. Transaction completed permit count -> {}",
                                 transactionCompleted.availablePermits());
                     } catch (InterruptedException e) {
+                        logger.error("Send thread aborted!!!!!!!! {}", e);
                         break;
                     }
                 }
@@ -1204,41 +1185,41 @@ public class ZWaveController {
      *
      * @author Jan-Willem Spuij
      */
-    // private class WatchDogTimerTask extends TimerTask {
-    //
-    // private final Logger logger = LoggerFactory.getLogger(WatchDogTimerTask.class);
-    // private final String serialPortName;
-    //
-    // /**
-    // * Creates a new instance of the WatchDogTimerTask class.
-    // *
-    // * @param serialPortName
-    // * the serial port name to reconnect to in case the serial
-    // * threads have died.
-    // */
-    // public WatchDogTimerTask(String serialPortName) {
-    // this.serialPortName = serialPortName;
-    // }
-    //
-    // /**
-    // * {@inheritDoc}
-    // */
-    // @Override
-    // public void run() {
-    // logger.trace("Watchdog: Checking Serial threads");
-    // if (
-    // // (receiveThread != null && !receiveThread.isAlive()) ||
-    // (sendThread != null && !sendThread.isAlive()) || (inputThread != null && !inputThread.isAlive())) {
-    // logger.warn("Threads not alive, respawning");
-    // disconnect();
-    // try {
-    // connect(serialPortName);
-    // } catch (SerialInterfaceException e) {
-    // logger.error("Unable to restart Serial threads: {}", e.getLocalizedMessage());
-    // }
-    // }
-    // }
-    // }
+    private class WatchDogTimerTask extends TimerTask {
+
+        private final Logger logger = LoggerFactory.getLogger(WatchDogTimerTask.class);
+        private final String serialPortName;
+
+        /**
+         * Creates a new instance of the WatchDogTimerTask class.
+         *
+         * @param serialPortName
+         *            the serial port name to reconnect to in case the serial
+         *            threads have died.
+         */
+        public WatchDogTimerTask(String serialPortName) {
+            this.serialPortName = serialPortName;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run() {
+            logger.trace("Watchdog: Checking Serial threads");
+            if (
+            // (receiveThread != null && !receiveThread.isAlive()) ||
+            (sendThread != null && !sendThread.isAlive()) || (inputThread != null && !inputThread.isAlive())) {
+                logger.warn("Threads not alive, respawning");
+                // disconnect();
+                // try {
+                // connect(serialPortName);
+                // } catch (SerialInterfaceException e) {
+                // logger.error("Unable to restart Serial threads: {}", e.getLocalizedMessage());
+                // }
+            }
+        }
+    }
 
     public void incomingPacket(SerialMessage packet) {
         // Add the packet to the receive queue

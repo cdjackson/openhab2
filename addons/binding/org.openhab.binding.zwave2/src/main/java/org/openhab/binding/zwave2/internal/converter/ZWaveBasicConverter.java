@@ -61,6 +61,9 @@ public class ZWaveBasicConverter extends ZWaveCommandClassConverter {
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveBasicCommandClass commandClass = (ZWaveBasicCommandClass) node
                 .resolveCommandClass(ZWaveCommandClass.CommandClass.BASIC, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         logger.debug("NODE {}: Generating poll message for {} endpoint {}", node.getNodeId(),
                 commandClass.getCommandClass().getLabel(), channel.getEndpoint());

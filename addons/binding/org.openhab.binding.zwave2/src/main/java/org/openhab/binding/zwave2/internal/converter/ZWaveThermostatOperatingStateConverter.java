@@ -53,6 +53,9 @@ public class ZWaveThermostatOperatingStateConverter extends ZWaveCommandClassCon
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveThermostatOperatingStateCommandClass commandClass = (ZWaveThermostatOperatingStateCommandClass) node
                 .resolveCommandClass(ZWaveCommandClass.CommandClass.THERMOSTAT_OPERATING_STATE, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
                 commandClass.getCommandClass().getLabel(), channel.getEndpoint());

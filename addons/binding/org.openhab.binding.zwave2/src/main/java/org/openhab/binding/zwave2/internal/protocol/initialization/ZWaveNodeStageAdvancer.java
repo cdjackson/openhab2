@@ -18,7 +18,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave2.internal.protocol.ZWaveDeviceClass.Generic;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
@@ -335,7 +335,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     // It seems that PC_CONTROLLERs don't respond to a lot of requests, so let's
                     // just assume their OK!
                     // If this is a controller, we're done
-                    if (node.getDeviceClass().getGenericDeviceClass() == Generic.STATIC_CONTOLLER) {
+                    if (node.getDeviceClass().getSpecificDeviceClass() == Specific.PC_CONTROLLER) {
                         logger.debug("NODE {}: Node advancer: FAILED_CHECK - Controller - terminating initialisation",
                                 node.getNodeId());
                         currentStage = ZWaveNodeInitStage.DONE;

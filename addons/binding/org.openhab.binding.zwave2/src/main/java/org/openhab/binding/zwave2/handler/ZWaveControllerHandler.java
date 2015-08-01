@@ -47,9 +47,6 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     // Network monitoring class
     ZWaveNetworkMonitor networkMonitor;
 
-    // private Iterator<ZWavePollItem> pollingIterator = null;
-    // private List<ZWavePollItem> pollingList = new ArrayList<ZWavePollItem>();
-
     private Boolean isMaster;
     private Boolean isSUC;
 
@@ -133,61 +130,10 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
 
     }
 
-    /**
-     * This method rebuilds the polling table. The polling table is a list of items that have
-     * polling enabled (ie a refresh interval is set). This list is then checked periodically
-     * and any item that has passed its polling interval will be polled.
-     */
-    private void rebuildPollingTable() {
-        // Rebuild the polling table
-        // pollingList.clear();
-
-        // if (converterHandler == null) {
-        // logger.debug("ConverterHandler not initialised. Polling disabled.");
-
-        // return;
-        // }
-        /*
-         * // Loop all bound items for this provider
-         * for (String name : eachProvider.getItemNames()) {
-         * // Find the node and check if it's completed initialisation.
-         * ZWaveBindingConfig cfg = eachProvider.getZwaveBindingConfig(name);
-         * ZWaveNode node = controller.getNode(cfg.getNodeId());
-         * if(node == null) {
-         * logger.debug("NODE {}: Polling list: can't get node for item {}", cfg.getNodeId(), name);
-         * continue;
-         * }
-         * if(node.getNodeInitializationStage() != ZWaveNodeInitStage.DONE) {
-         * logger.debug("NODE {}: Polling list: item {} is not completed initialisation", cfg.getNodeId(), name);
-         * continue;
-         * }
-         *
-         * logger.trace("Polling list: Checking {} == {}", name, converterHandler.getRefreshInterval(eachProvider,
-         * name));
-         *
-         * // If this binding is configured to poll - add it to the list
-         * if (converterHandler.getRefreshInterval(eachProvider, name) > 0) {
-         * ZWavePollItem item = new ZWavePollItem();
-         * item.item = name;
-         * item.provider = eachProvider;
-         * pollingList.add(item);
-         * logger.trace("Polling list added {}", name);
-         * }
-         * }
-         *
-         * pollingIterator = null;
-         */
-    }
-
     @Override
     public void ZWaveIncomingEvent(ZWaveEvent event) {
         // TODO Auto-generated method stub
 
-    }
-
-    private class ZWavePollItem {
-        // ZWaveBindingProvider provider;
-        String item;
     }
 
     protected void incomingMessage(SerialMessage serialMessage) {
@@ -200,11 +146,6 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     public abstract void sendPacket(SerialMessage serialMessage);
 
     public void deviceDiscovered(int nodeId) {
-        // Don't add the controller as a thing
-        if (controller.getOwnNodeId() == nodeId) {
-            return;
-        }
-
         if (discoveryService == null) {
             return;
         }
@@ -212,11 +153,6 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     }
 
     public void deviceAdded(ZWaveNode node) {
-        // Don't add the controller as a thing
-        if (controller.getOwnNodeId() == node.getNodeId()) {
-            return;
-        }
-
         if (discoveryService == null) {
             return;
         }
@@ -228,6 +164,10 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
         ThingType thingType = ZWaveConfigProvider.getThingType(newThing.getThingTypeUID());
 
         // thingType.getProperties()
+    }
+
+    public int getOwnNodeId() {
+        return controller.getOwnNodeId();
     }
 
     public ZWaveNode getNode(int node) {

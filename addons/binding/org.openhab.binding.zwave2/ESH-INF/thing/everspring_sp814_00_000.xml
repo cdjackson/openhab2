@@ -12,6 +12,11 @@
 					<property name="commandClass">ALARM</property>
 				</properties>
 			</channel>
+			<channel id="battery-level" typeId="system.battery-level">
+				<properties>
+					<property name="commandClass">BATTERY</property>
+				</properties>
+			</channel>
 		</channels>
 		<properties>
 			<property name="vendor">Everspring</property>
@@ -24,37 +29,73 @@
 			<parameter-group name="configuration">
 				<context>setup</context>
 				<label>Configuration Parameters</label>
-				<description></description>
 			</parameter-group>
 			<parameter-group name="association">
 				<context>link</context>
 				<label>Association Groups</label>
-				<description></description>
 			</parameter-group>
-			<parameter name="config_1_1" type="integer" groupName="configuration">
-				<label>1: Phase level on command</label>
-				<description><![CDATA[Defines which command to send when sensor triggers]]></description>
-				<default>0</default>
-				<options>
-					<option value="0">Set OFF</option>
-					<option value="1">Set ON</option>
-					<option value="9">Set LAST Level</option>
-				</options>
+			<parameter-group name="wakeup">
+				<context>sleep</context>
+				<label>Wakeup Configuration</label>
+			</parameter-group>
+			<parameter name="config_1_1" type="integer" min="0" max="99"
+				groupName="configuration">
+				<label>1: Basic Set Level</label>
+				<description><![CDATA[Sets the command value sent when motion is triggered.<BR/>0=OFF<BR/>1-99=ON or dimmer level]]></description>
+				<default>255</default>
 			</parameter>
 			<parameter name="config_2_1" type="integer" groupName="configuration">
-				<label>2: Enable/Disable Sleeping</label>
-				<description><![CDATA[Enables/Disables sleeping for debug purposes]]></description>
+				<label>2: Enable/Disable Detecting</label>
+				<description><![CDATA[The Detecting function can be Disabled or Enabled.]]></description>
 				<default>1</default>
 				<options>
 					<option value="0">Disabled</option>
 					<option value="1">Enabled</option>
 				</options>
 			</parameter>
-			<parameter name="group_1" type="integer" multiple="true"
-				groupName="association">
-				<label>Triggered Report</label>
+			<parameter name="config_3_1" type="integer" min="1" max="10"
+				groupName="configuration">
+				<label>3: Sensitivity Level</label>
+				<description><![CDATA[1 Means lowest sensitivity and 10 means highest.]]></description>
+				<default>6</default>
+			</parameter>
+			<parameter name="config_4_2" type="integer" min="5" max="3600"
+				groupName="configuration">
+				<label>4: Re-trigger Interval</label>
+				<description><![CDATA[Adjust the interval of being re-triggered after the detector has been triggered.<BR/>Interval in seconds.]]></description>
+				<default>5</default>
+			</parameter>
+			<parameter name="config_5_1" type="integer" min="1" max="100"
+				groupName="configuration">
+				<label>5: Lux Level</label>
+				<description><![CDATA[Sets minimum Lux Level of ambient illumination necessary for Motion Detector to trigger.]]></description>
+				<default>10</default>
+			</parameter>
+			<parameter name="config_6_1" type="integer" min="5" max="3600"
+				groupName="configuration">
+				<label>6: On-Off Duration</label>
+				<description><![CDATA[The duration determines how long before the module sends an Off after being triggered.<BR/>Duration in seconds]]></description>
+				<default>5</default>
+			</parameter>
+			<parameter name="group_1" type="integer" groupName="association">
+				<label>Reports</label>
 				<description><![CDATA[***Add description here***]]></description>
-				<multipleLimit>5</multipleLimit>
+			</parameter>
+			<parameter name="group_2" type="integer" multiple="true"
+				groupName="association">
+				<label>Control</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<multipleLimit>3</multipleLimit>
+			</parameter>
+			<parameter name="wakeup_interval" type="integer" groupName="wakeup">
+				<label>Wakeup Period</label>
+				<description>Set the wakeup period in seconds</description>
+			</parameter>
+			<parameter name="wakeup_node" type="integer" groupName="wakeup"
+				readOnly="true">
+				<label>Wakeup Node</label>
+				<description>The node to which wakeup messages will be sent
+				</description>
 			</parameter>
 		</config-description>
 	</thing-type>

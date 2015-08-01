@@ -82,10 +82,20 @@ public abstract class ZWaveCommandClassConverter {
         if (messageMap == null) {
             messageMap = new HashMap<CommandClass, Class<? extends ZWaveCommandClassConverter>>();
 
+            messageMap.put(CommandClass.ALARM, ZWaveAlarmConverter.class);
             messageMap.put(CommandClass.BASIC, ZWaveBasicConverter.class);
             messageMap.put(CommandClass.BATTERY, ZWaveBatteryConverter.class);
+            messageMap.put(CommandClass.METER, ZWaveMeterConverter.class);
+            messageMap.put(CommandClass.SENSOR_ALARM, ZWaveAlarmSensorConverter.class);
+            messageMap.put(CommandClass.SENSOR_BINARY, ZWaveBinarySensorConverter.class);
+            messageMap.put(CommandClass.SENSOR_MULTILEVEL, ZWaveMultiLevelSensorConverter.class);
             messageMap.put(CommandClass.SWITCH_BINARY, ZWaveBinarySwitchConverter.class);
             messageMap.put(CommandClass.SWITCH_MULTILEVEL, ZWaveMultiLevelSwitchConverter.class);
+            messageMap.put(CommandClass.THERMOSTAT_FAN_MODE, ZWaveThermostatFanModeConverter.class);
+            messageMap.put(CommandClass.THERMOSTAT_FAN_STATE, ZWaveThermostatFanStateConverter.class);
+            messageMap.put(CommandClass.THERMOSTAT_MODE, ZWaveThermostatModeConverter.class);
+            messageMap.put(CommandClass.THERMOSTAT_OPERATING_STATE, ZWaveThermostatOperatingStateConverter.class);
+            messageMap.put(CommandClass.THERMOSTAT_SETPOINT, ZWaveThermostatSetpointConverter.class);
         }
 
         Constructor<? extends ZWaveCommandClassConverter> constructor;

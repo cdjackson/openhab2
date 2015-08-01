@@ -56,6 +56,9 @@ public class ZWaveBinarySensorConverter extends ZWaveCommandClassConverter {
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveBinarySensorCommandClass commandClass = (ZWaveBinarySensorCommandClass) node
                 .resolveCommandClass(ZWaveCommandClass.CommandClass.SENSOR_BINARY, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
                 commandClass.getCommandClass().getLabel(), channel.getEndpoint());
@@ -71,14 +74,20 @@ public class ZWaveBinarySensorConverter extends ZWaveCommandClassConverter {
      */
     @Override
     public State handleEvent(ZWaveThingChannel channel, ZWaveCommandClassValueEvent event) {
+        logger.debug("ZWaveBinarySensorValueEvent 1");
+
         String sensorType = channel.getArguments().get("sensorType");
+        logger.debug("ZWaveBinarySensorValueEvent 2");
         ZWaveBinarySensorValueEvent sensorEvent = (ZWaveBinarySensorValueEvent) event;
+        logger.debug("ZWaveBinarySensorValueEvent 3");
 
         // Don't trigger event if this item is bound to another alarm type
         if (sensorType != null && SensorType.valueOf(sensorType) != sensorEvent.getSensorType()) {
+            logger.debug("ZWaveBinarySensorValueEvent 4");
             return null;
         }
 
+        logger.debug("ZWaveBinarySensorValueEvent 5");
         return sensorEvent.getValue() == 0 ? OnOffType.OFF : OnOffType.ON;
     }
 }

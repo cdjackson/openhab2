@@ -56,6 +56,9 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter {
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveConfigurationCommandClass commandClass = (ZWaveConfigurationCommandClass) node
                 .resolveCommandClass(ZWaveCommandClass.CommandClass.CONFIGURATION, channel.getEndpoint());
+        if (commandClass == null) {
+            return null;
+        }
 
         logger.debug("NODE {}: Generating poll message for {}, endpoint {}", node.getNodeId(),
                 commandClass.getCommandClass().getLabel(), channel.getEndpoint());

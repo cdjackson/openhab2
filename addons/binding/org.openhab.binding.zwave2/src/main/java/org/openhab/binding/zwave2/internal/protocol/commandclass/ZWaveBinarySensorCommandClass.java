@@ -272,7 +272,7 @@ public class ZWaveBinarySensorCommandClass extends ZWaveCommandClass
 
         @Override
         public Integer getValue() {
-            return getValue();
+            return (Integer) super.getValue();
         }
     }
 }
