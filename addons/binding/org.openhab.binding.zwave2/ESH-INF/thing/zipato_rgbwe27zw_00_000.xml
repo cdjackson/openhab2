@@ -7,6 +7,12 @@
 		<label>Zipato RGBWE27ZW</label>
 		<description><![CDATA[RGBW bulb]]></description>
 		<channels>
+          <channel id="dimmer-1" typeId="dimmer">
+                <properties>
+                    <property name="commandClass">SWITCH_MULTILEVEL,BASIC</property>
+                    <property name="commandClass:restoreLastValue">true</property>
+                </properties>
+            </channel>
             <channel id="color-1" typeId="color">
                 <label>Light Color</label>
                 <properties>
@@ -74,5 +80,11 @@
         <description>The color temperature channel allows to set the color
             temperature of a light from 0 (cold) to 100 (warm).</description>
         <category>ColorLight</category>
+    </channel-type>
+    <channel-type id="dimmer">
+        <item-type>Dimmer</item-type>
+        <label>Dimmer</label>
+        <description>Set the light level</description>
+        <category>Light</category>
     </channel-type>
 </thing:thing-descriptions>
