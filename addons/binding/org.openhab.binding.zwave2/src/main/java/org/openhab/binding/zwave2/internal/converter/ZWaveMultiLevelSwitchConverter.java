@@ -39,17 +39,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter {
     private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiLevelSwitchConverter.class);
 
     /**
-     * Normal On / Off converter converts on commands to 100%
-     */
-    // private final MultiLevelOnOffCommandConverter normalOnOffConverter = new MultiLevelOnOffCommandConverter();
-
-    /**
-     * Restore On / Off converter converts ON commands to the last value;
-     */
-    // private final RestoreValueMultiLevelOnOffCommandConverter restoreValueOnOffConverter = new
-    // RestoreValueMultiLevelOnOffCommandConverter();
-
-    /**
      * Constructor. Creates a new instance of the {@link ZWaveMultiLevelSwitchConverter} class.
      *
      */

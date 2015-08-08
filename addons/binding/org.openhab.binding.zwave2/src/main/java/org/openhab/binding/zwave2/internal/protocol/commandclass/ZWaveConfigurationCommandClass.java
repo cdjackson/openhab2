@@ -11,14 +11,14 @@ package org.openhab.binding.zwave2.internal.protocol.commandclass;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.zwave2.internal.protocol.ZWaveConfigurationParameter;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
-import org.openhab.binding.zwave2.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave2.internal.protocol.ZWaveEndpoint;
-import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveConfigurationParameter;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveEndpoint;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Handles the Configuration command class. This allows reading and writing of node configuration parameters
- * 
+ *
  * @author Chris Jackson
  */
 @XStreamAlias("configurationCommandClass")
@@ -46,7 +46,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Creates a new instance of the ZWaveConfigurationCommandClass class.
-     * 
+     *
      * @param node
      *            the node this command class belongs to
      * @param controller
@@ -79,23 +79,23 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
                 processConfigurationReport(serialMessage, offset);
                 break;
             case CONFIGURATIONCMD_GET:
-                logger.warn(String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(),
-                        command));
+                logger.warn(
+                        String.format("NODE %d: Command 0x%02X not implemented.", this.getNode().getNodeId(), command));
                 return;
             case CONFIGURATIONCMD_REPORT:
                 logger.trace("NODE {}: Process Configuration Report", this.getNode().getNodeId());
                 processConfigurationReport(serialMessage, offset);
                 break;
             default:
-                logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).", this
-                        .getNode().getNodeId(), command, this.getCommandClass().getLabel(), this.getCommandClass()
-                        .getKey()));
+                logger.warn(String.format("NODE %d: Unsupported Command 0x%02X for command class %s (0x%02X).",
+                        this.getNode().getNodeId(), command, this.getCommandClass().getLabel(),
+                        this.getCommandClass().getKey()));
         }
     }
 
     /**
      * Processes a CONFIGURATIONCMD_REPORT / CONFIGURATIONCMD_SET message.
-     * 
+     *
      * @param serialMessage
      *            the incoming message to process.
      * @param offset
@@ -107,6 +107,12 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
         // Extract the parameter index and value
         int parameter = serialMessage.getMessagePayloadByte(offset + 1);
         int size = serialMessage.getMessagePayloadByte(offset + 2);
+
+        // ZWave plus devices seem to return 0 if we request a parameter that doesn't exist
+        if (size == 0) {
+            logger.warn("NODE {}: Parameter {} response has 0 length", this.getNode().getNodeId(), parameter);
+            return;
+        }
 
         // Recover the data
         try {
@@ -137,20 +143,20 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets a SerialMessage with the CONFIGURATIONCMD_GET command
-     * 
+     *
      * @return the serial message
      */
     public SerialMessage getConfigMessage(int parameter) {
         // Check if the parameter exists in our list
         ZWaveConfigurationParameter configurationParameter = this.configParameters.get(parameter);
         if (configurationParameter != null && configurationParameter.getWriteOnly() == true) {
-            logger.debug("NODE {}: CONFIGURATIONCMD_GET ignored for parameter {} - parameter is write only", this
-                    .getNode().getNodeId(), parameter);
+            logger.debug("NODE {}: CONFIGURATIONCMD_GET ignored for parameter {} - parameter is write only",
+                    this.getNode().getNodeId(), parameter);
             return null;
         }
 
-        logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_GET", this.getNode()
-                .getNodeId());
+        logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_GET",
+                this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
                 SerialMessageType.Request, SerialMessageClass.ApplicationCommandHandler, SerialMessagePriority.Config);
         byte[] newPayload = { (byte) this.getNode().getNodeId(), 3, (byte) getCommandClass().getKey(),
@@ -161,19 +167,19 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets a SerialMessage with the CONFIGURATIONCMD_SET command
-     * 
+     *
      * @param parameter the parameter to set.
      * @return the serial message
      */
     public SerialMessage setConfigMessage(ZWaveConfigurationParameter parameter) {
         if (parameter != null && parameter.getReadOnly() == true) {
-            logger.debug("NODE {}: CONFIGURATIONCMD_SET ignored for parameter {} - parameter is read only", this
-                    .getNode().getNodeId(), parameter);
+            logger.debug("NODE {}: CONFIGURATIONCMD_SET ignored for parameter {} - parameter is read only",
+                    this.getNode().getNodeId(), parameter);
             return null;
         }
 
-        logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET", this.getNode()
-                .getNodeId());
+        logger.debug("NODE {}: Creating new message for application command CONFIGURATIONCMD_SET",
+                this.getNode().getNodeId());
         SerialMessage result = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
                 SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Config);
         byte[] newPayload = new byte[parameter.getSize() + 6];
@@ -194,7 +200,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Gets the stored parameter.
-     * 
+     *
      * @param index the parameter to get.
      * @return the stored parameter value;
      */
@@ -206,7 +212,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
      * Sets a parameter as Read Only.
      * Some parameters in some devices can not be written to. Trying to write them results in a timeout and this should
      * be avoided.
-     * 
+     *
      * @param index the parameter index
      * @param readOnly true if the parameter can not be read
      */
@@ -226,7 +232,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
      * Sets a parameter as Write Only.
      * Some parameters in some devices can not be read. Trying to read them results in a timeout and this should be
      * avoided.
-     * 
+     *
      * @param index the parameter index
      * @param writeOnly true if the parameter can not be read
      */
@@ -245,14 +251,14 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
     /**
      * ZWave configuration parameter received event.
      * Sent from the Configuration Command Class to the binding when a configuration value is received.
-     * 
+     *
      * @author Chris Jackson
      */
     public class ZWaveConfigurationParameterEvent extends ZWaveCommandClassValueEvent {
 
         /**
          * Constructor. Creates a new instance of the ZWaveConfigurationParameterEvent class.
-         * 
+         *
          * @param nodeId the nodeId of the event. Must be set to the controller node.
          */
         public ZWaveConfigurationParameterEvent(int nodeId, ZWaveConfigurationParameter parameter) {
@@ -261,7 +267,7 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
         /**
          * Returns the {@link ZWaveConfigurationParameter} that was received as event.
-         * 
+         *
          * @return the configuration parameter.
          */
         public ZWaveConfigurationParameter getParameter() {

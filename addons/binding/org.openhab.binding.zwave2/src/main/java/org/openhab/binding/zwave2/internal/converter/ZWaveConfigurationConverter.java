@@ -39,14 +39,6 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveConfigurationConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new IntegerDecimalTypeConverter());
-        // this.addStateConverter(new IntegerPercentTypeConverter());
-        // this.addStateConverter(new BigDecimalDecimalTypeConverter());
-
-        // this.addCommandConverter(new IntegerCommandConverter());
-        // this.addCommandConverter(new MultiLevelPercentCommandConverter());
     }
 
     /**
@@ -97,9 +89,12 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter {
             case Number:
                 state = new DecimalType(cfgEvent.getParameter().getValue());
                 break;
+            case Dimmer:
+                state = new DecimalType(cfgEvent.getParameter().getValue());
+                break;
             default:
                 state = null;
-                logger.warn("No conversion in {} to {}", this.getClass().getSimpleName(), channel.getItemType());
+                logger.warn("No conversion from {} to {}", this.getClass().getSimpleName(), channel.getItemType());
                 break;
         }
 

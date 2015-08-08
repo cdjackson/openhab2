@@ -242,13 +242,35 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
             coldWhite = 255;
         }
 
+        int len;
+        if (getVersion() > 1) {
+            len = 14;
+        } else {
+            len = 13;
+        }
+
         SerialMessage msg = new SerialMessage(this.getNode().getNodeId(), SerialMessageClass.SendData,
                 SerialMessageType.Request, SerialMessageClass.SendData, SerialMessagePriority.Set);
-        byte[] newPayload = { (byte) this.getNode().getNodeId(), 14, (byte) getCommandClass().getKey(),
-                (byte) COLOR_SET, 5, (byte) ZWaveColorType.RED.getKey(), (byte) red,
-                (byte) ZWaveColorType.GREEN.getKey(), (byte) green, (byte) ZWaveColorType.BLUE.getKey(), (byte) blue,
-                (byte) ZWaveColorType.WARM_WHITE.getKey(), (byte) warmWhite, (byte) ZWaveColorType.COLD_WHITE.getKey(),
-                (byte) coldWhite, (byte) 255 };
+        byte[] newPayload = new byte[len + 2];
+        newPayload[0] = (byte) this.getNode().getNodeId();
+        newPayload[1] = (byte) len;
+        newPayload[2] = (byte) getCommandClass().getKey();
+        newPayload[3] = (byte) COLOR_SET;
+        newPayload[4] = 5;
+        newPayload[5] = (byte) ZWaveColorType.RED.getKey();
+        newPayload[6] = (byte) red;
+        newPayload[7] = (byte) ZWaveColorType.GREEN.getKey();
+        newPayload[8] = (byte) green;
+        newPayload[9] = (byte) ZWaveColorType.BLUE.getKey();
+        newPayload[10] = (byte) blue;
+        newPayload[11] = (byte) ZWaveColorType.WARM_WHITE.getKey();
+        newPayload[12] = (byte) warmWhite;
+        newPayload[13] = (byte) ZWaveColorType.COLD_WHITE.getKey();
+        newPayload[14] = (byte) coldWhite;
+        if (getVersion() > 1) {
+            // Add the transition duration
+            newPayload[15] = (byte) 255;
+        }
         msg.setMessagePayload(newPayload);
         result.add(msg);
 

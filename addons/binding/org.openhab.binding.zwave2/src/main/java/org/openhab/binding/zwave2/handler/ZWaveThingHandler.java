@@ -29,6 +29,7 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.zwave2.ZWaveBindingConstants;
 import org.openhab.binding.zwave2.internal.converter.ZWaveCommandClassConverter;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
@@ -318,7 +319,10 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                 }
 
                 logger.debug("NODE {}: Processing event as channel {}", nodeId, channel.getUID());
-                updateState(channel.getUID(), channel.converter.handleEvent(channel, event));
+                State state = channel.converter.handleEvent(channel, event);
+                if (state != null) {
+                    updateState(channel.getUID(), state);
+                }
             }
 
             return;
@@ -437,7 +441,8 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             this.converter = ZWaveCommandClassConverter
                     .getConverter(ZWaveCommandClass.CommandClass.getCommandClass(commandClass.iterator().next()));
             if (this.converter == null) {
-                logger.warn("NODE {}: No converter for {}", nodeId, channel.getUID());
+                logger.warn("NODE {}: No converter for {}, class {}", nodeId, channel.getUID(),
+                        commandClass.iterator().next());
             }
         }
 
