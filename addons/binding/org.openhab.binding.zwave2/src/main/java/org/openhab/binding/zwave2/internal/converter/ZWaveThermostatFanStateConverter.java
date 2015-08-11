@@ -38,7 +38,6 @@ public class ZWaveThermostatFanStateConverter extends ZWaveCommandClassConverter
      */
     public ZWaveThermostatFanStateConverter() {
         super();
-        // this.addStateConverter(new IntegerDecimalTypeConverter());
     }
 
     /**

@@ -85,16 +85,16 @@ public class ZWaveConfigurationConverter extends ZWaveCommandClassConverter {
         }
 
         State state;
-        switch (channel.getItemType()) {
-            case Number:
+        switch (channel.getDataType()) {
+            case DecimalType:
                 state = new DecimalType(cfgEvent.getParameter().getValue());
                 break;
-            case Dimmer:
+            case PercentType:
                 state = new DecimalType(cfgEvent.getParameter().getValue());
                 break;
             default:
                 state = null;
-                logger.warn("No conversion from {} to {}", this.getClass().getSimpleName(), channel.getItemType());
+                logger.warn("No conversion from {} to {}", this.getClass().getSimpleName(), channel.getDataType());
                 break;
         }
 

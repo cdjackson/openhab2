@@ -30,11 +30,6 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveSceneConverter() {
         super();
-
-        // State converters used by this converter.
-        // this.addStateConverter(new BinaryDecimalTypeConverter());
-        // this.addStateConverter(new IntegerOnOffTypeConverter());
-        // this.addStateConverter(new IntegerOpenClosedTypeConverter());
     }
 
     @Override

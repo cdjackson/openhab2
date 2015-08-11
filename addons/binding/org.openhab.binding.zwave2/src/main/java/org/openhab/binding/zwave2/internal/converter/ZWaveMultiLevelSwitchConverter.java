@@ -44,17 +44,6 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveMultiLevelSwitchConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new IntegerDecimalTypeConverter());
-        // this.addStateConverter(new IntegerPercentTypeConverter());
-        // this.addStateConverter(new IntegerOnOffTypeConverter());
-        // this.addStateConverter(new IntegerOpenClosedTypeConverter());
-        // this.addStateConverter(new IntegerUpDownTypeConverter());
-
-        // this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
-        // this.addCommandConverter(new MultiLevelPercentCommandConverter());
-        // this.addCommandConverter(new MultiLevelUpDownCommandConverter());
     }
 
     /**
@@ -84,17 +73,23 @@ public class ZWaveMultiLevelSwitchConverter extends ZWaveCommandClassConverter {
     public State handleEvent(ZWaveThingChannel channel, ZWaveCommandClassValueEvent event) {
         int value = (int) event.getValue();
         State state;
-        switch (channel.getItemType()) {
-            case Dimmer:
+        switch (channel.getDataType()) {
+            case PercentType:
                 if ("true".equalsIgnoreCase(channel.getArguments().get("invertPercent"))) {
                     state = new PercentType(100 - value);
                 } else {
                     state = new PercentType(value);
                 }
                 break;
+            case OnOffType:
+                if (value == 0) {
+                    state = OnOffType.OFF;
+                } else {
+                    state = OnOffType.ON;
+                }
             default:
                 state = null;
-                logger.warn("No conversion in {} to {}", this.getClass().getSimpleName(), channel.getItemType());
+                logger.warn("No conversion in {} to {}", this.getClass().getSimpleName(), channel.getDataType());
                 break;
         }
 

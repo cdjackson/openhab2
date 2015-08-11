@@ -9,9 +9,7 @@ package org.openhab.binding.zwave2.handler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,7 +58,9 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
     private ZWaveControllerHandler controllerHandler;
 
     private int nodeId;
-    private List<ZWaveThingChannel> thingChannels;
+    private List<ZWaveThingChannel> thingChannelsCmd;
+    private List<ZWaveThingChannel> thingChannelsState;
+    private List<ZWaveThingChannel> thingChannelsPoll;
 
     private ScheduledFuture<?> pollingJob;
 
@@ -76,11 +76,78 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         updateStatus(ThingStatus.INITIALIZING);
 
         // Create the channels list to simplify processing incoming events
-        thingChannels = new ArrayList<ZWaveThingChannel>();
+        thingChannelsCmd = new ArrayList<ZWaveThingChannel>();
+        thingChannelsPoll = new ArrayList<ZWaveThingChannel>();
+        thingChannelsState = new ArrayList<ZWaveThingChannel>();
         for (Channel channel : getThing().getChannels()) {
-            ZWaveThingChannel zwaveChannel = new ZWaveThingChannel(nodeId, channel);
+            // Process the channel properties
+            Map<String, String> properties = channel.getProperties();
 
-            thingChannels.add(zwaveChannel);
+            for (String key : properties.keySet()) {
+                String[] bindingType = key.split(":");
+                if (bindingType.length != 3) {
+                    continue;
+                }
+                if (!ZWaveBindingConstants.CHANNEL_CFG_BINDING.equals(bindingType[0])) {
+                    continue;
+                }
+
+                String[] bindingProperties = properties.get(key).split(";");
+
+                // TODO: Check length???
+
+                // Get the command classes - comma separated
+                String[] cmdClasses = bindingProperties[0].split(",");
+
+                // Convert the arguments to a map
+                // - comma separated list of arguments "arg1=val1, arg2=val2"
+                Map<String, String> argumentMap = new HashMap<String, String>();
+                if (bindingProperties.length == 2) {
+                    String[] arguments = bindingProperties[1].split(",");
+                    for (String arg : arguments) {
+                        String[] prop = arg.split("=");
+                        argumentMap.put(prop[0], prop[1]);
+                    }
+                }
+
+                // Add all the command classes...
+                boolean first = true;
+                for (String cc : cmdClasses) {
+                    String[] ccSplit = cc.split(":");
+                    int endpoint = 0;
+
+                    if (ccSplit.length == 2) {
+                        endpoint = Integer.parseInt(ccSplit[1]);
+                    }
+
+                    // Get the data type
+                    DataType dataType = DataType.DecimalType;
+                    try {
+                        dataType = DataType.valueOf(bindingType[2]);
+                    } catch (IllegalArgumentException e) {
+                        logger.warn("NODE {}: Invalid item type defined ({}). Assuming DecimalType", nodeId, dataType);
+                    }
+
+                    ZWaveThingChannel chan = new ZWaveThingChannel(channel.getUID(), dataType, ccSplit[0], endpoint,
+                            argumentMap);
+
+                    // First time round, and this is a command - then add the command
+                    if (first && ("*".equals(bindingType[1]) || "Command".equals(bindingType[1]))) {
+                        thingChannelsCmd.add(chan);
+                    }
+
+                    // Add the state and polling handlers
+                    if ("*".equals(bindingType[1]) || "State".equals(bindingType[1])) {
+                        thingChannelsState.add(chan);
+
+                        if (first == true) {
+                            thingChannelsState.add(chan);
+                        }
+                    }
+
+                    first = false;
+                }
+            }
         }
 
         logger.debug("NODE {}: Initializing ZWave thing handler.", nodeId);
@@ -96,7 +163,7 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                 }
 
                 List<SerialMessage> messages = new ArrayList<SerialMessage>();
-                for (ZWaveThingChannel channel : thingChannels) {
+                for (ZWaveThingChannel channel : thingChannelsPoll) {
                     logger.debug("NODE {}: Polling {}", nodeId, channel.getUID());
                     if (channel.converter == null) {
                         logger.debug("NODE {}: Polling aborted as no converter found for {}", nodeId, channel.getUID());
@@ -113,6 +180,7 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         };
 
         pollingJob = scheduler.scheduleAtFixedRate(pollingRunnable, 60, 60, TimeUnit.SECONDS);
+
     }
 
     @Override
@@ -235,10 +303,19 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             return;
         }
 
+        DataType dataType;
+        try {
+            dataType = DataType.valueOf(command.getClass().getSimpleName());
+        } catch (IllegalArgumentException e) {
+            logger.warn("NODE {}: Command received with no implementation ({}).", nodeId,
+                    command.getClass().getSimpleName());
+            return;
+        }
+
         // Find the channel
         ZWaveThingChannel cmdChannel = null;
-        for (ZWaveThingChannel channel : thingChannels) {
-            if (channel.getUID().equals(channelUID)) {
+        for (ZWaveThingChannel channel : thingChannelsCmd) {
+            if (channel.getUID().equals(channelUID) && channel.getDataType() == dataType) {
                 cmdChannel = channel;
                 break;
             }
@@ -249,19 +326,20 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             return;
         }
 
-        ZWaveNode node = controllerHandler.getNode(cmdChannel.getNode());
+        ZWaveNode node = controllerHandler.getNode(nodeId);
         if (node == null) {
-            logger.warn("NODE {}: Node is not found for {}", cmdChannel.getNode(), channelUID);
+            logger.warn("NODE {}: Node is not found for {}", nodeId, channelUID);
             return;
         }
 
         if (cmdChannel.converter == null) {
-            logger.warn("NODE {}: No converter set for {}", cmdChannel.getNode(), channelUID);
+            logger.warn("NODE {}: No converter set for {}", nodeId, channelUID);
             return;
         }
+
         List<SerialMessage> messages = cmdChannel.converter.receiveCommand(cmdChannel, node, command);
         if (messages == null) {
-            logger.warn("NODE {}: No messages returned from converter", cmdChannel.getNode());
+            logger.warn("NODE {}: No messages returned from converter", nodeId);
             return;
         }
 
@@ -303,13 +381,13 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             }
 
             // Process the channels to see if we're interested
-            for (ZWaveThingChannel channel : thingChannels) {
+            for (ZWaveThingChannel channel : thingChannelsState) {
                 if (channel.getEndpoint() != event.getEndpoint()) {
                     continue;
                 }
 
                 // Is this command class associated with this channel?
-                if (channel.getCommandClass().contains(commandClass) == false) {
+                if (!channel.getCommandClass().equals(commandClass)) {
                     continue;
                 }
 
@@ -318,7 +396,7 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                     return;
                 }
 
-                logger.debug("NODE {}: Processing event as channel {}", nodeId, channel.getUID());
+                logger.debug("NODE {}: Processing event as channel {} {}", nodeId, channel.getUID(), channel.dataType);
                 State state = channel.converter.handleEvent(channel, event);
                 if (state != null) {
                     updateState(channel.getUID(), state);
@@ -380,69 +458,25 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
     public class ZWaveThingChannel {
         ChannelUID uid;
-        int node;
         int endpoint;
-        LinkedHashSet<String> commandClass;
+        String commandClass;
         ZWaveCommandClassConverter converter;
-        ItemType itemType;
+        DataType dataType;
         Map<String, String> arguments;
 
-        ZWaveThingChannel(int node, Channel channel) {
-            uid = channel.getUID();
-
-            arguments = new HashMap<String, String>();
-
-            // Process the channel properties
-            Map<String, String> properties = channel.getProperties();
-
-            // Set the node
-            this.node = node;
-
-            // Get the command class('s)
-            if (properties.containsKey(ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS)) {
-                // See if we specify an endpoint
-                String[] array = properties.get(ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS).split(":");
-                if (array.length == 2) {
-                    endpoint = Integer.parseInt(array[0]);
-                    array[0] = array[1];
-                } else {
-                    endpoint = 0;
-                }
-
-                // Now extract the command classes
-                array = array[0].split(",");
-                commandClass = new LinkedHashSet<String>(Arrays.asList(array));
-            } else {
-                logger.warn("NODE {}: No command classes defined in {}", getThing().getUID().toString());
-                commandClass = new LinkedHashSet<String>(0);
-            }
-
-            for (String key : properties.keySet()) {
-                String[] array = key.split(":");
-                if (array.length != 2) {
-                    continue;
-                }
-                if (!ZWaveBindingConstants.CHANNEL_CFG_COMMANDCLASS.equals(array[0])) {
-                    continue;
-                }
-
-                arguments.put(array[1], properties.get(key));
-            }
-
-            try {
-                itemType = ItemType.valueOf(channel.getAcceptedItemType());
-            } catch (IllegalArgumentException e) {
-                logger.warn("NODE {}: Invalid item type defined ({}). Assuming Number", nodeId,
-                        channel.getAcceptedItemType());
-                itemType = ItemType.Number;
-            }
+        ZWaveThingChannel(ChannelUID uid, DataType dataType, String commandClass, int endpoint,
+                Map<String, String> arguments) {
+            this.uid = uid;
+            this.arguments = arguments;
+            this.commandClass = commandClass;
+            this.endpoint = endpoint;
+            this.dataType = dataType;
 
             // Get the converter
             this.converter = ZWaveCommandClassConverter
-                    .getConverter(ZWaveCommandClass.CommandClass.getCommandClass(commandClass.iterator().next()));
+                    .getConverter(ZWaveCommandClass.CommandClass.getCommandClass(commandClass));
             if (this.converter == null) {
-                logger.warn("NODE {}: No converter for {}, class {}", nodeId, channel.getUID(),
-                        commandClass.iterator().next());
+                logger.warn("NODE {}: No converter for {}, class {}", nodeId, uid, commandClass);
             }
         }
 
@@ -450,20 +484,16 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             return uid;
         }
 
-        public Set<String> getCommandClass() {
+        public String getCommandClass() {
             return commandClass;
-        }
-
-        public int getNode() {
-            return node;
         }
 
         public int getEndpoint() {
             return endpoint;
         }
 
-        public ItemType getItemType() {
-            return itemType;
+        public DataType getDataType() {
+            return dataType;
         }
 
         public Map<String, String> getArguments() {
@@ -471,18 +501,14 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         }
     }
 
-    public enum ItemType {
-        Color,
-        Contact,
-        DateTime,
-        Dimmer,
-        Image,
-        Location,
-        Number,
-        Player,
-        Rollershutter,
-        String,
-        Switch;
+    public enum DataType {
+        DecimalType,
+        HSBType,
+        IncreaseDecreaseType,
+        OnOffType,
+        OpenClosedType,
+        PercentType,
+        StopMoveType;
     }
 
 }

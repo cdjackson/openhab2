@@ -48,10 +48,12 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
     private static final int COLOR_SET = 0x05;
 
     private final Set<ZWaveColorType> supportedColors = new HashSet<ZWaveColorType>();
+    private final Set<ZWaveColorType> refreshList = new HashSet<ZWaveColorType>();
+
+    private final Map<ZWaveColorType, Integer> colorMap = new HashMap<ZWaveColorType, Integer>();
 
     private boolean initialiseDone = false;
     private boolean isGetSupported = true;
-    private boolean refreshInProgress = false;
 
     /**
      * Creates a new instance of the ZWaveColorCommandClass class.
@@ -131,8 +133,18 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
         }
 
         logger.info("NODE {}: Color report {} {}", this.getNode().getNodeId(), colorType.toString(), level);
-        ZWaveCommandClassValueEvent zEvent = new ZWaveColorValueEvent(this.getNode().getNodeId(), 0, colorType, level);
-        this.getController().notifyEventListeners(zEvent);
+
+        // Update our knowledge of the color
+        colorMap.put(colorType, level);
+
+        // See if we're done updating
+        refreshList.remove(colorType);
+        if (refreshList.isEmpty()) {
+            // Yes - notify of a new color
+            logger.info("NODE {}: Color report finished {}", this.getNode().getNodeId(), colorMap);
+            ZWaveCommandClassValueEvent zEvent = new ZWaveColorValueEvent(this.getNode().getNodeId(), 0, colorMap);
+            this.getController().notifyEventListeners(zEvent);
+        }
     }
 
     /**
@@ -205,13 +217,17 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
      */
     public Collection<SerialMessage> getColor() {
         ArrayList<SerialMessage> result = new ArrayList<SerialMessage>();
-        if (refreshInProgress == true) {
+        if (refreshList.isEmpty() == false) {
             logger.debug("NODE {}: Color refresh is already in progress", this.getNode());
             return result;
         }
 
         // Request all colors supported by the bulb
+        // We keep a list of the requests we've made so we know when we're done
+        refreshList.clear();
+        colorMap.clear();
         for (ZWaveColorType color : supportedColors) {
+            refreshList.add(color);
             result.add(getValueMessage(color.getKey()));
         }
 
@@ -351,7 +367,7 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
      * @author Chris Jackson
      */
     public class ZWaveColorValueEvent extends ZWaveCommandClassValueEvent {
-        ZWaveColorType colorType;
+        Map<ZWaveColorType, Integer> colorMap;
 
         /**
          * Constructor. Creates a instance of the ZWaveColorValueEvent class.
@@ -361,16 +377,16 @@ public class ZWaveColorCommandClass extends ZWaveCommandClass implements ZWaveCo
          * @param colorType the color type that triggered the event;
          * @param value the value for the event.
          */
-        private ZWaveColorValueEvent(int nodeId, int endpoint, ZWaveColorType colorType, int level) {
-            super(nodeId, endpoint, CommandClass.COLOR, level);
-            this.colorType = colorType;
+        private ZWaveColorValueEvent(int nodeId, int endpoint, Map<ZWaveColorType, Integer> colorMap) {
+            super(nodeId, endpoint, CommandClass.COLOR, 0);
+            this.colorMap = colorMap;
         }
 
         /**
          * Gets the color type for this color value event.
          */
-        public ZWaveColorType getColorType() {
-            return colorType;
+        public Map<ZWaveColorType, Integer> getColorMap() {
+            return colorMap;
         }
     }
 }

@@ -10,13 +10,13 @@
 			<channel id="switch-1" typeId="switch">
 				<label>Switch 1</label>
 				<properties>
-					<property name="commandClass">1:SWITCH_BINARY,BASIC</property>
+					<property name="binding:*:OnOffType">SWITCH_BINARY:1,BASIC:1</property>
 				</properties>
-			</channel>   
+			</channel>
 			<channel id="switch-2" typeId="switch">
 				<label>Switch 2</label>
 				<properties>
-					<property name="commandClass">2:SWITCH_BINARY,BASIC</property>
+					<property name="name=binding:*:OnOffType">SWITCH_BINARY:2,BASIC:2</property>
 				</properties>
 			</channel>
 		</channels>
@@ -320,10 +320,4 @@
 
 		</config-description>
 	</thing-type>
-	<channel-type id="switch">
-		<item-type>Switch</item-type>
-		<label>Switch</label>
-		<description>Switch the light on and off</description>
-		<category>Light</category>
-	</channel-type>
 </thing:thing-descriptions>

@@ -47,11 +47,6 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveMeterConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new BigDecimalDecimalTypeConverter());
-        // this.addStateConverter(new BigDecimalOnOffTypeConverter());
-        // this.addStateConverter(new BigDecimalOpenClosedTypeConverter());
     }
 
     /**

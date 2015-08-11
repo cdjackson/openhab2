@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.smarthome.core.library.types.DecimalType;
+import org.eclipse.smarthome.core.library.types.PercentType;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.zwave2.handler.ZWaveThingHandler.ZWaveThingChannel;
@@ -41,17 +42,6 @@ public class ZWaveBasicConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveBasicConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new IntegerDecimalTypeConverter());
-        /// this.addStateConverter(new IntegerPercentTypeConverter());
-        // this.addStateConverter(new IntegerOnOffTypeConverter());
-        // this.addStateConverter(new IntegerOpenClosedTypeConverter());
-        // this.addStateConverter(new BigDecimalDecimalTypeConverter());
-
-        // this.addCommandConverter(new MultiLevelOnOffCommandConverter());
-        // this.addCommandConverter(new MultiLevelPercentCommandConverter());
-        // this.addCommandConverter(new MultiLevelIncreaseDecreaseCommandConverter());
     }
 
     /**
@@ -80,12 +70,20 @@ public class ZWaveBasicConverter extends ZWaveCommandClassConverter {
     @Override
     public State handleEvent(ZWaveThingChannel channel, ZWaveCommandClassValueEvent event) {
         State state = null;
-        switch (channel.getItemType()) {
-            case Number:
-                state = new DecimalType((int) event.getValue());
+        int value = (int) event.getValue();
+        switch (channel.getDataType()) {
+            case DecimalType:
+                state = new DecimalType(value);
+                break;
+            case PercentType:
+                if ("true".equalsIgnoreCase(channel.getArguments().get("invertPercent"))) {
+                    state = new PercentType(100 - value);
+                } else {
+                    state = new PercentType(value);
+                }
                 break;
             default:
-                logger.warn("No conversion in {} to {}", this.getClass().getSimpleName(), channel.getItemType());
+                logger.warn("No conversion in {} to {}", this.getClass().getSimpleName(), channel.getDataType());
                 break;
         }
 

@@ -99,10 +99,4 @@
 			</parameter>
 		</config-description>
 	</thing-type>
-	<channel-type id="motion">
-		<item-type>Switch</item-type>
-		<label>Motion</label>
-		<description>Indications if motion is detected</description>
-		<category>Motion</category>
-	</channel-type>
 </thing:thing-descriptions>

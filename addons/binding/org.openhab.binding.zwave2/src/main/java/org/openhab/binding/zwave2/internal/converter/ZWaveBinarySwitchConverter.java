@@ -41,15 +41,6 @@ public class ZWaveBinarySwitchConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveBinarySwitchConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new BinaryDecimalTypeConverter());
-        // this.addStateConverter(new BinaryPercentTypeConverter());
-        // this.addStateConverter(new IntegerOnOffTypeConverter());
-        // this.addStateConverter(new IntegerOpenClosedTypeConverter());
-        // this.addStateConverter(new IntegerUpDownTypeConverter());
-
-        // this.addCommandConverter(new BinaryOnOffCommandConverter());
     }
 
     /**

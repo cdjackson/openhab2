@@ -86,6 +86,7 @@ public abstract class ZWaveCommandClassConverter {
             messageMap.put(CommandClass.BASIC, ZWaveBasicConverter.class);
             messageMap.put(CommandClass.BATTERY, ZWaveBatteryConverter.class);
             messageMap.put(CommandClass.COLOR, ZWaveColorConverter.class);
+            messageMap.put(CommandClass.CONFIGURATION, ZWaveConfigurationConverter.class);
             messageMap.put(CommandClass.METER, ZWaveMeterConverter.class);
             messageMap.put(CommandClass.SENSOR_ALARM, ZWaveAlarmSensorConverter.class);
             messageMap.put(CommandClass.SENSOR_BINARY, ZWaveBinarySensorConverter.class);

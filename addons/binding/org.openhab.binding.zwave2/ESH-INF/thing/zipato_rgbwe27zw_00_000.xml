@@ -5,25 +5,40 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
 	<thing-type id="zipato_rgbwe27zw_00_000">
 		<label>Zipato RGBWE27ZW</label>
-		<description><![CDATA[RGBW bulb]]></description>
+		<description><![CDATA[RGBW bulb<br>
+		        <h1>Device Overview</h1>
+        <p>Brief description here...</p>
+        <h1>Inclusion and Exclusion</h1>
+        <p>To include the device into the network...</p>
+        <p>To exclude the device from the network...</p>]]></description>
 		<channels>
-          <channel id="dimmer-1" typeId="dimmer">
+			<channel id="color-1" typeId="color">
+				<label>Light Color</label>
+				<properties>
+					<property name="binding:*:HSBType">COLOR;colorMode=RGB</property>
+					<property name="binding:*:PercentType">SWITCH_MULTILEVEL,BASIC</property>
+					<property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
+				</properties>
+			</channel>
+            <channel id="color-coldwhite" typeId="brightness">
+                <label>Cold White</label>
                 <properties>
-                    <property name="commandClass">SWITCH_MULTILEVEL,BASIC</property>
-                    <property name="commandClass:restoreLastValue">true</property>
+                    <property name="binding:*:PercentType">COLOR;colorMode=COLD_WHITE</property>
+                    <property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
                 </properties>
             </channel>
-            <channel id="color-1" typeId="color">
-                <label>Light Color</label>
+            <channel id="color-warmwhite" typeId="brightness">
+                <label>Warm White</label>
                 <properties>
-                    <property name="commandClass">COLOR,BASIC</property>
+                    <property name="binding:*:PercentType">COLOR;colorMode=WARM_WHITE</property>
+                    <property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
                 </properties>
             </channel>
-            <channel id="color-temperature-1" typeId="color-temperature">
-                <label>Color Temperature</label>
+            <channel id="color-diffwhite" typeId="brightness">
+                <label>White Temperature</label>
                 <properties>
-                    <property name="commandClass">CONFIGURATION</property>
-                    <property name="parameter">1</property>
+                    <property name="binding:*:PercentType">COLOR;colorMode=DIFF_WHITE</property>
+                    <property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
                 </properties>
             </channel>
 		</channels>
@@ -43,10 +58,6 @@
 			<parameter-group name="association">
 				<context>link</context>
 				<label>Association Groups</label>
-			</parameter-group><!-- Remove if this is not a battery device -->
-			<parameter-group name="wakeup">
-				<context>sleep</context>
-				<label>Wakeup Configuration</label>
 			</parameter-group>
 			<parameter name="config_1_1" type="integer" min="1" max="100"
 				groupName="configuration">
@@ -68,23 +79,4 @@
 			</parameter>
 		</config-description>
 	</thing-type>
-    <channel-type id="color">
-        <item-type>Color</item-type>
-        <label>Light Color</label>
-        <description>Set the light level and color</description>
-        <category>ColorLight</category>
-    </channel-type>
-    <channel-type id="color-temperature">
-        <item-type>Dimmer</item-type>
-        <label>Color Temperature</label>
-        <description>The color temperature channel allows to set the color
-            temperature of a light from 0 (cold) to 100 (warm).</description>
-        <category>ColorLight</category>
-    </channel-type>
-    <channel-type id="dimmer">
-        <item-type>Dimmer</item-type>
-        <label>Dimmer</label>
-        <description>Set the light level</description>
-        <category>Light</category>
-    </channel-type>
 </thing:thing-descriptions>

@@ -43,7 +43,6 @@ public class ZWaveThermostatOperatingStateConverter extends ZWaveCommandClassCon
      */
     public ZWaveThermostatOperatingStateConverter() {
         super();
-        // this.addStateConverter(new BigDecimalDecimalTypeConverter());
     }
 
     /**

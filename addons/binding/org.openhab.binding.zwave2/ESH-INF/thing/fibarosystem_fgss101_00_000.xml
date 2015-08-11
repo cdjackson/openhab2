@@ -232,16 +232,4 @@ In the case of alarm frames the alarm priority is specified. Possible parameter 
 			</parameter>
 		</config-description>
 	</thing-type>
-	<channel-type id="smoke">
-		<item-type>Switch</item-type>
-		<label>Smoke Sensor</label>
-		<description>Indicates if smoke is detected</description>
-		<category>Smoke</category>
-	</channel-type>
-	<channel-type id="temperature">
-		<item-type>Number</item-type>
-		<label>Temperature</label>
-		<description>Indicates the current temperature</description>
-		<category>Temperature</category>
-	</channel-type>
 </thing:thing-descriptions>

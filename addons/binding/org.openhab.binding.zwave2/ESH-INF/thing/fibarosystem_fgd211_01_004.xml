@@ -5,13 +5,17 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
 	<thing-type id="fibarosystem_fgd211_01_004">
 		<label>Fibaro System FGD211</label>
-		<description><![CDATA[Universal Dimmer 500W]]></description>
+		<description><![CDATA[Universal Dimmer 500W<br>
+        <h1>Device Overview</h1>
+        <p>Brief description here...</p>
+        <h1>Inclusion and Exclusion</h1>
+        <p>To include the device into the network...</p>
+        <p>To exclude the device from the network...</p>]]></description>
 		<channels>
-			<channel id="dimmer-1" typeId="dimmer">
+			<channel id="brightness" typeId="brightness">
 				<properties>
-					<property name="commandClass">SWITCH_MULTILEVEL,BASIC</property>
-					<property name="commandClass:restoreLastValue">true</property>
-					<property name="commandClass:invertPercent">false</property>
+					<property name="binding:*:PercentType">SWITCH_MULTILEVEL,BASIC</property>
+					<property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
 				</properties>
 			</channel>
 		</channels>
@@ -226,10 +230,4 @@
 			</parameter>
 		</config-description>
 	</thing-type>
-	<channel-type id="dimmer">
-		<item-type>Dimmer</item-type>
-		<label>Dimmer</label>
-		<description>Set the light level</description>
-		<category>Light</category>
-	</channel-type>
 </thing:thing-descriptions>

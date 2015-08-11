@@ -41,12 +41,6 @@ public class ZWaveAlarmSensorConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveAlarmSensorConverter() {
         super();
-
-        // State and commmand converters used by this converter.
-        // this.addStateConverter(new IntegerDecimalTypeConverter());
-        // this.addStateConverter(new IntegerPercentTypeConverter());
-        // this.addStateConverter(new IntegerOnOffTypeConverter());
-        // this.addStateConverter(new IntegerOpenClosedTypeConverter());
     }
 
     /**

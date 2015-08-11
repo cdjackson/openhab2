@@ -40,8 +40,7 @@ public class ZWaveBindingConstants {
     public final static String CHANNEL_SERIAL_CAN = "serial_can";
     public final static String CHANNEL_SERIAL_OOF = "serial_oof";
 
-    public final static String CHANNEL_CFG_NODE = "node";
-    public final static String CHANNEL_CFG_ENDPOINT = "endpoint";
+    public final static String CHANNEL_CFG_BINDING = "binding";
     public final static String CHANNEL_CFG_COMMANDCLASS = "commandClass";
 
     public final static Set<ThingTypeUID> SUPPORTED_BRIDGE_TYPES_UIDS = ImmutableSet.of(CONTROLLER_SERIAL);

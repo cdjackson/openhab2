@@ -40,10 +40,6 @@ public class ZWaveBatteryConverter extends ZWaveCommandClassConverter {
      */
     public ZWaveBatteryConverter() {
         super();
-
-        // State and command converters used by this converter.
-        // this.addStateConverter(new BatteryDecimalTypeConverter());
-        // this.addStateConverter(new BatteryPercentTypeConverter());
     }
 
     /**

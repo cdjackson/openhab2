@@ -17,7 +17,7 @@ import org.eclipse.smarthome.core.library.types.StopMoveType;
 import org.eclipse.smarthome.core.library.types.UpDownType;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
-import org.openhab.binding.zwave2.handler.ZWaveThingHandler.ItemType;
+import org.openhab.binding.zwave2.handler.ZWaveThingHandler.DataType;
 import org.openhab.binding.zwave2.handler.ZWaveThingHandler.ZWaveThingChannel;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
@@ -55,7 +55,7 @@ public class FibaroFGRM222Converter extends ZWaveCommandClassConverter {
         }
 
         State state = new DecimalType(((Integer) event.getValue()).intValue());
-        if (channel.getItemType() == ItemType.Dimmer) {
+        if (channel.getDataType() == DataType.DecimalType) {
             state = new PercentType(100 - ((DecimalType) state).intValue());
         }
 

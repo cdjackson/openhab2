@@ -45,8 +45,6 @@ public class ZWaveThermostatSetpointConverter extends ZWaveCommandClassConverter
      */
     public ZWaveThermostatSetpointConverter() {
         super();
-        // this.addCommandConverter(new BigDecimalCommandConverter());
-        // this.addStateConverter(new BigDecimalDecimalTypeConverter());
     }
 
     /**
