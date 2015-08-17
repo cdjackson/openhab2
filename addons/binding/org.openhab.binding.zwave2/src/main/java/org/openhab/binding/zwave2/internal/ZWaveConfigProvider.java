@@ -1,4 +1,4 @@
-package org.openhab.binding.zwave2.internal.config;
+package org.openhab.binding.zwave2.internal;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import org.eclipse.smarthome.config.core.ConfigDescription;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameterGroup;
 import org.eclipse.smarthome.config.core.ConfigDescriptionProvider;
-import org.eclipse.smarthome.config.core.ConfigDescriptionRegistry;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.type.ThingType;
 import org.eclipse.smarthome.core.thing.type.ThingTypeRegistry;
@@ -25,18 +24,9 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider {
     private final Logger logger = LoggerFactory.getLogger(ZWaveConfigProvider.class);
 
     private static ThingTypeRegistry thingTypeRegistry;
-    private static ConfigDescriptionRegistry configDescriptionRegistry;
 
     private static Set<ThingTypeUID> zwaveThingTypeUIDList = new HashSet<ThingTypeUID>();
     private static List<ZWaveProduct> productIndex = new ArrayList<ZWaveProduct>();
-
-    protected void setConfigDescriptionRegistry(ConfigDescriptionRegistry configDescriptionRegistry) {
-        ZWaveConfigProvider.configDescriptionRegistry = configDescriptionRegistry;
-    }
-
-    protected void unsetConfigDescriptionRegistry(ConfigDescriptionRegistry configDescriptionRegistry) {
-        ZWaveConfigProvider.configDescriptionRegistry = null;
-    }
 
     protected void setThingTypeRegistry(ThingTypeRegistry thingTypeRegistry) {
         ZWaveConfigProvider.thingTypeRegistry = thingTypeRegistry;

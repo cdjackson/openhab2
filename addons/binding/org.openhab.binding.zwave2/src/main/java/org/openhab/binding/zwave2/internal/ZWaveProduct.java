@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.zwave2.internal.config;
+package org.openhab.binding.zwave2.internal;
 
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
