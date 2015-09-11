@@ -44,9 +44,8 @@ public class ZigBeeBindingConstants {
     public static final String CHANNEL_BRIGHTNESS = "brightness";
 
     // List of all parameters
-    public final static String PARAMETER_PANID = "panid";
-    public final static String PARAMETER_CHANNEL = "channel";
     public final static String PARAMETER_PORT = "port";
+    public final static String PARAMETER_RESET = "reset";
 
     public final static String PARAMETER_MACADDRESS = "macAddress";
 
