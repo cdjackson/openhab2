@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zigbee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+	<thing-type id="compacta_zbht_2">
+		<label>Compacta ZBHT-2</label>
+		<description>Wireless ZigBee HA Temperature/Humidity Sensor</description>
+		<channels>
+			<channel id="temperature-1" typeId="temperature">
+				<label>Temperature</label>
+				<properties>
+					<property name="binding:State:NumberType">2:TemperatureSensor;Scale=0.01</property>
+				</properties>
+			</channel>
+			<channel id="humidity-1" typeId="humidity">
+				<label>Humidity</label>
+				<properties>
+					<property name="binding:State:NumberType">2:HumiditySensor;Scale=0.01</property>
+				</properties>
+			</channel>
+		</channels>
+		<properties>
+            <property name="vendor">Compacta</property>
+            <property name="model">ZBHT-2</property>
+        </properties>
+	</thing-type>
+</thing:thing-descriptions>
