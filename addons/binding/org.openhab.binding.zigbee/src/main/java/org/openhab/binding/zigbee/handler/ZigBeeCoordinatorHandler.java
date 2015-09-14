@@ -170,7 +170,7 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
 								  channelId,
 								  ((String)getConfig().get(PARAMETER_RESET)).trim().toLowerCase().equals("y"),
 								  discoveryModes);
-        zigbeeApi.initializeHardware();
+        zigbeeApi.startup();
 
 		/* TODO Is the following check needed? What are the purposes of the check? */
 /*        boolean reset = false;
