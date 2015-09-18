@@ -93,8 +93,8 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
     public void initialize() {
         logger.debug("Initializing ZigBee network [{}].", this.thing.getUID());
 
-        panId = 0xFFFF; // ZB-stick sets the pan Id themself
-        channelId = 19; // default channel for TI (ZNP)
+		panId = new BigDecimal((getConfig().get(PARAMETER_PANID)).toString()).intValue();
+		channelId = new BigDecimal((getConfig().get(PARAMETER_CHANNEL)).toString()).intValue();
 
         final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
         final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
@@ -168,7 +168,7 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
         zigbeeApi = new ZigBeeApi(networkInterface,
 								  panId,
 								  channelId,
-								  ((String)getConfig().get(PARAMETER_RESET)).trim().toLowerCase().equals("y"),
+								  new Boolean((getConfig().get(PARAMETER_RESET)).toString()).booleanValue(),
 								  discoveryModes);
         zigbeeApi.startup();
 
