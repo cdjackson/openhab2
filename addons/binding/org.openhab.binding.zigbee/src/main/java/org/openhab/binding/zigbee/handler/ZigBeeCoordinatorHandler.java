@@ -93,8 +93,8 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
     public void initialize() {
         logger.debug("Initializing ZigBee network [{}].", this.thing.getUID());
 
-        panId = ((BigDecimal) getConfig().get(PARAMETER_PANID)).intValue();
-        channelId = ((BigDecimal) getConfig().get(PARAMETER_CHANNEL)).intValue();
+		panId = new BigDecimal((getConfig().get(PARAMETER_PANID)).toString()).intValue();
+		channelId = new BigDecimal((getConfig().get(PARAMETER_CHANNEL)).toString()).intValue();
 
         final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
         final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
@@ -165,10 +165,15 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
 
         final EnumSet<DiscoveryMode> discoveryModes = DiscoveryMode.ALL;
 
-        zigbeeApi = new ZigBeeApi(networkInterface, panId, channelId, false, discoveryModes);
-        zigbeeApi.initializeHardware();
+        zigbeeApi = new ZigBeeApi(networkInterface,
+								  panId,
+								  channelId,
+								  new Boolean((getConfig().get(PARAMETER_RESET)).toString()).booleanValue(),
+								  discoveryModes);
+        zigbeeApi.startup();
 
-        boolean reset = false;
+		/* TODO Is the following check needed? What are the purposes of the check? */
+/*        boolean reset = false;
         int channel = zigbeeApi.getZigBeeNetworkManager().getCurrentChannel();
         int pan = zigbeeApi.getZigBeeNetworkManager().getCurrentPanId();
         if (channel != channelId || pan != panId) {
@@ -188,7 +193,7 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
 
             return;
         }
-
+*/
         logger.debug("ZigBee network [{}] started", this.thing.getUID());
 
         final List<ZigBeeEndpoint> endpoints = new ArrayList<ZigBeeEndpoint>();

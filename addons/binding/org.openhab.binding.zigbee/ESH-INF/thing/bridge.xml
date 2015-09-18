@@ -12,6 +12,7 @@
 			<parameter name="port" type="text" required="true">
 				<label>Port</label>
 				<description>Serial Port</description>
+				<default>/dev/ttyACM0</default>
 			</parameter>
 			<parameter name="channel" type="integer" required="false"
 				min="11" max="25">
@@ -21,10 +22,14 @@
 				<advanced>true</advanced>
 			</parameter>
 			<parameter name="panid" type="Integer" required="false">
-				<label>PAN ID</label>
-				<description>PAN Network ID</description>
-				<default>0</default>
-				<advanced>true</advanced>
+		        <label>PAN ID</label>
+		        <description>PAN Network ID</description>
+        		<default>0</default>
+		        <advanced>true</advanced>
+			</parameter>
+			<parameter name="reset" type="boolean" required="false">
+				<label>(Re)create the ZigBee-network (dongle reset)? y/n</label>
+				<default>false</default>
 			</parameter>
 		</config-description>
 
