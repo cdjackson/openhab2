@@ -30,6 +30,8 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 
 | Add-on | Type |
 |--------|------|
+| Anel | Binding |
+| Astro | Binding |
 | Denon | Binding |
 | EDS OWServer | Binding |
 | Energenie | Binding |
@@ -45,18 +47,23 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 | InsteonPLM | Binding |
 | KNX | Binding |
 | Milight | Binding |
+| Modbus | Binding |
+| Networkhealth | Binding |
 | Nibeheatpump | Binding |
 | NTP | Binding |
 | Onkyo | Binding |
 | OpenEnergyMonitor | Binding |
 | OneWire | Binding |
 | RFXCOM | Binding |
+| Samsung AC | Binding |
 | SNMP | Binding |
 | SwegonVentilation | Binding |
 | SystemInfo | Binding |
 | Tinkerforge | Binding |
 | Tellstick | Binding |
 | Weather | Binding |
+| WOL | Binding |
+| XBMC | Binding |
 | ZWave | Binding |
 | rrd4j | Persistence |
 | MySQL | Persistence |

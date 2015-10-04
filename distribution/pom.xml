@@ -163,8 +163,13 @@
             <version>${esh.version}</version>
         </dependency>
 
-		<!-- openHAB 1 add-ons to include -->
-		<dependency>
+        <!-- openHAB 1 add-ons to include -->
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.anel</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.denon</artifactId>
             <version>${oh1.version}</version>
@@ -236,6 +241,16 @@
         </dependency>
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.modbus</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.networkhealth</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.nibeheatpump</artifactId>
             <version>${oh1.version}</version>
         </dependency>
@@ -296,12 +311,27 @@
         </dependency>    	
         <dependency>
             <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.wol</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>    	
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.xbmc</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>    	
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.zwave</artifactId>
             <version>${oh1.version}</version>
         </dependency>    	
         <dependency>
             <groupId>org.openhab.binding</groupId>
             <artifactId>org.openhab.binding.tellstick</artifactId>
+            <version>${oh1.version}</version>
+        </dependency>    	
+        <dependency>
+            <groupId>org.openhab.binding</groupId>
+            <artifactId>org.openhab.binding.samsungac</artifactId>
             <version>${oh1.version}</version>
         </dependency>    	
 
