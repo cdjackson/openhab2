@@ -93,9 +93,12 @@ public abstract class ZigBeeCoordinatorHandler extends BaseBridgeHandler impleme
     public void initialize() {
         logger.debug("Initializing ZigBee network [{}].", this.thing.getUID());
 
-        panId = ((BigDecimal) getConfig().get(PARAMETER_PANID)).intValue();
-        channelId = ((BigDecimal) getConfig().get(PARAMETER_CHANNEL)).intValue();
+        try {
+            panId = ((BigDecimal) getConfig().get(PARAMETER_PANID)).intValue();
+            channelId = ((BigDecimal) getConfig().get(PARAMETER_CHANNEL)).intValue();
+        } catch (ClassCastException e) {
 
+        }
         final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
         final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
         if (eshUserDataFolder != null) {
