@@ -53,6 +53,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.openhab.io.jetty.certificate"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.openhab.core.init"
@@ -91,6 +98,13 @@
 
    <plugin
          id="org.eclipse.smarthome.ui.paperui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.openhab.ui.iconset.classic"
          download-size="0"
          install-size="0"
          version="0.0.0"

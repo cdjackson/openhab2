@@ -42,9 +42,10 @@ java ^
 -Dosgi.clean=true ^
 -Declipse.ignoreApp=true ^
 -Dosgi.noShutdown=true ^
--Djetty.port=%HTTP_PORT% ^
--Djetty.port.ssl=%HTTPS_PORT% ^
+-Dorg.osgi.service.http.port=%HTTP_PORT% ^
+-Dorg.osgi.service.http.port.secure=%HTTPS_PORT% ^
 -Djetty.home.bundle=org.openhab.io.jetty ^
+-Djetty.keystore.path=./runtime/etc/keystore ^
 -Dlogback.configurationFile=./runtime/etc/logback.xml ^
 -Dfelix.fileinstall.dir=./addons ^
 -Djava.library.path=./lib ^
