@@ -28,21 +28,22 @@ public enum ZWaveNodeInitStage {
     MANUFACTURER(7, true, "Manufacture Name and Product Identification"),
     APP_VERSION(8, true, "Application Version"),
     DISCOVERY_COMPLETE(9, true, "Discovery Complete"),
-    VERSION(10, true, "Command Class Versions"),
-    ENDPOINTS(11, true, "Command Class Endpoints"),
-    UPDATE_DATABASE(12, true, "Updating database"),
-    STATIC_VALUES(13, true, "Static Information"),
-    ASSOCIATIONS(14, false, "Associations"),
-    SET_WAKEUP(15, false, "Wakeup Target"),
-    SET_ASSOCIATION(16, false, "Wakeup Target"),
-    GET_CONFIGURATION(17, false, "Getting configuration"),
-    STATIC_END(18, false, "Static Initialisation Finished"),
+    DISCOVERY_WAIT(10, true, "Discovery Wait"),
+    VERSION(11, true, "Command Class Versions"),
+    ENDPOINTS(12, true, "Command Class Endpoints"),
+    UPDATE_DATABASE(13, true, "Updating database"),
+    STATIC_VALUES(14, true, "Static Information"),
+    ASSOCIATIONS(15, false, "Associations"),
+    SET_WAKEUP(16, false, "Wakeup Target"),
+    SET_ASSOCIATION(17, false, "Wakeup Target"),
+    GET_CONFIGURATION(18, false, "Getting configuration"),
+    STATIC_END(19, false, "Static Initialisation Finished"),
 
     // States below are not restored from the configuration files
-    SESSION_START(19, false, "Restore Marker"),
-    DYNAMIC_VALUES(20, false, "Frequently Changed Information"),
+    SESSION_START(20, false, "Restore Marker"),
+    DYNAMIC_VALUES(21, false, "Frequently Changed Information"),
 
-    DONE(21, false, "Node Complete");
+    DONE(22, false, "Node Complete");
 
     private int stage;
     private boolean mandatory;

@@ -20,6 +20,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.smarthome.core.thing.UID;
 import org.openhab.binding.zwave2.handler.ZWaveControllerHandler;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessagePriority;
@@ -1224,5 +1225,9 @@ public class ZWaveController {
     public void incomingPacket(SerialMessage packet) {
         // Add the packet to the receive queue
         recvQueue.add(packet);
+    }
+
+    public UID getUID() {
+        return ioHandler.getUID();
     }
 }

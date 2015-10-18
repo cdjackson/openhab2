@@ -283,9 +283,8 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                     continue;
                 }
 
-                Object xxx = configurationParameter.getValue();
-
-                configuration.put(configurationParameter.getKey(), xxx);
+                Object val = configurationParameter.getValue();
+                configuration.put(configurationParameter.getKey(), val);
             } else if ("wakeup".equals(cfg[0])) {
             } else {
                 logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
@@ -510,5 +509,4 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         PercentType,
         StopMoveType;
     }
-
 }

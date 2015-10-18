@@ -11,10 +11,17 @@ package org.openhab.binding.zwave2.internal.protocol.initialization;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
+import org.eclipse.smarthome.config.core.Configuration;
+import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.zwave2.internal.ZWaveConfigProvider;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave2.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveController;
@@ -27,6 +34,7 @@ import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandCla
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveCommandClassInitialization;
+import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveManufacturerSpecificCommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave2.internal.protocol.commandclass.ZWaveNoOperationCommandClass;
@@ -105,6 +113,8 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
     private ZWaveNode node;
     private ZWaveController controller;
     private boolean restoredFromConfigfile = false;
+
+    private Thing thing;
 
     private static final int MAX_BUFFFER_LEN = 256;
     private ArrayBlockingQueue<SerialMessage> msgQueue;
@@ -353,6 +363,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                 case WAIT:
                     logger.debug("NODE {}: Node advancer: WAIT - Listening={}, FrequentlyListening={}",
                             node.getNodeId(), node.isListening(), node.isFrequentlyListening());
+
                     // If the node is listening, or frequently listening, then we progress.
                     if (node.isListening() == true || node.isFrequentlyListening() == true) {
                         logger.debug("NODE {}: Node advancer: WAIT - Advancing", node.getNodeId());
@@ -450,6 +461,22 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     controller.nodeDiscoveryComplete(node);
                     break;
 
+                case DISCOVERY_WAIT:
+                    // At this point, we've discovered the device, alerted the system, and are waiting for the
+                    // system to create the thing. We need to wait for this to properly configure the device
+                    // as we need the database information.
+
+                    // If we don't yet know the thing, then try and find it
+                    if (thing != null) {
+                        break;
+                    }
+
+                    ThingUID uid = new ThingUID(controller.getUID().getAsString() + ":node" + node.getNodeId());
+                    logger.debug("NODE {}: Node advancer: DISCOVERY_WAIT - looking for {}", uid);
+
+                    thing = ZWaveConfigProvider.getThing(uid);
+                    break;
+
                 case APP_VERSION:
                     ZWaveVersionCommandClass versionCommandClass = (ZWaveVersionCommandClass) node
                             .getCommandClass(CommandClass.VERSION);
@@ -517,51 +544,55 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                 case UPDATE_DATABASE:
                     // This stage reads information from the database to allow us to modify the configuration
                     logger.debug("NODE {}: Node advancer: UPDATE_DATABASE", node.getNodeId());
-                    /*
-                     * // We now should know all the command classes, so run through the database and set any options
-                     * database = new ZWaveProductDatabase();
-                     * if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
-                     * node.getApplicationVersion()) == true) {
-                     * List<ZWaveDbCommandClass> classList = database.getProductCommandClasses();
-                     *
-                     * if (classList != null) {
-                     * // Loop through the command classes and update the records...
-                     * for (ZWaveDbCommandClass dbClass : classList) {
-                     * // If we want to remove the class, then remove it!
-                     * if(dbClass.remove != null && dbClass.remove == true) {
-                     * // TODO: This will only remove the root nodes and ignores endpoint
-                     * // TODO: Do we need to search into multi_instance?
-                     * node.removeCommandClass(CommandClass.getCommandClass(dbClass.Id));
-                     * logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - removing {}",
-                     * node.getNodeId(), CommandClass.getCommandClass(dbClass.Id).getLabel());
-                     * continue;
-                     * }
-                     *
-                     * // Get the command class
-                     * int endpoint = dbClass.endpoint == null ? 0 : dbClass.endpoint;
-                     * ZWaveCommandClass zwaveClass = node.resolveCommandClass(CommandClass.getCommandClass(dbClass.Id),
-                     * endpoint);
-                     *
-                     * // If we found the command class, then set its options
-                     * if(zwaveClass != null) {
-                     * zwaveClass.setOptions(dbClass);
-                     * continue;
-                     * }
-                     *
-                     * // Command class isn't found! Do we want to add it?
-                     * // TODO: Does this need to account for multiple endpoints!?!
-                     * if(dbClass.add != null && dbClass.add == true) {
-                     * ZWaveCommandClass commandClass = ZWaveCommandClass.getInstance(dbClass.Id, node, controller);
-                     * if (commandClass != null) {
-                     * logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - adding {}",
-                     * node.getNodeId(), CommandClass.getCommandClass(dbClass.Id).getLabel());
-                     * node.addCommandClass(commandClass);
-                     * }
-                     * }
-                     * }
-                     * }
-                     * }
-                     */
+
+                    // We now should know all the command classes, so run through the database and set any options
+                    Map<String, String> properties = thing.getProperties();
+                    for (Map.Entry<String, String> entry : properties.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+
+                        String cmds[] = key.split(":");
+                        if ("commandClass".equals(cmds[0]) == false) {
+                            continue;
+                        }
+                        String args[] = value.split("=");
+
+                        if ("REMOVE".equals(args[0])) {
+                            // If we want to remove the class, then remove it!
+
+                            // TODO: This will only remove the root nodes and ignores endpoint
+                            // TODO: Do we need to search into multi_instance?
+                            node.removeCommandClass(CommandClass.getCommandClass(cmds[1]));
+                            logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - removing {}", node.getNodeId(),
+                                    CommandClass.getCommandClass(args[0]).getLabel());
+                            continue;
+                        }
+
+                        // Get the command class
+                        int endpoint = cmds[2] == null ? 0 : Integer.parseInt(cmds[2]);
+                        ZWaveCommandClass zwaveClass = node.resolveCommandClass(CommandClass.getCommandClass(cmds[1]),
+                                endpoint);
+
+                        // If we found the command class, then set its options
+                        if (zwaveClass != null) {
+                            Map<String, String> option = new HashMap<String, String>(1);
+                            option.put(args[0], args[1]);
+                            zwaveClass.setOptions(option);
+                            continue;
+                        }
+
+                        // Command class isn't found! Do we want to add it?
+                        // TODO: Does this need to account for multiple endpoints!?!
+                        if ("ADD".equals(args[0])) {
+                            ZWaveCommandClass commandClass = ZWaveCommandClass
+                                    .getInstance(CommandClass.getCommandClass(args[0]).getKey(), node, controller);
+                            if (commandClass != null) {
+                                logger.debug("NODE {}: Node advancer: UPDATE_DATABASE - adding {}", node.getNodeId(),
+                                        CommandClass.getCommandClass(args[0]).getLabel());
+                                node.addCommandClass(commandClass);
+                            }
+                        }
+                    }
                     break;
 
                 case STATIC_VALUES:
@@ -618,35 +649,19 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     if (stageAdvanced == false) {
                         break;
                     }
-                    /*
-                     * // Open the product database
-                     * ZWaveProductDatabase associations = new ZWaveProductDatabase();
-                     * if(associations.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
-                     * node.getApplicationVersion()) == true) {
-                     * // We have this device in the database
-                     * // Assume the database is correct since some devices report invalid number of groups!
-                     * List<ZWaveDbAssociationGroup> groupList = associations.getProductAssociationGroups();
-                     *
-                     * // No groups known
-                     * if (groupList == null) {
-                     * logger.debug("NODE {}: Node advancer: ASSOCIATIONS - none in database", node.getNodeId());
-                     * break;
-                     * }
-                     *
-                     * // Request every group
-                     * for (ZWaveDbAssociationGroup group : groupList) {
-                     * logger.debug("NODE {}: Node advancer: ASSOCIATIONS request group {}", node.getNodeId(),
-                     * group.Index);
-                     * addToQueue(associationCommandClass.getAssociationMessage(group.Index));
-                     * }
-                     * }
-                     * else {
-                     * for(int group = 1; group <= associationCommandClass.getMaxGroups(); group++) {
-                     * logger.debug("NODE {}: Node advancer: ASSOCIATIONS request group {}", node.getNodeId(), group);
-                     * addToQueue(associationCommandClass.getAssociationMessage(group));
-                     * }
-                     * }
-                     */
+
+                    Configuration config = thing.getConfiguration();
+                    for (String x : config.keySet()) {
+                        ConfigDescriptionParameter parm = (ConfigDescriptionParameter) config.get(x);
+
+                        String[] cfg = parm.getName().split("_");
+                        if ("group".equals(cfg[0])) {
+                            int group = Integer.parseInt(cfg[1]);
+                            logger.debug("NODE {}: Node advancer: ASSOCIATIONS request group {}", node.getNodeId(),
+                                    group);
+                            addToQueue(associationCommandClass.getAssociationMessage(group));
+                        }
+                    }
                     break;
 
                 case SET_WAKEUP:
@@ -691,99 +706,74 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                     if (controller.isMasterController() == false) {
                         break;
                     }
-                    /*
-                     * database = new ZWaveProductDatabase();
-                     * if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
-                     * node.getApplicationVersion()) == false) {
-                     * // No database entry for this device!
-                     * logger.warn("NODE {}: Node advancer: SET_ASSOCIATION - Unknown device: {}:{}:{}",
-                     * node.getNodeId(),
-                     * Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()),
-                     * Integer.toHexString(node.getDeviceId()));
-                     * break;
-                     * }
-                     *
-                     * List<ZWaveDbAssociationGroup> groups = database.getProductAssociationGroups();
-                     * if(groups == null || groups.size() == 0) {
-                     * logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - No association groups",
-                     * node.getNodeId());
-                     * break;
-                     * }
-                     *
-                     * // Get the group members
-                     * ZWaveAssociationCommandClass associationCls = (ZWaveAssociationCommandClass) node
-                     * .getCommandClass(CommandClass.ASSOCIATION);
-                     * if(associationCls == null) {
-                     * logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION class not supported",
-                     * node.getNodeId());
-                     * break;
-                     * }
-                     *
-                     * // Loop through all the groups in the database
-                     * for (ZWaveDbAssociationGroup group : groups) {
-                     * if(group.SetToController == true) {
-                     * // Check if we're already a member
-                     * if(associationCls.getGroupMembers(group.Index).contains(controller.getOwnNodeId())) {
-                     * logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION set for group {}",
-                     * node.getNodeId(), group.Index);
-                     * }
-                     * else {
-                     * logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}",
-                     * node.getNodeId(), group.Index);
-                     * // Set the association, and request the update so we confirm if it's set
-                     * addToQueue(associationCls.setAssociationMessage(group.Index, controller.getOwnNodeId()));
-                     * addToQueue(associationCls.getAssociationMessage(group.Index));
-                     * }
-                     * }
-                     * }
-                     */
+
+                    ZWaveAssociationCommandClass associationCls = (ZWaveAssociationCommandClass) node
+                            .getCommandClass(CommandClass.ASSOCIATION);
+                    if (associationCls == null) {
+                        logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION class not supported",
+                                node.getNodeId());
+                        break;
+                    }
+
+                    String associations = thing.getProperties().get("DefaultAssociations");
+                    if (associations == null || associations.length() == 0) {
+                        logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - no default associations",
+                                node.getNodeId());
+                        break;
+                    }
+
+                    String groups[] = associations.split(",");
+                    for (int c = 0; c < groups.length; c++) {
+                        int group = Integer.parseInt(groups[c]);
+
+                        // Check if we're already a member
+                        if (associationCls.getGroupMembers(group).contains(controller.getOwnNodeId())) {
+                            logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION set for group {}",
+                                    node.getNodeId(), group);
+                        } else {
+                            logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}",
+                                    node.getNodeId(), group);
+                            // Set the association, and request the update so we confirm if it's set
+                            addToQueue(associationCls.setAssociationMessage(group, controller.getOwnNodeId()));
+                            addToQueue(associationCls.getAssociationMessage(group));
+                        }
+                    }
                     break;
 
                 case GET_CONFIGURATION:
-                    /*
-                     * database = new ZWaveProductDatabase();
-                     * if(database.FindProduct(node.getManufacturer(), node.getDeviceType(), node.getDeviceId(),
-                     * node.getApplicationVersion()) == false) {
-                     * // No database entry for this device!
-                     * logger.warn("NODE {}: Node advancer: GET_CONFIGURATION - Unknown device: {}:{}:{}",
-                     * node.getNodeId(),
-                     * Integer.toHexString(node.getManufacturer()), Integer.toHexString(node.getDeviceType()),
-                     * Integer.toHexString(node.getDeviceId()));
-                     * break;
-                     * }
-                     *
-                     * ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
-                     * .getCommandClass(CommandClass.CONFIGURATION);
-                     *
-                     * // If there are no configuration entries for this node, then continue.
-                     * List<ZWaveDbConfigurationParameter> configList = database.getProductConfigParameters();
-                     * if(configList.size() == 0) {
-                     * break;
-                     * }
-                     *
-                     * // If the node doesn't support configuration class, then we better let people know!
-                     * if (configurationCommandClass == null) {
-                     * logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported",
-                     * node.getNodeId());
-                     * break;
-                     * }
-                     *
-                     * // Request all parameters for this node
-                     * for (ZWaveDbConfigurationParameter parameter : configList) {
-                     * // Some parameters don't return anything, so don't request them!
-                     * if(parameter.WriteOnly != null && parameter.WriteOnly == true) {
-                     * configurationCommandClass.setParameterWriteOnly(parameter.Index, true);
-                     * continue;
-                     * }
-                     *
-                     * // If this is the first time around the loop
-                     * // or we don't have a value for this parameter
-                     * // then request it!
-                     * if(configurationCommandClass.getParameter(parameter.Index) == null) {
-                     * addToQueue(configurationCommandClass.getConfigMessage(parameter.Index));
-                     * }
-                     * }
-                     */
+
+                    ZWaveConfigurationCommandClass configurationCommandClass = (ZWaveConfigurationCommandClass) node
+                            .getCommandClass(CommandClass.CONFIGURATION);
+
+                    // If the node doesn't support configuration class, then we better let people know!
+                    if (configurationCommandClass == null) {
+                        logger.error("NODE {}: Node advancer: GET_CONFIGURATION - CONFIGURATION class not supported",
+                                node.getNodeId());
+                        break;
+                    }
+
+                    Configuration configParameters = thing.getConfiguration();
+                    for (String x : configParameters.keySet()) {
+                        ConfigDescriptionParameter parm = (ConfigDescriptionParameter) configParameters.get(x);
+
+                        String[] cfg = parm.getName().split("_");
+                        if ("config".equals(cfg[0])) {
+                            int index = Integer.parseInt(cfg[1]);
+
+                            // Some parameters don't return anything, so don't request them!
+                            if ("wo".equals(cfg[3])) {
+                                configurationCommandClass.setParameterWriteOnly(index, true);
+                                continue;
+                            }
+
+                            // If this is the first time around the loop
+                            // or we don't have a value for this parameter
+                            // then request it!
+                            if (configurationCommandClass.getParameter(index) == null) {
+                                addToQueue(configurationCommandClass.getConfigMessage(index));
+                            }
+                        }
+                    }
                     break;
 
                 case DYNAMIC_VALUES:
@@ -867,7 +857,9 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
             // data for this stage.
             // If we have all the data, set stageAdvanced to true to tell the system
             // that we're starting again, then loop around again.
-            if (currentStage != ZWaveNodeInitStage.DONE && sendMessage() == false) {
+            if (currentStage != ZWaveNodeInitStage.DONE &&
+
+            sendMessage() == false) {
                 // Move on to the next stage
                 setCurrentStage(currentStage.getNextStage());
                 stageAdvanced = true;
@@ -878,6 +870,7 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                 logger.debug("NODE {}: Node advancer - advancing to {}", node.getNodeId(), currentStage.toString());
             }
         } while (msgQueue.isEmpty());
+
     }
 
     /**

@@ -3,6 +3,7 @@ package org.openhab.binding.zwave2.internal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -13,20 +14,38 @@ import org.eclipse.smarthome.config.core.ConfigDescription;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameterGroup;
 import org.eclipse.smarthome.config.core.ConfigDescriptionProvider;
+import org.eclipse.smarthome.config.core.ConfigDescriptionRegistry;
+import org.eclipse.smarthome.config.core.ConfigOptionProvider;
+import org.eclipse.smarthome.config.core.ParameterOption;
+import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingRegistry;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.type.ThingType;
 import org.eclipse.smarthome.core.thing.type.ThingTypeRegistry;
 import org.openhab.binding.zwave2.ZWaveBindingConstants;
+import org.openhab.binding.zwave2.handler.ZWaveControllerHandler;
+import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZWaveConfigProvider implements ConfigDescriptionProvider {
+public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOptionProvider {
     private final Logger logger = LoggerFactory.getLogger(ZWaveConfigProvider.class);
 
+    private static ThingRegistry thingRegistry;
     private static ThingTypeRegistry thingTypeRegistry;
+    private static ConfigDescriptionRegistry configDescriptionRegistry;
 
     private static Set<ThingTypeUID> zwaveThingTypeUIDList = new HashSet<ThingTypeUID>();
     private static List<ZWaveProduct> productIndex = new ArrayList<ZWaveProduct>();
+
+    protected void setThingRegistry(ThingRegistry thingRegistry) {
+        ZWaveConfigProvider.thingRegistry = thingRegistry;
+    }
+
+    protected void unsetThingRegistry(ThingRegistry thingRegistry) {
+        ZWaveConfigProvider.thingRegistry = null;
+    }
 
     protected void setThingTypeRegistry(ThingTypeRegistry thingTypeRegistry) {
         ZWaveConfigProvider.thingTypeRegistry = thingTypeRegistry;
@@ -36,9 +55,16 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider {
         ZWaveConfigProvider.thingTypeRegistry = null;
     }
 
+    protected void setConfigDescriptionRegistry(ConfigDescriptionRegistry configDescriptionRegistry) {
+        ZWaveConfigProvider.configDescriptionRegistry = configDescriptionRegistry;
+    }
+
+    protected void unsetConfigDescriptionRegistry(ConfigDescriptionRegistry configDescriptionRegistry) {
+        ZWaveConfigProvider.configDescriptionRegistry = null;
+    }
+
     @Override
     public Collection<ConfigDescription> getConfigDescriptions(Locale locale) {
-        // TODO Auto-generated method stub
         logger.debug("getConfigDescriptions called");
         return null;
     }
@@ -145,5 +171,82 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider {
         }
 
         return thingTypeRegistry.getThingType(thingTypeUID);
+    }
+
+    public static ThingType getThingType(ZWaveNode node) {
+        // Check that we know about the registry
+        if (thingTypeRegistry == null) {
+            return null;
+        }
+
+        for (ZWaveProduct product : ZWaveConfigProvider.getProductIndex()) {
+            if (product.match(node) == true) {
+                return thingTypeRegistry.getThingType(product.thingTypeUID);
+            }
+        }
+        return null;
+    }
+
+    public static Thing getThing(ThingUID thingUID) {
+        // Check that we know about the registry
+        if (thingRegistry == null) {
+            return null;
+        }
+
+        return thingRegistry.get(thingUID);
+    }
+
+    @Override
+    public Collection<ParameterOption> getParameterOptions(URI uri, String param, Locale locale) {
+        // We need to update the options of all requests for association groups...
+        ThingUID id = new ThingUID(uri.toString());
+
+        // Is this a zwave thing?
+        if (!id.getBindingId().equals(ZWaveBindingConstants.BINDING_ID)) {
+            return null;
+        }
+
+        // And is it an association group?
+        if (!param.startsWith("group_")) {
+            return null;
+        }
+
+        // And make sure this is a node because we want to get the id off the end...
+        if (!id.getId().startsWith("node")) {
+            return null;
+        }
+
+        int nodeId = Integer.parseInt(id.getId().substring(4));
+
+        List<ParameterOption> options = new ArrayList<ParameterOption>();
+
+        // Add all the nodes on this controller...
+        ThingUID bridgeUID = new ThingUID(id.getThingTypeUID() + id.getBridgeIds().toString());
+
+        // Get the controller for this thing
+        Thing bridge = getThing(bridgeUID);
+        if (bridge == null) {
+            return null;
+        }
+
+        // Get its handler
+        ZWaveControllerHandler handler = (ZWaveControllerHandler) bridge.getHandler();
+
+        // And iterate over all its nodes
+        Collection<ZWaveNode> nodes = handler.getNodes();
+        for (ZWaveNode node : nodes) {
+            // Don't add its own id
+            if (node.getNodeId() == nodeId) {
+                continue;
+            }
+
+            // Add the node for the standard association class
+            options.add(new ParameterOption("node" + node.getNodeId(), "Node " + node.getNodeId()));
+
+            // If this device supports multi_instance_association class, then add all endpoints as well...
+
+        }
+
+        return Collections.unmodifiableList(options);
     }
 }

@@ -16,6 +16,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.eclipse.smarthome.core.thing.UID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.type.ThingType;
 import org.eclipse.smarthome.core.types.Command;
@@ -27,6 +28,7 @@ import org.openhab.binding.zwave2.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave2.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave2.internal.protocol.event.ZWaveEvent;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,7 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     private Logger logger = LoggerFactory.getLogger(ZWaveControllerHandler.class);
 
     private ZWaveDiscoveryService discoveryService;
+    private ServiceRegistration discoveryRegistration;
 
     private volatile ZWaveController controller;
 
@@ -98,7 +101,7 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
         discoveryService.activate();
 
         // And register it as an OSGi service
-        bundleContext.registerService(DiscoveryService.class.getName(), discoveryService,
+        discoveryRegistration = bundleContext.registerService(DiscoveryService.class.getName(), discoveryService,
                 new Hashtable<String, Object>());
     }
 
@@ -106,6 +109,8 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     public void dispose() {
         // Remove the discovery service
         discoveryService.deactivate();
+
+        discoveryRegistration.unregister();
 
         // if (this.converterHandler != null) {
         // this.converterHandler = null;
@@ -193,5 +198,9 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
 
     public void removeEventListener(ZWaveThingHandler zWaveThingHandler) {
         controller.removeEventListener(zWaveThingHandler);
+    }
+
+    public UID getUID() {
+        return thing.getUID();
     }
 }
