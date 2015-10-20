@@ -26,7 +26,7 @@
 			<property name="manufacturerRef">0100:*</property>
 			<property name="versionMin">1.4</property>
 			<property name="versionMax">1.8</property>
-			<property name="commandClass:ASSOCIATION:0:default">3</property>
+            <property name="DefaultAssociations">3</property>
 		</properties>
 		<config-description>
 			<parameter-group name="configuration">

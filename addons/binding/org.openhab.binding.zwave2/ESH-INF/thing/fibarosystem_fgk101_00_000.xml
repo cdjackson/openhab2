@@ -9,12 +9,12 @@
 		<channels>
 			<channel id="door-1" typeId="door">
 				<properties>
-					<property name="commandClass">SENSOR_BINARY,BASIC</property>
+                    <property name="binding:*:OnOffType">SENSOR_BINARY:1,BASIC:1</property>
 				</properties>
 			</channel>
 			<channel id="temperature-1" typeId="temperature">
 				<properties>
-					<property name="commandClass">2:SENSOR_MULTILEVEL</property>
+					<property name="commandClass">SENSOR_MULTILEVEL:2</property>
 				</properties>
 			</channel>
 			<channel id="battery-level" typeId="system.battery-level">
@@ -28,7 +28,7 @@
 			<property name="model">FGK101</property>
 			<property name="manufacturerId">010F</property>
 			<property name="manufacturerRef">0700:*</property>
-			<property name="commandClass:ASSOCIATION:0:default">3</property>
+            <property name="DefaultAssociations">3</property>
 		</properties>
 		<config-description>
 			<parameter-group name="configuration">

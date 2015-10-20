@@ -28,7 +28,7 @@
 			<property name="model">FGSS101</property>
 			<property name="manufacturerId">010F</property>
 			<property name="manufacturerRef">0C00:1000</property>
-			<property name="commandClass:ASSOCIATION:0:default">3</property>
+            <property name="DefaultAssociations">3</property>
 		</properties>
 		<config-description>
 			<parameter-group name="configuration">

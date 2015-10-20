@@ -5,7 +5,9 @@
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
 	<thing-type id="fibarosystem_fgs221_00_000">
 		<label>Fibaro System FGS221</label>
-		<description>Double Relay Switch 2x1.5kW</description>
+		<description><![CDATA[Double Relay Switch 2x1.5kW<br>
+<h1>Device Overview</h1><p>Brief description here</p><h1>Inclusion and Exclusion</h1><p>To include the device into the network...</p><p>To exclude the device from the network...</p>
+		]]></description>
 		<channels>
 			<channel id="switch-1" typeId="switch">
 				<label>Switch 1</label>
@@ -16,7 +18,7 @@
 			<channel id="switch-2" typeId="switch">
 				<label>Switch 2</label>
 				<properties>
-					<property name="name=binding:*:OnOffType">SWITCH_BINARY:2,BASIC:2</property>
+					<property name="binding:*:OnOffType">SWITCH_BINARY:2,BASIC:2</property>
 				</properties>
 			</channel>
 		</channels>
@@ -25,7 +27,7 @@
 			<property name="model">FGS221</property>
 			<property name="manufacturerId">010F</property>
 			<property name="manufacturerRef">0200:*</property>
-			<property name="commandClass:ASSOCIATION:0:default">3</property>
+			<property name="DefaultAssociations">3</property>
 		</properties>
 		<config-description>
 			<parameter-group name="configuration">
