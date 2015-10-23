@@ -10,7 +10,7 @@
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.zwave.internal.ZWaveHandlerFactory">
 
-   <implementation class="org.openhab.binding.zwave2.internal.ZWaveHandlerFactory"/>
+   <implementation class="org.openhab.binding.zwave.internal.ZWaveHandlerFactory"/>
 
    <service>
       <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>

@@ -9,11 +9,12 @@
 
 -->
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.zwave.ConfigDescription">
-   <implementation class="org.openhab.binding.zwave2.internal.config.ZWaveConfigProvider"/>
+   <implementation class="org.openhab.binding.zwave.internal.ZWaveConfigProvider"/>
    <service>
       <provide interface="org.eclipse.smarthome.config.core.ConfigDescriptionProvider"/>
       <provide interface="org.eclipse.smarthome.config.core.ConfigOptionProvider"/>
    </service>
    <reference bind="setThingRegistry" cardinality="1..1" interface="org.eclipse.smarthome.core.thing.ThingRegistry" name="ThingRegistry" policy="static" unbind="unsetThingRegistry"/>
    <reference bind="setThingTypeRegistry" cardinality="1..1" interface="org.eclipse.smarthome.core.thing.type.ThingTypeRegistry" name="ThingTypeRegistry" policy="static" unbind="unsetThingTypeRegistry"/>
+   <reference bind="setConfigDescriptionRegistry" cardinality="1..1" interface="org.eclipse.smarthome.config.core.ConfigDescriptionRegistry" name="ConfigDescriptionRegistry" policy="static" unbind="unsetConfigDescriptionRegistry"/>
 </scr:component>

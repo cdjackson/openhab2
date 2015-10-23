@@ -12,8 +12,7 @@
 			<channel id="switch-1" typeId="switch">
 				<label>Switch 1</label>
 				<properties>
-					<property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
-					<property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
+					<property name="binding:Command:OnOffType">SWITCH_BINARY,BASIC</property>
 				</properties>
 			</channel>
 		</channels>

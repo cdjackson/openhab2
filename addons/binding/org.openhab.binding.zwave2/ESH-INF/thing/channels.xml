@@ -62,7 +62,7 @@
 		<label>Temperature</label>
 		<description>Indicates the current temperature</description>
 		<category>Temperature</category>
-		<state pattern="%0.1f" readOnly="true">
+		<state pattern="%.1f" readOnly="true">
 		</state>
 	</channel-type>
 
@@ -81,4 +81,55 @@
 		<description>Indicates if smoke is detected</description>
 		<category>Smoke</category>
 	</channel-type>
+
+    <!-- Energy - Power Consumption -->
+    <channel-type id="power_watts">
+        <item-type>Number</item-type>
+        <label>Power Consumption</label>
+        <description>Indicates the instantaneous power consumption</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+
+    <!-- Energy - Current Consumption -->
+    <channel-type id="power_current">
+        <item-type>Number</item-type>
+        <label>Current Consumption</label>
+        <description>Indicates the instantaneous current consumption</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+    
+    <!-- Energy - Voltage -->
+    <channel-type id="power_voltage">
+        <item-type>Number</item-type>
+        <label>Voltage</label>
+        <description>Indicates the instantaneous voltage</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+    
+    <!-- Energy - Power Factor -->
+    <channel-type id="power_powerfactor">
+        <item-type>Number</item-type>
+        <label>Power Factor</label>
+        <description>Indicates the instantaneous power factor</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+    
+    <!-- Energy - Energy Consumption -->
+    <channel-type id="power_energy">
+        <item-type>Number</item-type>
+        <label>Energy Consumption</label>
+        <description>Indicates the energy consumption</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+    
 </thing:thing-descriptions>
