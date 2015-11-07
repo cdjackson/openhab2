@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
-	<thing-type id="qubino_zmnhda_00_000">
+	<thing-type id="qubino_zmnhba_00_000">
 		<label>Qubino ZMNHBA</label>
 		<description><![CDATA[Flush dimmer<br>
 <h1>Device Overview</h1>
