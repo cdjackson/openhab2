@@ -9,6 +9,7 @@
 package org.openhab.binding.zwave.internal.converter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,9 @@ import org.slf4j.LoggerFactory;
 public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(ZWaveMultiLevelSensorConverter.class);
+
+    private static BigDecimal ONE_POINT_EIGHT = new BigDecimal("1.8");
+    private static BigDecimal THIRTY_TWO = new BigDecimal("32");
 
     /**
      * Constructor. Creates a new instance of the {@link ZWaveMultiLevelSensorConverter} class.
@@ -92,12 +96,11 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter {
                         // For temperature, there are only two scales, so we simplify the conversion
                         if (sensorEvent.getSensorScale() == 0) {
                             // Scale is celsius, convert to fahrenheit
-                            double c = val.doubleValue();
-                            val = new BigDecimal((c * 9.0 / 5.0) + 32.0);
+                            val = val.multiply(ONE_POINT_EIGHT).add(THIRTY_TWO).movePointRight(1);
                         } else if (sensorEvent.getSensorScale() == 1) {
                             // Scale is fahrenheit, convert to celsius
-                            double f = val.doubleValue();
-                            val = new BigDecimal((f - 32.0) * 5.0 / 9.0);
+                            val = val.movePointLeft(1).subtract(THIRTY_TWO).divide(ONE_POINT_EIGHT,
+                                    MathContext.DECIMAL32);
                         }
                         break;
                     default:
