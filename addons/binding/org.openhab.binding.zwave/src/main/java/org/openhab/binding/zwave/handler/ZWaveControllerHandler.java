@@ -131,8 +131,17 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     }
 
     public void startDeviceDiscovery() {
-        // TODO Auto-generated method stub
+        if (controller == null) {
+            return;
+        }
+        controller.requestAddNodesStart();
+    }
 
+    public void stopDeviceDiscovery() {
+        if (controller == null) {
+            return;
+        }
+        controller.requestAddNodesStop();
     }
 
     @Override
