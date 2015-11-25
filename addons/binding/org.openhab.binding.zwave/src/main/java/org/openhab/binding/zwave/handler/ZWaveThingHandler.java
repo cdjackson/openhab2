@@ -8,6 +8,7 @@
 package org.openhab.binding.zwave.handler;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -519,7 +520,7 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
     }
 
     @Override
-    public Collection<ParameterOption> getParameterOptions(String param, Locale locale) {
+    public Collection<ParameterOption> getParameterOptions(URI uri, String param, Locale locale) {
         // Is it an association group?
         if (!param.startsWith("group_")) {
             return null;
