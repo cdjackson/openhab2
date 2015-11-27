@@ -83,6 +83,18 @@ public class ZWaveDiscoveryService extends AbstractDiscoveryService {
         controllerHandler.startDeviceDiscovery();
     }
 
+    @Override
+    public synchronized void abortScan() {
+        controllerHandler.stopDeviceDiscovery();
+        super.abortScan();
+    }
+
+    @Override
+    protected synchronized void stopScan() {
+        controllerHandler.stopDeviceDiscovery();
+        super.stopScan();
+    }
+
     private ThingUID getThingUID(ZWaveNode node) {
         ThingUID bridgeUID = controllerHandler.getThing().getUID();
 
