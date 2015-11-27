@@ -9,19 +9,15 @@ package org.openhab.binding.zwave.handler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.smarthome.config.core.ConfigOptionProvider;
 import org.eclipse.smarthome.config.core.Configuration;
-import org.eclipse.smarthome.config.core.ParameterOption;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -54,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventListener, ConfigOptionProvider {
+public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventListener {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet();
 
@@ -516,19 +512,5 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         OpenClosedType,
         PercentType,
         StopMoveType;
-    }
-
-    @Override
-    public Collection<ParameterOption> getParameterOptions(String param, Locale locale) {
-        // Is it an association group?
-        if (!param.startsWith("group_")) {
-            return null;
-        }
-
-        List<ParameterOption> options = new ArrayList<ParameterOption>();
-        options.add(new ParameterOption("node1", "Node 1"));
-        options.add(new ParameterOption("node1", "Node 3"));
-
-        return options;
     }
 }

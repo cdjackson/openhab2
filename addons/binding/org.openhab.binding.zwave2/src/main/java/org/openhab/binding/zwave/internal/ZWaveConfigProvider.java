@@ -3,6 +3,7 @@ package org.openhab.binding.zwave.internal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,8 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameterGroup;
 import org.eclipse.smarthome.config.core.ConfigDescriptionProvider;
 import org.eclipse.smarthome.config.core.ConfigDescriptionRegistry;
+import org.eclipse.smarthome.config.core.ConfigOptionProvider;
+import org.eclipse.smarthome.config.core.ParameterOption;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingRegistry;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
@@ -21,11 +24,12 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.type.ThingType;
 import org.eclipse.smarthome.core.thing.type.ThingTypeRegistry;
 import org.openhab.binding.zwave.ZWaveBindingConstants;
+import org.openhab.binding.zwave.handler.ZWaveControllerHandler;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZWaveConfigProvider implements ConfigDescriptionProvider { // , ConfigOptionProvider {
+public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOptionProvider {
     private final Logger logger = LoggerFactory.getLogger(ZWaveConfigProvider.class);
 
     private static ThingRegistry thingRegistry;
@@ -200,67 +204,76 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider { // , Con
 
         return thingRegistry.get(thingUID);
     }
-    /*
-     * @Override
-     * public Collection<ParameterOption> getParameterOptions(URI uri, String param, Locale locale) {
-     * // We need to update the options of all requests for association groups...
-     * ThingUID id = new ThingUID(uri.toString());
-     *
-     * // Is this a zwave thing?
-     * if (!id.getBindingId().equals(ZWaveBindingConstants.BINDING_ID)) {
-     * return null;
-     * }
-     *
-     * // And is it an association group?
-     * if (!param.startsWith("group_")) {
-     * return null;
-     * }
-     *
-     * // And make sure this is a node because we want to get the id off the end...
-     * if (!id.getId().startsWith("node")) {
-     * return null;
-     * }
-     *
-     * int nodeId = Integer.parseInt(id.getId().substring(4));
-     *
-     * List<ParameterOption> options = new ArrayList<ParameterOption>();
-     *
-     * Thing xxxx = getThing(id);
-     * ThingUID bridgeUID = xxxx.getBridgeUID();
-     *
-     * // Add all the nodes on this controller...
-     * // String a = id.getAsString().substring(0, id.getAsString().lastIndexOf(":"));
-     * // ThingUID bridgeUID = new ThingUID(a);
-     * // ThingUID bridgeUID = new ThingUID(id.getThingTypeUID() + id.getBridgeIds().toString());
-     *
-     * // Get the controller for this thing
-     * Thing bridge = getThing(bridgeUID);
-     * if (bridge == null) {
-     * return null;
-     * }
-     *
-     * // Get its handler
-     * ZWaveControllerHandler handler = (ZWaveControllerHandler) bridge.getHandler();
-     *
-     * options.add(new ParameterOption("node1", "Node 1"));
-     * options.add(new ParameterOption("node1", "Node 3"));
-     *
-     * // And iterate over all its nodes
-     * Collection<ZWaveNode> nodes = handler.getNodes();
-     * for (ZWaveNode node : nodes) {
-     * // Don't add its own id
-     * if (node.getNodeId() == nodeId) {
-     * continue;
-     * }
-     *
-     * // Add the node for the standard association class
-     * options.add(new ParameterOption("node" + node.getNodeId(), "Node " + node.getNodeId()));
-     *
-     * // If this device supports multi_instance_association class, then add all endpoints as well...
-     *
-     * }
-     *
-     * return Collections.unmodifiableList(options);
-     * }
-     */
+
+    @Override
+    public Collection<ParameterOption> getParameterOptions(URI uri, String param, Locale locale) {
+        // We need to update the options of all requests for association groups...
+        String a = uri.getScheme();
+        if (!"thing".equals(uri.getScheme())) {
+            return null;
+        }
+
+        ThingUID thingUID = new ThingUID(uri.getSchemeSpecificPart());
+        ThingType thingType = thingTypeRegistry.getThingType(thingUID.getThingTypeUID());
+        if (thingType == null) {
+            return null;
+        }
+
+        // Is this a zwave thing?
+        if (!thingUID.getBindingId().equals(ZWaveBindingConstants.BINDING_ID)) {
+            return null;
+        }
+
+        // And is it an association group?
+        if (!param.startsWith("group_")) {
+            return null;
+        }
+
+        // And make sure this is a node because we want to get the id off the end...
+        if (!thingUID.getId().startsWith("node")) {
+            return null;
+        }
+
+        int nodeId = Integer.parseInt(thingUID.getId().substring(4));
+
+        List<ParameterOption> options = new ArrayList<ParameterOption>();
+
+        Thing xxxx = getThing(thingUID);
+        ThingUID bridgeUID = xxxx.getBridgeUID();
+
+        // Add all the nodes on this controller...
+        // String a = id.getAsString().substring(0, id.getAsString().lastIndexOf(":"));
+        // ThingUID bridgeUID = new ThingUID(a);
+        // ThingUID bridgeUID = new ThingUID(id.getThingTypeUID() + id.getBridgeIds().toString());
+
+        // Get the controller for this thing
+        Thing bridge = getThing(bridgeUID);
+        if (bridge == null) {
+            return null;
+        }
+
+        // Get its handler
+        ZWaveControllerHandler handler = (ZWaveControllerHandler) bridge.getHandler();
+
+        options.add(new ParameterOption("node1", "Node 1"));
+        options.add(new ParameterOption("node1", "Node 3"));
+
+        // And iterate over all its nodes
+        Collection<ZWaveNode> nodes = handler.getNodes();
+        for (ZWaveNode node : nodes) {
+            // Don't add its own id
+            if (node.getNodeId() == nodeId) {
+                continue;
+            }
+
+            // Add the node for the standard association class
+            options.add(new ParameterOption("node" + node.getNodeId(), "Node " + node.getNodeId()));
+
+            // If this device supports multi_instance_association class, then add all endpoints as well...
+
+        }
+
+        return Collections.unmodifiableList(options);
+    }
+
 }
