@@ -15,7 +15,6 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameterGroup;
 import org.eclipse.smarthome.config.core.ConfigDescriptionProvider;
 import org.eclipse.smarthome.config.core.ConfigDescriptionRegistry;
-import org.eclipse.smarthome.config.core.ConfigOptionProvider;
 import org.eclipse.smarthome.config.core.ParameterOption;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingRegistry;
@@ -26,6 +25,7 @@ import org.eclipse.smarthome.core.thing.type.ThingTypeRegistry;
 import org.openhab.binding.zwave.ZWaveBindingConstants;
 import org.openhab.binding.zwave.handler.ZWaveControllerHandler;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -258,6 +258,12 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOpt
         options.add(new ParameterOption("node1", "Node 1"));
         options.add(new ParameterOption("node1", "Node 3"));
 
+        boolean supportsMultiInstanceAssociation = false;
+        ZWaveNode myNode = handler.getNode(nodeId);
+        if (myNode.getCommandClass(CommandClass.MULTI_INSTANCE_ASSOCIATION) != null) {
+            supportsMultiInstanceAssociation = true;
+        }
+
         // And iterate over all its nodes
         Collection<ZWaveNode> nodes = handler.getNodes();
         for (ZWaveNode node : nodes) {
@@ -267,10 +273,18 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOpt
             }
 
             // Add the node for the standard association class
+            // TODO: Get the node name????
             options.add(new ParameterOption("node" + node.getNodeId(), "Node " + node.getNodeId()));
 
-            // If this device supports multi_instance_association class, then add all endpoints as well...
-
+            // If the device supports multi_instance_association class, then add all endpoints as well...
+            // If this node also supports multi_instance class
+            if (supportsMultiInstanceAssociation == true && node.getCommandClass(CommandClass.ASSOCIATION) != null) {
+                // Loop through all the endpoints for this device
+                // How????
+                // TODO: Should we limit this to controllable classes - to eliminate sensors?
+                // for(node.get)
+                // options.add(new ParameterOption("node" + node.getNodeId(), "Node " + node.getNodeId()));
+            }
         }
 
         return Collections.unmodifiableList(options);

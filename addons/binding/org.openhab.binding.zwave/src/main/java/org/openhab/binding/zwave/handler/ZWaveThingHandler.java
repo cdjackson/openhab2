@@ -8,7 +8,6 @@
 package org.openhab.binding.zwave.handler;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -513,19 +512,5 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
         OpenClosedType,
         PercentType,
         StopMoveType;
-    }
-
-    @Override
-    public Collection<ParameterOption> getParameterOptions(String param, Locale locale) {
-        // Is it an association group?
-        if (!param.startsWith("group_")) {
-            return null;
-        }
-
-        List<ParameterOption> options = new ArrayList<ParameterOption>();
-        options.add(new ParameterOption("node1", "Node 1"));
-        options.add(new ParameterOption("node1", "Node 3"));
-
-        return options;
     }
 }
