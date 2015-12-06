@@ -15,12 +15,15 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 | [IPP Binding](../../addons/binding/org.openhab.binding.ipp/README.md) | Internet Printing Protocol (replaces 1.x CUPS Binding) |
 | [KEBA Binding](../../addons/binding/org.openhab.binding.keba/README.md) | Electric vehicle charging station |
 | [LIFX Binding](https://github.com/eclipse/smarthome/blob/20150525/addons/binding/org.eclipse.smarthome.binding.lifx/README.md) | Wifi-enabled LED bulbs |
+| [Lutron Binding](../../addons/binding/org.openhab.binding.lutron/README.md) | Dimmers And Lighting Controls |
 | [MAX! Binding](../../addons/binding/org.openhab.binding.max/README.md) | Heater control solution by eQ-3 |
 | [Network Binding](../../addons/binding/org.openhab.binding.network/) | Scans local network (replaces 1.x networkhealth Binding) |
 | [NTP Binding](https://github.com/eclipse/smarthome/blob/master/extensions/binding/org.eclipse.smarthome.binding.ntp/README.md) | NTP time servers |
 | [PioneerAVR Binding](../../addons/binding/org.openhab.binding.pioneeravr/README.md) | AV receivers by Pioneer |
 | [Philips Hue Binding](https://github.com/eclipse/smarthome/blob/20150525/addons/binding/org.eclipse.smarthome.binding.hue/README.md) | LED lighting system |
 | [Pulseaudio Binding](../../addons/binding/org.openhab.binding.pulseaudio/README.md) | software-based audio distribution |
+| [Rfxcom Binding](../../addons/binding/org.openhab.binding.rfxcom/README.md) | 433MHz radio transceiver and devices |
+| [SamsungTV Binding](../../addons/binding/org.openhab.binding.samsungtv/README.md) | Samsung Smart TVs |
 | [SMAEnergyMeter Binding](../../addons/binding/org.openhab.binding.smaenergymeter/README.md) | SMA Energy Meter for photovoltaic systems |
 | [Sonos Binding](../../addons/binding/org.openhab.binding.sonos/README.md) | Multi-room audio system |
 | [Squeezebox Binding](../../addons/binding/org.openhab.binding.squeezebox/README.md) | Logitech's connected speakers |
@@ -35,12 +38,14 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 |--------|------|
 | Anel | Binding |
 | Astro | Binding |
+| CalDAV | Binding |
 | Comfo Air | Binding |
 | Denon | Binding |
 | DMX (OLA) | Binding |
 | EDS OWServer | Binding |
 | Energenie | Binding |
 | Enocean | Binding |
+| Enphaseenergy | Binding |
 | Epsonprojector | Binding |
 | Exec | Binding |
 | Freeswitch | Binding |
@@ -51,6 +56,7 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 | IHC | Binding |
 | InsteonPLM | Binding |
 | KNX | Binding |
+| LCN | Binding |
 | Milight | Binding |
 | Modbus | Binding |
 | Networkhealth | Binding |
@@ -59,8 +65,10 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 | Onkyo | Binding |
 | OpenEnergyMonitor | Binding |
 | OneWire | Binding |
+| RWE SmartHome | Binding |
 | RFXCOM | Binding |
 | Samsung AC | Binding |
+| Sapp | Binding |
 | Satel | Binding |
 | SNMP | Binding |
 | SwegonVentilation | Binding |
@@ -74,10 +82,12 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 | InfluxDB | Persistence |
 | rrd4j | Persistence |
 | MySQL | Persistence |
+| MongoDB | Persistence |
 | Logging | Persistence |
 | JPA | Persistence |
 | Mail | Action |
 | Pushover | Action |
+| Telegram | Action |
 | XBMC | Action |
 | XMPP | Action |
 | GoogleTTS | TTS engine |
@@ -87,8 +97,7 @@ All optional add-ons for openHAB 2 are [available in a separate download](https:
 
 | Add-on | Type | Reason
 |--------|------|------|
-| MySQL | Persistence | [Unsynchronized change in openHAB 1 core](https://github.com/openhab/openhab/issues/2661)
-| MongoDB | Persistence | [Unsynchronized change in openHAB 1 core](https://github.com/openhab/openhab/issues/2661)
+| Twitter | Action | [Hardcoded path for local file storage](https://github.com/openhab/openhab/issues/3454)
 
 
 ## Compatible Applications
