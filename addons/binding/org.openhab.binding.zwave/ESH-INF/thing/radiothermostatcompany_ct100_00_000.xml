@@ -37,19 +37,19 @@
                     <property name="binding:*:Number">THERMOSTAT_MODE</property>
                 </properties>
             </channel>
-            <channel id="mode-1" typeId="mode">
+            <channel id="thermostat_fan_mode-1" typeId="thermostat_fan_mode">
                 <label>Thermostat Fan Mode</label>
                 <properties>
                     <property name="binding:*:Number">THERMOSTAT_FAN_MODE</property>
                 </properties>
             </channel>
-            <channel id="mode-1" typeId="mode">
+            <channel id="thermostat_fan_state-1" typeId="thermostat_fan_state">
                 <label>Thermostat Fan State</label>
                 <properties>
                     <property name="binding:*:Number">THERMOSTAT_FAN_STATE</property>
                 </properties>
             </channel>
-            <channel id="mode-1" typeId="mode">
+            <channel id="thermostat_state-1" typeId="thermostat_state">
                 <label>Thermostat Operating State</label>
                 <properties>
                     <property name="binding:*:Number">THERMOSTAT_OPERATING_STATE</property>

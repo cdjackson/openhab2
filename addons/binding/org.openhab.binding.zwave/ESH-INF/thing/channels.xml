@@ -94,9 +94,88 @@
         </description>
         <category>Door</category>
         <state pattern="%s" readOnly="true">
+        </state>
+    </channel-type>
+
+    <!-- Thermostat Fan Mode Channel -->
+    <channel-type id="thermostat_fan_mode">
+        <item-type>Switch</item-type>
+        <label>Fan Mode</label>
+        <description>Sets the fan mode
+        </description>
+        <category>Door</category>
+        <state pattern="%s">
             <options>
-                <option value="ON">Ok</option>
-                <option value="OFF">Alarm</option>
+                <option value="0">Auto</option>
+                <option value="1">On</option>
+                <option value="2">Auto High</option>
+                <option value="3">On High</option>
+                <option value="4">Unknown(4)</option>
+                <option value="5">Unknown(5)</option>
+                <option value="6">Circulate</option>
+            </options>
+        </state>
+    </channel-type>
+
+    <!-- Thermostat Fan State Channel -->
+    <channel-type id="thermostat_fan_state">
+        <item-type>Switch</item-type>
+        <label>Fan Mode</label>
+        <description>Sets the fan mode
+        </description>
+        <category>Door</category>
+        <state pattern="%s">
+            <options>
+                <option value="0">Idle</option>
+                <option value="1">Running</option>
+                <option value="2">Running High</option>
+            </options>
+        </state>
+    </channel-type>
+
+    <!-- Thermostat Operating State Channel -->
+    <channel-type id="thermostat_state">
+        <item-type>Switch</item-type>
+        <label>Fan Mode</label>
+        <description>Sets the thermostat operating state
+        </description>
+        <category>Door</category>
+        <state pattern="%s">
+            <options>
+                <option value="0">Idle</option>
+                <option value="1">Heating</option>
+                <option value="2">Cooling</option>
+                <option value="3">Fan Only</option>
+                <option value="4">Pending Heat</option>
+                <option value="5">Pending Cool</option>
+                <option value="6">Vent / Economiser</option>
+            </options>
+        </state>
+    </channel-type>
+
+    <!-- Thermostat Mode Channel -->
+    <channel-type id="thermostat_mode">
+        <item-type>Switch</item-type>
+        <label>Thermostat Mode</label>
+        <description>Sets the thermostat
+        </description>
+        <category>Door</category>
+        <state pattern="%s">
+            <options>
+                <option value="0">Off</option>
+                <option value="1">Heat</option>
+                <option value="2">Cool</option>
+                <option value="3">Auto</option>
+                <option value="4">Aux Heat</option>
+                <option value="5">Resume</option>
+                <option value="6">Fan Only</option>
+                <option value="7">Furnace</option>
+                <option value="8">Dry Air</option>
+                <option value="9">Moist Air</option>
+                <option value="10">Auto Changeover</option>
+                <option value="11">Heat Economy</option>
+                <option value="12">Cool Economy</option>
+                <option value="13">Away</option>
             </options>
         </state>
     </channel-type>
