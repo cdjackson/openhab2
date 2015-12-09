@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+import org.openhab.binding.zwave.ZWaveBindingConstants;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -32,7 +33,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * ZWaveNodeSerializer class. Serializes nodes to XML and back again.
- * 
+ *
  * @author Chris Jackson
  * @author Jan-Willem Spuij
  */
@@ -48,10 +49,7 @@ public class ZWaveNodeSerializer {
     public ZWaveNodeSerializer() {
         logger.trace("Initializing ZWaveNodeSerializer.");
 
-        // TODO: Change the folder for OH2
-        // ConfigConstants.getUserDataFolder();
-        final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
-        final String eshUserDataFolder = System.getProperty(USERDATA_DIR_PROG_ARGUMENT);
+        final String eshUserDataFolder = System.getProperty(ZWaveBindingConstants.USERDATA_DIR_PROG_ARGUMENT);
         if (eshUserDataFolder != null) {
             folderName = eshUserDataFolder + "/zwave";
         }
@@ -86,7 +84,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Serializes an XML tree of a {@link ZWaveNode}
-     * 
+     *
      * @param node
      *            the node to serialize
      */
@@ -124,7 +122,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Deserializes an XML tree of a {@link ZWaveNode}
-     * 
+     *
      * @param nodeId
      *            the number of the node to deserialize
      * @return returns the Node or null in case Serialization failed.
@@ -159,7 +157,7 @@ public class ZWaveNodeSerializer {
 
     /**
      * Deletes the persistence store for the specified node.
-     * 
+     *
      * @param nodeId The node ID to remove
      * @return true if the file was deleted
      */

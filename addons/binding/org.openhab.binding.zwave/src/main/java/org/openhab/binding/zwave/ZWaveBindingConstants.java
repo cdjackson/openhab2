@@ -23,6 +23,8 @@ public class ZWaveBindingConstants {
 
     public static final String BINDING_ID = "zwave";
 
+    public static final String USERDATA_DIR_PROG_ARGUMENT = "smarthome.userdata";
+
     // Controllers
     public final static ThingTypeUID CONTROLLER_SERIAL = new ThingTypeUID(BINDING_ID, "serial_zstick");
 
