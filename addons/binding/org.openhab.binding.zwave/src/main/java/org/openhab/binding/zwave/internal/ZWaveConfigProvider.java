@@ -66,7 +66,7 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOpt
     @Override
     public Collection<ConfigDescription> getConfigDescriptions(Locale locale) {
         logger.debug("getConfigDescriptions called");
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
