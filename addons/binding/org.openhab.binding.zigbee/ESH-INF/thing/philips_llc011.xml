@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zigbee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+	<thing-type id="philips_llc011">
+		<label>Philips LLC011</label>
+		<description>Philips Hue Bloom</description>
+		<channels>
+			<channel id="color-1" typeId="color">
+				<label>Light Color</label>
+				<properties>
+                    <property name="binding:*:HSBType">11:Color</property>
+                    <property name="binding:*:PercentType">11:Level</property>
+                    <property name="binding:*:OnOffType">11:OnOff</property>
+				</properties>
+			</channel>
+			<channel id="color-temperature" typeId="color-temperature">
+				<label>White Temperature</label>
+                <properties>
+                    <property name="binding:*:PercentType">11:ColorTemperature</property>
+                    <property name="binding:*:OnOffType">11:OnOff</property>
+                </properties>
+			</channel>
+		</channels>
+		<properties>
+            <property name="vendor">Philips</property>
+            <property name="model">LLC011</property>
+        </properties>
+	</thing-type>
+</thing:thing-descriptions>
