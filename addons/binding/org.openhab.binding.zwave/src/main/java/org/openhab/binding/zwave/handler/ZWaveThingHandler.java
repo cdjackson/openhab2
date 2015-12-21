@@ -31,15 +31,19 @@ import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.zwave.ZWaveBindingConstants;
 import org.openhab.binding.zwave.internal.converter.ZWaveCommandClassConverter;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.ZWaveAssociation;
+import org.openhab.binding.zwave.internal.protocol.ZWaveAssociationGroup;
 import org.openhab.binding.zwave.internal.protocol.ZWaveConfigurationParameter;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveConfigurationCommandClass.ZWaveConfigurationParameterEvent;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass.ZWaveWakeUpEvent;
+import org.openhab.binding.zwave.internal.protocol.event.ZWaveAssociationEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInitializationCompletedEvent;
@@ -71,6 +75,11 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
     @Override
     public void initialize() {
+        BigDecimal nodeParm = (BigDecimal) getConfig().get(ZWaveBindingConstants.PARAMETER_NODEID);
+        if (nodeParm == null) {
+            logger.debug("NodeID is not set in {}", this.getThing().getUID());
+            return;
+        }
         nodeId = ((BigDecimal) getConfig().get(ZWaveBindingConstants.PARAMETER_NODEID)).intValue();
 
         // Until we get an update put the Thing into initialisation state
@@ -276,20 +285,80 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
                 // Set the parameter and request a read-back
                 controllerHandler.sendData(configurationCommandClass.setConfigMessage(cfgParameter));
                 controllerHandler.sendData(configurationCommandClass.getConfigMessage(parameterIndex));
-
-                configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
             } else if ("group".equals(cfg[0])) {
                 if (cfg.length < 2) {
                     logger.warn("NODE{}: Association invalid {}", nodeId, configurationParameter.getKey());
                     continue;
                 }
 
-                Object val = configurationParameter.getValue();
-                configuration.put(configurationParameter.getKey(), val);
+                Integer groupIndex = Integer.valueOf(cfg[1]);
+
+                // Get the association command class
+                ZWaveAssociationCommandClass associationCommandClass = (ZWaveAssociationCommandClass) node
+                        .getCommandClass(CommandClass.ASSOCIATION);
+                        // ZWaveAssociationCommandClass associationCommandClassMulti = (ZWaveAssociationCommandClass)
+                        // node
+                        // .getCommandClass(CommandClass.ASSOCIATION);
+
+                // Get the configuration information.
+                // This should be an array of nodes, and/or nodes and endpoints
+                ArrayList<String> paramValues = new ArrayList<String>();
+                Object parameter = configurationParameter.getValue();
+                if (parameter instanceof List) {
+                    paramValues.addAll((List) configurationParameter.getValue());
+                } else if (parameter instanceof String) {
+                    paramValues.add((String) parameter);
+                }
+
+                ZWaveAssociationGroup currentMembers = associationCommandClass.getGroupMembers(groupIndex);
+                ZWaveAssociationGroup newMembers = new ZWaveAssociationGroup(groupIndex);
+
+                if (!paramValues.contains("empty")) {
+                    // Loop over all the parameters
+                    for (String paramValue : paramValues) {
+                        String[] groupCfg = paramValue.split("_");
+
+                        // Make sure this is a correctly formatted option
+                        if (!"node".equals(groupCfg[0])) {
+                            continue;
+                        }
+
+                        // Get the node Id and endpoint Id
+                        int associationNodeId = Integer.parseInt(groupCfg[1]);
+                        int associationEndpointId = Integer.parseInt(groupCfg[2]);
+
+                        newMembers.addAssociation(associationNodeId, associationEndpointId);
+                    }
+                }
+
+                // Loop through the current members and remove anything that's not in the new members list
+                for (ZWaveAssociation member : currentMembers.getAssociations()) {
+                    // Is the current association still in the newMembers list?
+                    if (newMembers.isAssociated(member.getNode(), member.getEndpoint()) == false) {
+                        // No - so it needs to be removed
+                        controllerHandler.sendData(
+                                associationCommandClass.removeAssociationMessage(groupIndex, member.getNode()));
+                    }
+                }
+
+                // Now loop through the new members and add anything not in the current members list
+                for (ZWaveAssociation member : newMembers.getAssociations()) {
+                    // Is the new association still in the currentMembers list?
+                    if (currentMembers.isAssociated(member.getNode(), member.getEndpoint()) == false) {
+                        // No - so it needs to be added
+                        controllerHandler
+                                .sendData(associationCommandClass.setAssociationMessage(groupIndex, member.getNode()));
+                    }
+                }
+
+                // Request an update to the association group
+                controllerHandler.sendData(associationCommandClass.getAssociationMessage(groupIndex));
             } else if ("wakeup".equals(cfg[0])) {
             } else {
                 logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
             }
+
+            configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
         }
 
         // Persist changes
@@ -371,13 +440,41 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             if (event instanceof ZWaveConfigurationParameterEvent) {
                 ZWaveConfigurationParameter parameter = ((ZWaveConfigurationParameterEvent) event).getParameter();
                 if (parameter != null) {
-                    logger.debug("NODE {}: Update {} to {}", nodeId,
+                    logger.debug("NODE {}: Update CONFIGURATION {} to {}", nodeId,
                             "config_" + parameter.getIndex() + "_" + parameter.getSize(), parameter.getValue());
                     Configuration configuration = editConfiguration();
                     configuration.put("config_" + parameter.getIndex() + "_" + parameter.getSize(),
                             parameter.getValue());
                     updateConfiguration(configuration);
                 }
+
+                return;
+            }
+
+            // If this is an association event, update the configuration
+            if (incomingEvent instanceof ZWaveAssociationEvent) {
+                int groupId = ((ZWaveAssociationEvent) event).getGroupId();
+                List<ZWaveAssociation> groupMembers = ((ZWaveAssociationEvent) event).getGroupMembers();
+                if (groupMembers != null) {
+                    logger.debug("NODE {}: Update ASSOCIATION {}", nodeId, "group_" + groupId);
+                    Configuration configuration = editConfiguration();
+
+                    List<String> group = new ArrayList<String>();
+
+                    // Build the configuration value
+                    for (ZWaveAssociation groupMember : groupMembers) {
+                        group.add("node_" + groupMember.getNode() + "_" + groupMember.getEndpoint());
+                    }
+
+                    if (group.isEmpty()) {
+                        configuration.put("group_" + groupId, "empty");
+                    } else {
+                        configuration.put("group_" + groupId, group);
+                    }
+                    updateConfiguration(configuration);
+                }
+
+                return;
             }
 
             // Process the channels to see if we're interested

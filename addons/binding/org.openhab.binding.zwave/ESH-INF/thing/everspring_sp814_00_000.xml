@@ -77,11 +77,15 @@
 				<description><![CDATA[The duration determines how long before the module sends an Off after being triggered.<BR/>Duration in seconds]]></description>
 				<default>5</default>
 			</parameter>
-			<parameter name="group_1" type="integer" groupName="association">
+			<parameter name="group_1" type="text" groupName="association">
 				<label>Reports</label>
 				<description><![CDATA[***Add description here***]]></description>
+                <options>
+                    <option value="empty">None</option>
+                </options>
+                <default>empty</default>
 			</parameter>
-			<parameter name="group_2" type="integer" multiple="true"
+			<parameter name="group_2" type="text" multiple="true"
 				groupName="association">
 				<label>Control</label>
 				<description><![CDATA[***Add description here***]]></description>

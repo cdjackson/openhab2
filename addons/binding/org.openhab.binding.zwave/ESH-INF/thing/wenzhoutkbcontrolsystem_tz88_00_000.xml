@@ -162,9 +162,13 @@ within 1.5 seconds.
 					<option value="3">Switch on</option>
 				</options>
 			</parameter>
-			<parameter name="group_1" type="integer" groupName="association">
+			<parameter name="group_1" type="text" groupName="association">
 				<label>Target for automatic reports</label>
 				<description><![CDATA[***Add description here***]]></description>
+                <options>
+                    <option value="empty">None</option>
+                </options>
+                <default>empty</default>
 			</parameter>
 		</config-description>
 	</thing-type>

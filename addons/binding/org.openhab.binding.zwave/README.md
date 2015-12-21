@@ -13,11 +13,14 @@ A wide range of devices are supported from lights, switches and sensors to smoke
 
 ## Supported Things
 
+### ZWave Serial Adapter
+
+Before the binding can be used, a serial adapter must be added. This needs to be done manually. Select `Serial ZStick`, and enter the serial port.
+
 
 ## Discovery
 
-
- Once the binding is authorized, it automatically reads all devices that are set up on the Hue bridge and puts them in the Inbox.
+Once the binding is authorized, and an adapter is added, it automatically reads all devices that are set up on the ZWave controller and puts them in the Inbox.
 
 ## Binding Configuration
 

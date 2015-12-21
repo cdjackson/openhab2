@@ -303,21 +303,25 @@
 					</option>
 				</options>
 			</parameter>
-			<parameter name="group_1" type="integer" multiple="true"
+			<parameter name="group_1" type="text" multiple="true"
 				groupName="association">
 				<label>Switch 1</label>
 				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
-			<parameter name="group_2" type="integer" multiple="true"
+			<parameter name="group_2" type="text" multiple="true"
 				groupName="association">
 				<label>Switch 2</label>
 				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
-			<parameter name="group_3" type="integer" groupName="association">
+			<parameter name="group_3" type="text" groupName="association">
 				<label>Controller Updates</label>
 				<description><![CDATA[***Add description here***]]></description>
+                <options>
+                    <option value="empty">None</option>
+                </options>
+                <default>empty</default>
 			</parameter>
 
 		</config-description>

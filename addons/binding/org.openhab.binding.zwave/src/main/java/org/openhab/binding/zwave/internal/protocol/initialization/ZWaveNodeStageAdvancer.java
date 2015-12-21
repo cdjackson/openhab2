@@ -23,6 +23,7 @@ import org.eclipse.smarthome.core.thing.type.ThingType;
 import org.openhab.binding.zwave.internal.ZWaveConfigProvider;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
+import org.openhab.binding.zwave.internal.protocol.ZWaveAssociation;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
@@ -757,20 +758,21 @@ public class ZWaveNodeStageAdvancer implements ZWaveEventListener {
                         break;
                     }
 
-                    String groups[] = associations.split(",");
-                    for (int c = 0; c < groups.length; c++) {
-                        int group = Integer.parseInt(groups[c]);
+                    String defaultGroups[] = associations.split(",");
+                    for (int c = 0; c < defaultGroups.length; c++) {
+                        int groupId = Integer.parseInt(defaultGroups[c]);
+                        ZWaveAssociation association = new ZWaveAssociation(controller.getOwnNodeId());
 
                         // Check if we're already a member
-                        if (associationCls.getGroupMembers(group).contains(controller.getOwnNodeId())) {
+                        if (associationCls.getGroupMembers(groupId).getAssociations().contains(association)) {
                             logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - ASSOCIATION set for group {}",
-                                    node.getNodeId(), group);
+                                    node.getNodeId(), groupId);
                         } else {
                             logger.debug("NODE {}: Node advancer: SET_ASSOCIATION - Adding ASSOCIATION to group {}",
-                                    node.getNodeId(), group);
+                                    node.getNodeId(), groupId);
                             // Set the association, and request the update so we confirm if it's set
-                            addToQueue(associationCls.setAssociationMessage(group, controller.getOwnNodeId()));
-                            addToQueue(associationCls.getAssociationMessage(group));
+                            addToQueue(associationCls.setAssociationMessage(groupId, controller.getOwnNodeId()));
+                            addToQueue(associationCls.getAssociationMessage(groupId));
                         }
                     }
                     break;

@@ -143,19 +143,19 @@
                 Power report is sent with time interval set by entered value.</li></ul>]]></description>
 				<default>300</default>
 			</parameter>
-			<parameter name="group_1" type="integer" multiple="true"
+			<parameter name="group_1" type="text" multiple="true"
 				groupName="association">
 				<label>Basic on/off Q1</label>
 				<description><![CDATA[Triggered at change of the output Q1 state and reflecting its state]]></description>
 				<multipleLimit>4</multipleLimit>
 			</parameter>
-			<parameter name="group_2" type="integer" multiple="true"
+			<parameter name="group_2" type="text" multiple="true"
 				groupName="association">
 				<label>Basic on/off Q2</label>
 				<description><![CDATA[Triggered at change of the output Q2 state and reflecting its state]]></description>
 				<multipleLimit>4</multipleLimit>
 			</parameter>
-			<parameter name="group_3" type="integer" multiple="true"
+			<parameter name="group_3" type="text" multiple="true"
 				groupName="association">
 				<label>Default Reporting Group</label>
 				<description><![CDATA[Reporting for controller]]></description>

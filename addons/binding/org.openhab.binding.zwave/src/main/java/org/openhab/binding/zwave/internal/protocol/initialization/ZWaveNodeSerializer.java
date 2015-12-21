@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import org.eclipse.smarthome.config.core.ConfigConstants;
+import org.openhab.binding.zwave.ZWaveBindingConstants;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEndpoint;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
@@ -49,8 +49,10 @@ public class ZWaveNodeSerializer {
     public ZWaveNodeSerializer() {
         logger.trace("Initializing ZWaveNodeSerializer.");
 
-        final String eshUserDataFolder = ConfigConstants.getUserDataFolder();
-        folderName = eshUserDataFolder + "/zwave";
+        final String eshUserDataFolder = System.getProperty(ZWaveBindingConstants.USERDATA_DIR_PROG_ARGUMENT);
+        if (eshUserDataFolder != null) {
+            folderName = eshUserDataFolder + "/zwave";
+        }
 
         final File folder = new File(folderName);
 

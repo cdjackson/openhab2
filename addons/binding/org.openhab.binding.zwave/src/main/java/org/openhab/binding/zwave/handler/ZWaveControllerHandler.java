@@ -10,7 +10,9 @@ package org.openhab.binding.zwave.handler;
 import static org.openhab.binding.zwave.ZWaveBindingConstants.*;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -76,8 +78,12 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
     protected void initializeNetwork(String port) {
         logger.debug("Initialising ZWave controller");
 
+        // Create config parameters
+        Map<String, String> config = new HashMap<String, String>();
+        config.put("masterController", isMaster.toString());
+
         // TODO: Handle soft reset better!
-        controller = new ZWaveController(this);
+        controller = new ZWaveController(this, config);
         controller.addEventListener(this);
 
         // The network monitor service needs to know the controller...
@@ -198,7 +204,6 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
 
     public void sendData(SerialMessage message) {
         controller.sendData(message);
-
     }
 
     public void addEventListener(ZWaveThingHandler zWaveThingHandler) {

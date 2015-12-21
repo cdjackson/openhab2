@@ -3,8 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
-	<thing-type id="radiothermostatcompany_ct100_00_000">
-		<label>Radio Thermostat Company of America CT100</label>
+	<thing-type id="residentialcontrols_tbz48_00_000">
+		<label>Residential Controls TBZ48</label>
 		<description><![CDATA[Z-Wave Thermostat<br><h1>Device Overview</h1><p>Brief description here</p><h1>Inclusion and Exclusion</h1><p>To include the device into the network...</p><p>To exclude the device from the network...</p>]]></description>
 		<channels>
             <channel id="setpoint-1" typeId="setpoint">
@@ -62,30 +62,16 @@
 			</channel>
 		</channels>
 		<properties>
-			<property name="vendor">Radio Thermostat Company of America</property>
-			<property name="model">CT100</property>
-			<property name="manufacturerId">0098</property>
-			<property name="manufacturerRef">6401:0015,6401:0106,6401:0107</property>
+			<property name="vendor">Residential Control Systems</property>
+			<property name="model">TBZ48</property>
+			<property name="manufacturerId">0010</property>
+			<property name="manufacturerRef">5442:5432</property>
 		</properties>
 		<config-description>
-			<parameter-group name="configuration">
-				<context>setup</context>
-				<label>Configuration Parameters</label>
-			</parameter-group>
-			<parameter-group name="association">
-				<context>link</context>
-				<label>Association Groups</label>
-			</parameter-group>
 			<parameter-group name="wakeup">
 				<context>sleep</context>
 				<label>Wakeup Configuration</label>
 			</parameter-group>
-			<parameter name="group_1" type="text" multiple="true"
-				groupName="association">
-				<label>Group 1</label>
-				<description><![CDATA[Send report about Thermostat Mode, Thermostat Operating State, Fan Mode, Fan State, Setpoint, Sensor Multilevel]]></description>
-				<multipleLimit>2</multipleLimit>
-			</parameter>
 			<parameter name="wakeup_interval" type="integer" groupName="wakeup">
 				<label>Wakeup Period</label>
 				<description>Set the wakeup period in seconds</description>

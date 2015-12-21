@@ -72,7 +72,7 @@
     </channel-type>
 
     <!-- Tamper Switch Channel -->
-    <channel-type id="door">
+    <channel-type id="tamper">
         <item-type>Switch</item-type>
         <label>Tamper Status</label>
         <description>Indicates if the tamper switch is triggered
@@ -88,22 +88,22 @@
 
     <!-- Heating Setpoint Channel -->
     <channel-type id="setpoint">
-        <item-type>Switch</item-type>
+        <item-type>Number</item-type>
         <label>Heating Setpoint</label>
         <description>Sets the heating setpoint
         </description>
-        <category>Door</category>
+        <category>Temperature</category>
         <state pattern="%s" readOnly="true">
         </state>
     </channel-type>
 
     <!-- Thermostat Fan Mode Channel -->
     <channel-type id="thermostat_fan_mode">
-        <item-type>Switch</item-type>
+        <item-type>Number</item-type>
         <label>Fan Mode</label>
         <description>Sets the fan mode
         </description>
-        <category>Door</category>
+        <category>Temperature</category>
         <state pattern="%s">
             <options>
                 <option value="0">Auto</option>
@@ -119,11 +119,11 @@
 
     <!-- Thermostat Fan State Channel -->
     <channel-type id="thermostat_fan_state">
-        <item-type>Switch</item-type>
+        <item-type>Number</item-type>
         <label>Fan Mode</label>
         <description>Sets the fan mode
         </description>
-        <category>Door</category>
+        <category>Temperature</category>
         <state pattern="%s">
             <options>
                 <option value="0">Idle</option>
@@ -135,11 +135,11 @@
 
     <!-- Thermostat Operating State Channel -->
     <channel-type id="thermostat_state">
-        <item-type>Switch</item-type>
+        <item-type>Number</item-type>
         <label>Fan Mode</label>
         <description>Sets the thermostat operating state
         </description>
-        <category>Door</category>
+        <category>Temperature</category>
         <state pattern="%s">
             <options>
                 <option value="0">Idle</option>
@@ -155,11 +155,11 @@
 
     <!-- Thermostat Mode Channel -->
     <channel-type id="thermostat_mode">
-        <item-type>Switch</item-type>
+        <item-type>Number</item-type>
         <label>Thermostat Mode</label>
         <description>Sets the thermostat
         </description>
-        <category>Door</category>
+        <category>Temperature</category>
         <state pattern="%s">
             <options>
                 <option value="0">Off</option>
@@ -186,6 +186,16 @@
         <label>Temperature</label>
         <description>Indicates the current temperature</description>
         <category>Temperature</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+
+    <!-- Humidity Channel -->
+    <channel-type id="humidity">
+        <item-type>Number</item-type>
+        <label>Humidity</label>
+        <description>Indicates the current humidity</description>
+        <category>Humidity</category>
         <state pattern="%.1f" readOnly="true">
         </state>
     </channel-type>

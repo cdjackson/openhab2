@@ -22,10 +22,10 @@ import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAssociationCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveVersionCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNodeStatusEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
@@ -692,8 +692,8 @@ public class ZWaveNode {
         if (groups != 0) {
             // Loop through each association group and add the node ID to the list
             for (int group = 1; group <= groups; group++) {
-                for (Integer associationNodeId : associationCmdClass.getGroupMembers(group)) {
-                    routedNodes.add(associationNodeId);
+                for (ZWaveAssociation associationNode : associationCmdClass.getGroupMembers(group).getAssociations()) {
+                    routedNodes.add(associationNode.getNode());
                 }
             }
         }

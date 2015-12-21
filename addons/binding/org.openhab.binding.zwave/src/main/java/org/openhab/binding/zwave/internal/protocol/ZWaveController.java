@@ -26,10 +26,10 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageCl
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClassDynamicState;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveMultiInstanceCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveNetworkEvent;
@@ -114,7 +114,7 @@ public class ZWaveController {
     private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
     private int sucID = 0;
     private boolean softReset = false;
-    private boolean masterController = false;
+    private boolean masterController = true;
 
     private AtomicInteger timeOutCount = new AtomicInteger(0);
 

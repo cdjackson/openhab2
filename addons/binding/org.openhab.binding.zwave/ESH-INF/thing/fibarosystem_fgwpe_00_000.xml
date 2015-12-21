@@ -281,21 +281,25 @@ Available settings: 10 - 65 535 (1W - 6 553,5W).<BR/>
 Value higher than 32 000 (3 200W) turns the overload safety switch off, i.e. this functionality is turned off by default.]]></description>
 				<default>65535</default>
 			</parameter>
-			<parameter name="group_1" type="integer" multiple="true"
+			<parameter name="group_1" type="text" multiple="true"
 				groupName="association">
 				<label>Group 1</label>
 				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
-			<parameter name="group_2" type="integer" multiple="true"
+			<parameter name="group_2" type="text" multiple="true"
 				groupName="association">
 				<label>Group 2</label>
 				<description><![CDATA[***Add description here***]]></description>
 				<multipleLimit>16</multipleLimit>
 			</parameter>
-			<parameter name="group_3" type="integer" groupName="association">
+			<parameter name="group_3" type="text" groupName="association">
 				<label>Controller Updates</label>
 				<description><![CDATA[***Add description here***]]></description>
+                <options>
+                    <option value="empty">None</option>
+                </options>
+                <default>empty</default>
 			</parameter><!-- Remove the wakeup if this is not a battery device -->
 			<parameter name="wakeup_interval" type="integer" groupName="wakeup">
 				<label>Wakeup Period</label>

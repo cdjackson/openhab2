@@ -71,7 +71,7 @@
 				<description><![CDATA[Adjust shock sensor sensitivity. Values range from 0 to 31 where 0 means minimum sensitivity and 31 means maximum sensitivity.]]></description>
 				<default>16</default>
 			</parameter>
-			<parameter name="group_1" type="integer" multiple="true"
+			<parameter name="group_1" type="text" multiple="true"
 				groupName="association">
 				<label>Lifeline</label>
 				<description><![CDATA[***Add description here***]]></description>
