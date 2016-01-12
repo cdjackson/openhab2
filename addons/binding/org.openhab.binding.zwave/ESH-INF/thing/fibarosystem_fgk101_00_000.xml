@@ -7,7 +7,7 @@
 		<label>Fibaro System FGK101</label>
 		<description><![CDATA[Door Opening Sensor]]></description>
 		<channels>
-			<channel id="door-1" typeId="door">
+			<channel id="door-1" typeId="doorwindow">
 				<properties>
                     <property name="binding:*:OnOffType">SENSOR_BINARY:1,BASIC:1</property>
 				</properties>

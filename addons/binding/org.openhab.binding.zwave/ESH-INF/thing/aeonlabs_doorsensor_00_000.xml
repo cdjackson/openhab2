@@ -7,7 +7,7 @@
 		<label>Aeon Labs DoorSensor</label>
 		<description><![CDATA[Door/Window sensor<br><h1>Device Overview</h1><p>Brief description here</p><h1>Inclusion and Exclusion</h1><p>To include the device into the network...</p><p>To exclude the device from the network...</p>]]></description>
 		<channels>
-			<channel id="door-1" typeId="door">
+			<channel id="door-1" typeId="doorwindow">
 				<label>Door/Window State</label>
 				<properties>
 					<property name="binding:*:OnOffType">BASIC</property>

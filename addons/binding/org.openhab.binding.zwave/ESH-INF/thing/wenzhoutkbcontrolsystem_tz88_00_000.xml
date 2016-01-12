@@ -48,27 +48,27 @@ within 1.5 seconds.
 					<property name="binding:Command:OnOffType">SWITCH_BINARY,BASIC</property>
 				</properties>
 			</channel>
-            <channel id="power_watts-1" typeId="power_watts">
+            <channel id="power_watts-1" typeId="electric_watts">
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_current-1" typeId="power_current">
+            <channel id="power_current-1" typeId="electric_current">
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_A</property>
                 </properties>
             </channel>
-            <channel id="power_voltage-1" typeId="power_voltage">
+            <channel id="power_voltage-1" typeId="electric_voltage">
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_V</property>
                 </properties>
             </channel>
-            <channel id="power_powerfactor-1" typeId="power_powerfactor">
+            <channel id="power_powerfactor-1" typeId="electric_powerfactor">
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_Power_Factor</property>
                 </properties>
             </channel>
-            <channel id="power_energy-1" typeId="power_energy">
+            <channel id="power_energy-1" typeId="power_kwh">
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_KWh</property>
                 </properties>
