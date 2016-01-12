@@ -43,5 +43,8 @@ public class ZWaveBindingConstants {
     public final static String CHANNEL_CFG_BINDING = "binding";
     public final static String CHANNEL_CFG_COMMANDCLASS = "commandClass";
 
+    public final static String CMDCLASS_ARG_ALARM_TYPE = "alarm_type";
+    public final static String CMDCLASS_ARG_SENSOR_TYPE = "sensor_type";
+
     public final static Set<ThingTypeUID> SUPPORTED_BRIDGE_TYPES_UIDS = ImmutableSet.of(CONTROLLER_SERIAL);
 }
