@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/zwave-thing-description/v1.0.0">
+	<thing-type id="wenzhoutkbcontrolsystem_tz88_00_000">
+		<label>Wenzhou TKB Control System TZ88</label>
+		<description><![CDATA[Energy Monitoring Wall Plug<br>
+<h1>Device Overview</h1>
+<p>
+This plug-in ON/OFF switch is able to detect current wattage (5~3150W) and
+overload wattage (3010~3300W) of connected lights or appliances. When detecting
+overload state, the Switch will be disabled and its On/Off button will be lockout of
+which LED will flash quickly. However, unplug and re-connect the switch will reset
+its overload condition to normal status.
+</p>
+<h1>Inclusion and Exclusion</h1>
+<p>
+In the front casing, there is an On/Off button with LED indicator which is used to
+toggle switch on and off or carry out inclusion, exclusion, reset or association. When
+first power is applied, its LED flashes on and off alternately and repeatedly at
+2-second intervals. It implies that it has not been assigned a node ID and cannot
+work with Z-Wave enabled devices.
+</p>
+<h2>Manual Inclusion</h2>
+<p>
+Have the Z-Wave Controller enter inclusion mode then press the On/Off button three times
+within 1.5 seconds. 
+</p>
+<h2>Auto Inclusion</h2>
+<p>
+The function of auto inclusion will be executed as long as the switch does not have
+Node ID and just plug the switch into a wall outlet.
+Note: Auto inclusion timeout is 4 minute during which the node information of
+explorer frame will be emitted once every 5 seconds. Unlike “inclusion” function as
+shown in the table below, the execution of auto inclusion is free from pressing the
+On/Off button on the Switch. 
+</p>
+<h2>Exclusion</h2>
+<p>
+Have the Z-Wave Controller enter exclusion mode then press the On/Off button three times
+within 1.5 seconds. 
+</p>
+]]></description>
+		<channels>
+			<channel id="switch-1" typeId="switch">
+				<properties>
+					<property name="binding:Command:OnOffType">SWITCH_BINARY,BASIC</property>
+				</properties>
+			</channel>
+            <channel id="power_watts-1" typeId="electric_watts">
+                <properties>
+                    <property name="binding:*:DecimalType">METER;meterScale=E_W</property>
+                </properties>
+            </channel>
+            <channel id="power_current-1" typeId="electric_current">
+                <properties>
+                    <property name="binding:*:DecimalType">METER;meterScale=E_A</property>
+                </properties>
+            </channel>
+            <channel id="power_voltage-1" typeId="electric_voltage">
+                <properties>
+                    <property name="binding:*:DecimalType">METER;meterScale=E_V</property>
+                </properties>
+            </channel>
+            <channel id="power_powerfactor-1" typeId="electric_powerfactor">
+                <properties>
+                    <property name="binding:*:DecimalType">METER;meterScale=E_Power_Factor</property>
+                </properties>
+            </channel>
+            <channel id="power_energy-1" typeId="power_kwh">
+                <properties>
+                    <property name="binding:*:DecimalType">METER;meterScale=E_KWh</property>
+                </properties>
+            </channel>
+		</channels>
+		<properties>
+			<property name="vendor">Wenzhou TKB Control System</property>
+			<property name="model">TZ88</property>
+			<property name="manufacturerId">0118</property>
+			<property name="manufacturerRef">0001:0001</property>
+			<property name="DefaultAssociations">1</property>
+		</properties>
+		<config-description>
+			<parameter-group name="configuration">
+				<context>setup</context>
+				<label>Configuration Parameters</label>
+			</parameter-group>
+			<parameter-group name="association">
+				<context>link</context>
+				<label>Association Groups</label>
+			</parameter-group>
+			<parameter name="config_1_2" type="integer" min="1" max="32767"
+				groupName="configuration">
+				<label>1: Watt meter report interval (5s)</label>
+				<description><![CDATA[Interval (x5 seconds) to send out watt meter report]]></description>
+				<default>720</default>
+			</parameter>
+			<parameter name="config_2_2" type="integer" min="1" max="32767"
+				groupName="configuration">
+				<label>2: KWH Meter Report Interval (10min)</label>
+				<description><![CDATA[Interval (x10 minutes) to send out KWH Meter Report]]></description>
+				<default>6</default>
+			</parameter>
+			<parameter name="config_3_2" type="integer" min="1" max="1300"
+				groupName="configuration">
+				<label>3: Threshold for Load Caution (10mA)</label>
+				<description><![CDATA[Threshold (x0.01A) of current for Load Caution]]></description>
+				<default>1300</default>
+			</parameter>
+			<parameter name="config_4_2" type="integer" min="1" max="10000"
+				groupName="configuration">
+				<label>4: Threshold of KWh for Load Caution</label>
+				<description><![CDATA[***Add description here***]]></description>
+				<default>10000</default>
+			</parameter>
+			<parameter name="config_5_1" type="integer" groupName="configuration">
+				<label>5: Restore switch state mode</label>
+				<description><![CDATA[defines the behavior after a power cut]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">Switch off</option>
+					<option value="1">Last switch state</option>
+					<option value="2">Switch on</option>
+				</options>
+			</parameter>
+			<parameter name="config_6_1" type="integer" groupName="configuration">
+				<label>6: Mode of switch off function</label>
+				<description><![CDATA[?]]></description>
+				<default>1</default>
+				<options>
+					<option value="0">Disable</option>
+					<option value="1">Enable</option>
+				</options>
+			</parameter>
+			<parameter name="config_7_1" type="integer" groupName="configuration">
+				<label>7: LED Behavior</label>
+				<description><![CDATA[defines the behavior of the LED]]></description>
+				<default>0</default>
+				<options>
+					<option value="1">Show switch state</option>
+					<option value="2">Show night mode</option>
+				</options>
+			</parameter>
+			<parameter name="config_8_2" type="integer" min="1" max="32767"
+				groupName="configuration">
+				<label>8: Auto off timer</label>
+				<description><![CDATA[Seconds before socket switches off. 0 to disable]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">0 : Disable auto off function</option>
+				</options>
+			</parameter>
+			<parameter name="config_9_1" type="integer" groupName="configuration">
+				<label>9: RF off command mode</label>
+				<description><![CDATA[?]]></description>
+				<default>0</default>
+				<options>
+					<option value="0">Switch off</option>
+					<option value="1">Ignore</option>
+					<option value="2">Switch toggle</option>
+					<option value="3">Switch on</option>
+				</options>
+			</parameter>
+			<parameter name="group_1" type="text" groupName="association">
+				<label>Target for automatic reports</label>
+				<description><![CDATA[***Add description here***]]></description>
+                <options>
+                    <option value="empty">None</option>
+                </options>
+                <default>empty</default>
+			</parameter>
+		</config-description>
+	</thing-type>
+</thing:thing-descriptions>
