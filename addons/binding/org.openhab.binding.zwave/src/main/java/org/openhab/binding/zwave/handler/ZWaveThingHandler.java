@@ -75,12 +75,17 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
 
     @Override
     public void initialize() {
-        BigDecimal nodeParm = (BigDecimal) getConfig().get(ZWaveBindingConstants.PARAMETER_NODEID);
+        final String nodeParm = this.getThing().getProperties().get(ZWaveBindingConstants.PARAMETER_NODEID);
         if (nodeParm == null) {
             logger.debug("NodeID is not set in {}", this.getThing().getUID());
             return;
         }
-        nodeId = ((BigDecimal) getConfig().get(ZWaveBindingConstants.PARAMETER_NODEID)).intValue();
+        try {
+            nodeId = Integer.parseInt(nodeParm);
+        } catch (final NumberFormatException ex) {
+            logger.debug("NodeID ({}) cannot be parsed in {}", nodeParm, this.getThing().getUID());
+            return;
+        }
 
         // Until we get an update put the Thing into initialisation state
         updateStatus(ThingStatus.INITIALIZING);
