@@ -25,7 +25,7 @@
                     <property name="binding:*:Number">SENSOR_MULTILEVEL:1;sensor_type=TEMPERATURE,setpoint_scale=1</property>
                 </properties>
             </channel>
-            <channel id="humidity-1" typeId="humidity">
+            <channel id="humidity-1" typeId="relhumidity">
                 <label>Current Temperature</label>
                 <properties>
                     <property name="binding:*:Number">SENSOR_MULTILEVEL:2;sensor_type=HUMIDITY</property>

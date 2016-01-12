@@ -13,12 +13,12 @@
 					<property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
 				</properties>
 			</channel>
-			<channel id="power_watts-1" typeId="power_watts">
+			<channel id="power_watts-1" typeId="electric_watts">
 				<properties>
 					<property name="binding:*:DecimalType">METER;meterScale=E_W</property>
 				</properties>
 			</channel>
-			<channel id="power_energy-1" typeId="power_energy">
+			<channel id="power_energy-1" typeId="power_kwh">
 				<properties>
 					<property name="binding:*:DecimalType">METER;meterScale=E_KWh</property>
 				</properties>

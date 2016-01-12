@@ -7,13 +7,13 @@
 		<label>GreenWave NP210</label>
 		<description><![CDATA[Smart PowerNode<br><h1>Device Overview</h1><p>Brief description here</p><h1>Inclusion and Exclusion</h1><p>To include the device into the network...</p><p>To exclude the device from the network...</p>]]></description>
 		<channels>
-		    <channel id="power_watts-0" typeId="power_watts">
+		    <channel id="power_watts-0" typeId="electric_watts">
                 <label>Current Power (Total)</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-0" typeId="power_energy">
+            <channel id="power_energy-0" typeId="power_kwh">
                 <label>Energy Consumed (Total)</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER;meterScale=E_KWh</property>
@@ -26,13 +26,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:1,BASIC:1</property>
                 </properties>
             </channel>
-            <channel id="power_watts-1" typeId="power_watts">
+            <channel id="power_watts-1" typeId="electric_watts">
                 <label>Current Power 1</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:1;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-1" typeId="power_energy">
+            <channel id="power_energy-1" typeId="power_kwh">
                 <label>Energy Consumed 1</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:1;meterScale=E_KWh</property>
@@ -44,13 +44,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:2,BASIC:2</property>
                 </properties>
             </channel>
-            <channel id="power_watts-2" typeId="power_watts">
+            <channel id="power_watts-2" typeId="electric_watts">
                 <label>Current Power 2</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:2;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-2" typeId="power_energy">
+            <channel id="power_energy-2" typeId="power_kwh">
                 <label>Energy Consumed 2</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:2;meterScale=E_KWh</property>
@@ -62,13 +62,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:3,BASIC:3</property>
                 </properties>
             </channel>
-            <channel id="power_watts-3" typeId="power_watts">
+            <channel id="power_watts-3" typeId="electric_watts">
                 <label>Current Power 3</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:3;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-3" typeId="power_energy">
+            <channel id="power_energy-3" typeId="power_kwh">
                 <label>Energy Consumed 3</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:3;meterScale=E_KWh</property>
@@ -80,13 +80,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:4,BASIC:4</property>
                 </properties>
             </channel>
-            <channel id="power_watts-4" typeId="power_watts">
+            <channel id="power_watts-4" typeId="electric_watts">
                 <label>Current Power 4</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:4;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-4" typeId="power_energy">
+            <channel id="power_energy-4" typeId="power_kwh">
                 <label>Energy Consumed 4</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:4;meterScale=E_KWh</property>
@@ -98,13 +98,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:5,BASIC:5</property>
                 </properties>
             </channel>
-            <channel id="power_watts-5" typeId="power_watts">
+            <channel id="power_watts-5" typeId="electric_watts">
                 <label>Current Power 5</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:5;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-5" typeId="power_energy">
+            <channel id="power_energy-5" typeId="power_kwh">
                 <label>Energy Consumed 5</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:5;meterScale=E_KWh</property>
@@ -116,13 +116,13 @@
                     <property name="binding:*:OnOffType">SWITCH_BINARY:6,BASIC:6</property>
                 </properties>
             </channel>
-            <channel id="power_watts-6" typeId="power_watts">
+            <channel id="power_watts-6" typeId="electric_watts">
                 <label>Current Power 6</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:6;meterScale=E_W</property>
                 </properties>
             </channel>
-            <channel id="power_energy-6" typeId="power_energy">
+            <channel id="power_energy-6" typeId="power_kwh">
                 <label>Energy Consumed 6</label>
                 <properties>
                     <property name="binding:*:DecimalType">METER:6;meterScale=E_KWh</property>
