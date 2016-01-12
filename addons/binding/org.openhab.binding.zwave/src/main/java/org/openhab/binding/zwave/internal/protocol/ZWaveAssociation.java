@@ -1,5 +1,13 @@
 package org.openhab.binding.zwave.internal.protocol;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+/**
+ *
+ * @author Chris Jackson - Initial contribution
+ *
+ */
+@XStreamAlias("multiAssociationCommandClass")
 public class ZWaveAssociation {
     private int node;
     private int endpoint;

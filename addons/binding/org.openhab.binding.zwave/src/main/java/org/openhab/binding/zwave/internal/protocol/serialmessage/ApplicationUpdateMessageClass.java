@@ -8,17 +8,19 @@
  */
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNodeState;
-import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveWakeUpCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveInclusionEvent;
 import org.openhab.binding.zwave.internal.protocol.initialization.ZWaveNodeInitStage;
 import org.slf4j.Logger;
@@ -80,8 +82,11 @@ public class ApplicationUpdateMessageClass extends ZWaveCommandProcessor {
                         zController.pollNode(node);
                     }
                 } else {
+                    List<Integer> nif = new ArrayList<Integer>();
+
                     for (int i = 6; i < length + 3; i++) {
                         int data = incomingMessage.getMessagePayloadByte(i);
+                        nif.add(data); // Keep a record
                         if (data == 0xef) {
                             // TODO: Implement control command classes
                             break;
@@ -92,6 +97,8 @@ public class ApplicationUpdateMessageClass extends ZWaveCommandProcessor {
                             node.addCommandClass(commandClass);
                         }
                     }
+
+                    node.updateNIF(nif);
                 }
 
                 // Treat the node information frame as a wakeup

@@ -145,11 +145,12 @@ public class ZWaveNodeSerializer {
             } catch (IOException e) {
                 logger.error("NODE {}: Error serializing from file: {}", nodeId, e.getMessage());
             } finally {
-                if (reader != null)
+                if (reader != null) {
                     try {
                         reader.close();
                     } catch (IOException e) {
                     }
+                }
             }
             return null;
         }

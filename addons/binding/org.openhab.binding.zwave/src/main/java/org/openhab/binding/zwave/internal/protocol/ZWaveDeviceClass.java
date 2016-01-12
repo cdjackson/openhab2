@@ -19,7 +19,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Z-Wave device class. A Z-Wave device class groups devices with the same functionality together in a class.
- * 
+ *
  * @author Chris Jackson
  * @author Jan-Willem Spuij
  */
@@ -34,7 +34,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Constructor. Creates a new instance of the Z-Wave device class.
-     * 
+     *
      * @param basicDeviceClass the basic device class of this node.
      * @param genericDeviceClass the generic device class of this node.
      * @param specificDeviceClass the specific device class of this node.
@@ -49,7 +49,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Returns the basic device class of the node.
-     * 
+     *
      * @return the basicDeviceClass
      */
     public Basic getBasicDeviceClass() {
@@ -58,7 +58,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the basic device class of the node.
-     * 
+     *
      * @param basicDeviceClass the basicDeviceClass to set
      */
     public void setBasicDeviceClass(Basic basicDeviceClass) {
@@ -67,7 +67,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Get the generic device class of the node.
-     * 
+     *
      * @return the genericDeviceClass
      */
     public Generic getGenericDeviceClass() {
@@ -76,7 +76,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the generic device class of the node.
-     * 
+     *
      * @param genericDeviceClass the genericDeviceClass to set
      */
     public void setGenericDeviceClass(Generic genericDeviceClass) {
@@ -85,7 +85,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Get the specific device class of the node.
-     * 
+     *
      * @return the specificDeviceClass
      */
     public Specific getSpecificDeviceClass() {
@@ -94,7 +94,7 @@ public class ZWaveDeviceClass {
 
     /**
      * Set the specific device class of the node.
-     * 
+     *
      * @param specificDeviceClass the specificDeviceClass to set
      * @exception IllegalArgumentException thrown when the specific device class does not match
      *                the generic device class.
@@ -103,8 +103,9 @@ public class ZWaveDeviceClass {
 
         // The specific Device class does not match the generic device class.
         if (specificDeviceClass.genericDeviceClass != Generic.NOT_KNOWN
-                && specificDeviceClass.genericDeviceClass != this.genericDeviceClass)
+                && specificDeviceClass.genericDeviceClass != this.genericDeviceClass) {
             throw new IllegalArgumentException("specificDeviceClass");
+        }
 
         this.specificDeviceClass = specificDeviceClass;
     }
@@ -153,7 +154,7 @@ public class ZWaveDeviceClass {
     /**
      * Z-Wave basic Device Class enumeration. The Basic Device Class provides
      * the device with a role in the Z-Wave network.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @since 1.3.0
@@ -189,7 +190,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the basic device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the basic device class.
          */
@@ -221,7 +222,7 @@ public class ZWaveDeviceClass {
      * Network. Generic Device Classes can have Command Classes that are mandatory or recommended for all devices that
      * belong to this device class. Generic device class do not relate directly to Basic Device Classes. E.G. a
      * BINARY_SWITCH can be a ROUTING_SLAVE or a SLAVE.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @author Chris Jackson
@@ -229,7 +230,7 @@ public class ZWaveDeviceClass {
     public enum Generic {
         NOT_KNOWN(0, "Not Known"),
         REMOTE_CONTROLLER(0x01, "Remote Controller"),
-        STATIC_CONTOLLER(0x02, "Static Controller"),
+        STATIC_CONTROLLER(0x02, "Static Controller"),
         AV_CONTROL_POINT(0x03, "A/V Control Point"),
         DISPLAY(0x06, "Display"),
         GARAGE_DOOR(0x07, "Garage Door"),
@@ -278,7 +279,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the generic device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param i the code to lookup
          * @return enumeration value of the generic device class.
          */
@@ -306,7 +307,7 @@ public class ZWaveDeviceClass {
 
         /**
          * Get the mandatory command classes for this device class.
-         * 
+         *
          * @return the mandatory command classes.
          */
         public CommandClass[] getMandatoryCommandClasses() {
@@ -314,7 +315,7 @@ public class ZWaveDeviceClass {
                 case NOT_KNOWN:
                     return new CommandClass[0];
                 case REMOTE_CONTROLLER:
-                case STATIC_CONTOLLER:
+                case STATIC_CONTROLLER:
                 case GARAGE_DOOR:
                 case REPEATER_SLAVE:
                 case TOGGLE_SWITCH:
@@ -337,7 +338,8 @@ public class ZWaveDeviceClass {
                     return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC,
                             CommandClass.SENSOR_MULTILEVEL };
                 case PULSE_METER:
-                    return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC, CommandClass.METER_PULSE };
+                    return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC,
+                            CommandClass.METER_PULSE };
                 case METER:
                     return new CommandClass[] { CommandClass.NO_OPERATION, CommandClass.BASIC };
                 case ENTRY_CONTROL:
@@ -358,7 +360,7 @@ public class ZWaveDeviceClass {
      * are based on a Generic Device Class. The Specific Device Class inherits all the mandatory commands from the
      * Generic Device Class. In addition to these commands, more mandatory or recommended Command Classes can be
      * specified for a Specific Device Class.
-     * 
+     *
      * @author Brian Crosby
      * @author Jan-Willem Spuij
      * @author Chris Jackson
@@ -369,9 +371,9 @@ public class ZWaveDeviceClass {
         PORTABLE_SCENE_CONTROLLER(2, Generic.REMOTE_CONTROLLER, "Portable Scene Controller"),
         PORTABLE_INSTALLER_TOOL(3, Generic.REMOTE_CONTROLLER, "Portable Installer Tool"),
 
-        PC_CONTROLLER(1, Generic.STATIC_CONTOLLER, "PC Controller"),
-        SCENE_CONTROLLER(2, Generic.STATIC_CONTOLLER, "Scene Controller"),
-        INSTALLER_TOOL(3, Generic.STATIC_CONTOLLER, "Static Installer Tool"),
+        PC_CONTROLLER(1, Generic.STATIC_CONTROLLER, "PC Controller"),
+        SCENE_CONTROLLER(2, Generic.STATIC_CONTROLLER, "Scene Controller"),
+        INSTALLER_TOOL(3, Generic.STATIC_CONTROLLER, "Static Installer Tool"),
 
         SATELLITE_RECEIVER(4, Generic.AV_CONTROL_POINT, "Satellite Receiver"),
         SATELLITE_RECEIVER_V2(17, Generic.AV_CONTROL_POINT, "Satellite Receiver V2"),
@@ -465,8 +467,9 @@ public class ZWaveDeviceClass {
         private static void initMapping() {
             codeToSpecificMapping = new HashMap<Generic, Map<Integer, Specific>>();
             for (Specific s : values()) {
-                if (!codeToSpecificMapping.containsKey(s.genericDeviceClass))
+                if (!codeToSpecificMapping.containsKey(s.genericDeviceClass)) {
                     codeToSpecificMapping.put(s.genericDeviceClass, new HashMap<Integer, Specific>());
+                }
                 codeToSpecificMapping.get(s.genericDeviceClass).put(s.key, s);
             }
         }
@@ -474,7 +477,7 @@ public class ZWaveDeviceClass {
         /**
          * Lookup function based on the generic device class and the specific device class code.
          * Returns null if the code does not exist.
-         * 
+         *
          * @param genericDeviceClass the generic device class
          * @param i the specific device class code
          * @return the Specific enumeration
@@ -485,11 +488,13 @@ public class ZWaveDeviceClass {
             }
             // special case for SPECIFIC_TYPE_NOT_USED. It's valid for all
             // generic classes (and bound to NOT_KNOWN).
-            if (i == 0)
+            if (i == 0) {
                 return codeToSpecificMapping.get(Generic.NOT_KNOWN).get(i);
+            }
 
-            if (!codeToSpecificMapping.containsKey(genericDeviceClass))
+            if (!codeToSpecificMapping.containsKey(genericDeviceClass)) {
                 return null;
+            }
 
             return codeToSpecificMapping.get(genericDeviceClass).get(i);
         }
@@ -510,7 +515,7 @@ public class ZWaveDeviceClass {
 
         /**
          * Get the mandatory command classes for this device class.
-         * 
+         *
          * @return the mandatory command classes.
          */
         public CommandClass[] getMandatoryCommandClasses() {

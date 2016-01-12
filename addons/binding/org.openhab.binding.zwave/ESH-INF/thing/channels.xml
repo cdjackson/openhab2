@@ -4,7 +4,7 @@
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-	<!-- Color Channel -->
+	<!-- Color Setting Channel -->
 	<channel-type id="color">
 		<item-type>Color</item-type>
 		<label>Color</label>
@@ -14,7 +14,7 @@
 		<category>ColorLight</category>
 	</channel-type>
 
-	<!-- Brightness Channel -->
+	<!-- Brightness (Dimmer) Channel -->
 	<channel-type id="brightness">
 		<item-type>Dimmer</item-type>
 		<label>Brightness</label>
@@ -41,8 +41,8 @@
 		<category>Light</category>
 	</channel-type>
 
-    <!-- Door Channel -->
-    <channel-type id="door">
+    <!-- Door / Window Channel -->
+    <channel-type id="doorwindow">
         <item-type>Switch</item-type>
         <label>Door Open</label>
         <description>Indicates if the door/window is open or closed
@@ -59,10 +59,10 @@
     <!-- PIR Channel -->
     <channel-type id="motion">
         <item-type>Switch</item-type>
-        <label>PIR Alarm</label>
+        <label>Motion Alarm</label>
         <description>Indicates if the sensor has detected motion
         </description>
-        <category>Door</category>
+        <category>Motion</category>
         <state pattern="%s" readOnly="true">
             <options>
                 <option value="ON">Ok</option>
@@ -70,7 +70,7 @@
             </options>
         </state>
     </channel-type>
-
+    
     <!-- Tamper Switch Channel -->
     <channel-type id="tamper">
         <item-type>Switch</item-type>
@@ -191,10 +191,10 @@
     </channel-type>
 
     <!-- Humidity Channel -->
-    <channel-type id="humidity">
+    <channel-type id="relhumidity">
         <item-type>Number</item-type>
         <label>Humidity</label>
-        <description>Indicates the current humidity</description>
+        <description>Indicates the current relative humidity</description>
         <category>Humidity</category>
         <state pattern="%.1f" readOnly="true">
         </state>
@@ -210,14 +210,6 @@
         </state>
     </channel-type>
 
-	<!-- Motion Sensor channel -->
-	<channel-type id="motion">
-		<item-type>Switch</item-type>
-		<label>Motion</label>
-		<description>Indications if motion is detected</description>
-		<category>Motion</category>
-	</channel-type>
-
 	<!-- Smoke Sensor Channel -->
 	<channel-type id="smoke">
 		<item-type>Switch</item-type>
@@ -227,9 +219,9 @@
 	</channel-type>
 
     <!-- Energy - Power Consumption -->
-    <channel-type id="power_watts">
+    <channel-type id="electric_watts">
         <item-type>Number</item-type>
-        <label>Power Consumption</label>
+        <label>Electric Power Consumption</label>
         <description>Indicates the instantaneous power consumption</description>
         <category>Energy</category>
         <state pattern="%.1f" readOnly="true">
@@ -237,9 +229,9 @@
     </channel-type>
 
     <!-- Energy - Current Consumption -->
-    <channel-type id="power_current">
+    <channel-type id="electric_current">
         <item-type>Number</item-type>
-        <label>Current Consumption</label>
+        <label>Electric Current Consumption</label>
         <description>Indicates the instantaneous current consumption</description>
         <category>Energy</category>
         <state pattern="%.1f" readOnly="true">
@@ -247,7 +239,7 @@
     </channel-type>
     
     <!-- Energy - Voltage -->
-    <channel-type id="power_voltage">
+    <channel-type id="electric_voltage">
         <item-type>Number</item-type>
         <label>Voltage</label>
         <description>Indicates the instantaneous voltage</description>
@@ -257,7 +249,7 @@
     </channel-type>
     
     <!-- Energy - Power Factor -->
-    <channel-type id="power_powerfactor">
+    <channel-type id="electric_powerfactor">
         <item-type>Number</item-type>
         <label>Power Factor</label>
         <description>Indicates the instantaneous power factor</description>
@@ -266,11 +258,21 @@
         </state>
     </channel-type>
     
-    <!-- Energy - Energy Consumption -->
-    <channel-type id="power_energy">
+    <!-- Energy - Energy Consumption (kWh) -->
+    <channel-type id="power_kwh">
         <item-type>Number</item-type>
         <label>Energy Consumption</label>
-        <description>Indicates the energy consumption</description>
+        <description>Indicates the energy consumption (kWh)</description>
+        <category>Energy</category>
+        <state pattern="%.1f" readOnly="true">
+        </state>
+    </channel-type>
+    
+    <!-- Energy - Energy Consumption (kVAh) -->
+    <channel-type id="power_kvah">
+        <item-type>Number</item-type>
+        <label>Energy Consumption</label>
+        <description>Indicates the energy consumption (kVAh)</description>
         <category>Energy</category>
         <state pattern="%.1f" readOnly="true">
         </state>

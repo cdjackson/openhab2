@@ -301,7 +301,7 @@ public class ZWaveConfigProvider implements ConfigDescriptionProvider, ConfigOpt
             // Add the node for the standard association class if it supports a controllable class
             if (supportsControllableClass(node)) {
                 // TODO: Use the node name
-                options.add(new ParameterOption("node" + node.getNodeId() + ".0", "Node " + node.getNodeId()));
+                options.add(new ParameterOption("node_" + node.getNodeId() + "_0", "Node " + node.getNodeId()));
             }
 
             // If the device supports multi_instance_association class, then add all controllable endpoints as well...

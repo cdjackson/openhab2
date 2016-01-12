@@ -9,15 +9,15 @@
 package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
-import org.openhab.binding.zwave.internal.protocol.ZWaveController;
-import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
-import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessagePriority;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageType;
+import org.openhab.binding.zwave.internal.protocol.ZWaveController;
+import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Basic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Generic;
 import org.openhab.binding.zwave.internal.protocol.ZWaveDeviceClass.Specific;
+import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass.CommandClass;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class processes a serial message from the zwave controller
- * 
+ *
  * @author Chris Jackson
  */
 public class IdentifyNodeMessageClass extends ZWaveCommandProcessor {
@@ -60,16 +60,29 @@ public class IdentifyNodeMessageClass extends ZWaveCommandProcessor {
         boolean routing = (incomingMessage.getMessagePayloadByte(0) & 0x40) != 0 ? true : false;
         int version = (incomingMessage.getMessagePayloadByte(0) & 0x07) + 1;
         boolean frequentlyListening = (incomingMessage.getMessagePayloadByte(1) & 0x60) != 0 ? true : false;
+        boolean beaming = ((incomingMessage.getMessagePayloadByte(1) & 0x10) != 0);
+        boolean security = ((incomingMessage.getMessagePayloadByte(1) & 0x01) != 0);
+
+        int maxBaudRate = 9600;
+        if ((incomingMessage.getMessagePayloadByte(0) & 0x38) == 0x10) {
+            maxBaudRate = 40000;
+        }
 
         logger.debug("NODE {}: Listening = {}", nodeId, listening);
         logger.debug("NODE {}: Routing = {}", nodeId, routing);
+        logger.debug("NODE {}: Beaming = {}", nodeId, beaming);
         logger.debug("NODE {}: Version = {}", nodeId, version);
         logger.debug("NODE {}: FLIRS = {}", nodeId, frequentlyListening);
+        logger.debug("NODE {}: Security = {}", nodeId, security);
+        logger.debug("NODE {}: Max Baud = {}", nodeId, maxBaudRate);
 
         node.setListening(listening);
         node.setRouting(routing);
         node.setVersion(version);
         node.setFrequentlyListening(frequentlyListening);
+        node.setSecurity(security);
+        node.setBeaming(beaming);
+        node.setMaxBaud(maxBaudRate);
 
         Basic basic = Basic.getBasic(incomingMessage.getMessagePayloadByte(3));
         if (basic == null) {
