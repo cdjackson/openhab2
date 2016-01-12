@@ -430,135 +430,135 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
             return;
         }
 
-        // Handle command class value events.
         if (incomingEvent instanceof ZWaveCommandClassValueEvent) {
-            // Cast to a command class event
-            ZWaveCommandClassValueEvent event = (ZWaveCommandClassValueEvent) incomingEvent;
+            handleCommandClassValueEvent((ZWaveCommandClassValueEvent) incomingEvent);
+        } else if (incomingEvent instanceof ZWaveTransactionCompletedEvent) {
+            handleTransactionCompletedEvent((ZWaveTransactionCompletedEvent) incomingEvent);
+        } else if (incomingEvent instanceof ZWaveWakeUpEvent) {
+            handleWakeUpEvent((ZWaveWakeUpEvent) incomingEvent);
+        } else if (incomingEvent instanceof ZWaveNodeStatusEvent) {
+            handleNodeStatusEvent((ZWaveNodeStatusEvent) incomingEvent);
+        } else if (incomingEvent instanceof ZWaveInitializationCompletedEvent) {
+            handleInitalizationCompletedEvent((ZWaveInitializationCompletedEvent) incomingEvent);
+        }
+    }
 
-            String commandClass = event.getCommandClass().getLabel();
+    private void handleCommandClassValueEvent(final ZWaveCommandClassValueEvent event) {
+        logger.debug("NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}",
+                event.getNodeId(), event.getEndpoint(), event.getCommandClass().getLabel(), event.getValue());
 
-            logger.debug(
-                    "NODE {}: Got a value event from Z-Wave network, endpoint = {}, command class = {}, value = {}",
-                    event.getNodeId(), event.getEndpoint(), commandClass, event.getValue());
-
+        if (event instanceof ZWaveConfigurationParameterEvent) {
             // If this is a configuration parameter update, process it before the channels
-            if (event instanceof ZWaveConfigurationParameterEvent) {
-                ZWaveConfigurationParameter parameter = ((ZWaveConfigurationParameterEvent) event).getParameter();
-                if (parameter != null) {
-                    logger.debug("NODE {}: Update CONFIGURATION {} to {}", nodeId,
-                            "config_" + parameter.getIndex() + "_" + parameter.getSize(), parameter.getValue());
-                    Configuration configuration = editConfiguration();
-                    configuration.put("config_" + parameter.getIndex() + "_" + parameter.getSize(),
-                            parameter.getValue());
-                    updateConfiguration(configuration);
-                }
-
-                return;
-            }
-
+            handleConfigurationParameterEvent((ZWaveConfigurationParameterEvent) event);
+        } else if (event instanceof ZWaveAssociationEvent) {
             // If this is an association event, update the configuration
-            if (incomingEvent instanceof ZWaveAssociationEvent) {
-                int groupId = ((ZWaveAssociationEvent) event).getGroupId();
-                List<ZWaveAssociation> groupMembers = ((ZWaveAssociationEvent) event).getGroupMembers();
-                if (groupMembers != null) {
-                    logger.debug("NODE {}: Update ASSOCIATION {}", nodeId, "group_" + groupId);
-                    Configuration configuration = editConfiguration();
-
-                    List<String> group = new ArrayList<String>();
-
-                    // Build the configuration value
-                    for (ZWaveAssociation groupMember : groupMembers) {
-                        group.add("node_" + groupMember.getNode() + "_" + groupMember.getEndpoint());
-                    }
-
-                    if (group.isEmpty()) {
-                        configuration.put("group_" + groupId, "empty");
-                    } else {
-                        configuration.put("group_" + groupId, group);
-                    }
-                    updateConfiguration(configuration);
-                }
-
-                return;
-            }
-
-            // Process the channels to see if we're interested
-            for (ZWaveThingChannel channel : thingChannelsState) {
-                if (channel.getEndpoint() != event.getEndpoint()) {
-                    continue;
-                }
-
-                // Is this command class associated with this channel?
-                if (!channel.getCommandClass().equals(commandClass)) {
-                    continue;
-                }
-
-                if (channel.converter == null) {
-                    logger.warn("NODE {}: No converter set for {}", nodeId, channel.getUID());
-                    return;
-                }
-
-                logger.debug("NODE {}: Processing event as channel {} {}", nodeId, channel.getUID(), channel.dataType);
-                State state = channel.converter.handleEvent(channel, event);
-                if (state != null) {
-                    updateState(channel.getUID(), state);
-                }
-            }
-
-            return;
+            handleAssociationEvent((ZWaveAssociationEvent) event);
+        } else {
+            handleChannelEvent(event);
         }
+    }
 
-        // Handle transaction complete events.
-        if (incomingEvent instanceof ZWaveTransactionCompletedEvent) {
-            return;
-        }
-
-        // Handle wakeup notification events.
-        if (incomingEvent instanceof ZWaveWakeUpEvent) {
-            if (((ZWaveWakeUpEvent) incomingEvent)
-                    .getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_CAPABILITIES_REPORT
-                    && ((ZWaveWakeUpEvent) incomingEvent)
-                            .getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_REPORT) {
-                return;
-            }
-
-            ZWaveNode node = controllerHandler.getNode(((ZWaveWakeUpEvent) incomingEvent).getNodeId());
-            if (node == null) {
-                return;
-            }
-
-            ZWaveWakeUpCommandClass commandClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
+    private void handleConfigurationParameterEvent(final ZWaveConfigurationParameterEvent event) {
+        ZWaveConfigurationParameter parameter = event.getParameter();
+        if (parameter != null) {
+            logger.debug("NODE {}: Update CONFIGURATION {} to {}", nodeId,
+                    "config_" + parameter.getIndex() + "_" + parameter.getSize(), parameter.getValue());
             Configuration configuration = editConfiguration();
-            configuration.put("wakeup_interval", commandClass.getInterval());
-            configuration.put("wakeup_node", commandClass.getTargetNodeId());
+            configuration.put("config_" + parameter.getIndex() + "_" + parameter.getSize(), parameter.getValue());
             updateConfiguration(configuration);
-            return;
         }
+    }
 
-        // Handle node state change events.
-        if (incomingEvent instanceof ZWaveNodeStatusEvent) {
-            // Cast to a command class event
-            ZWaveNodeStatusEvent event = (ZWaveNodeStatusEvent) incomingEvent;
+    private void handleAssociationEvent(final ZWaveAssociationEvent event) {
+        int groupId = event.getGroupId();
+        List<ZWaveAssociation> groupMembers = event.getGroupMembers();
+        if (groupMembers != null) {
+            logger.debug("NODE {}: Update ASSOCIATION {}", nodeId, "group_" + groupId);
+            Configuration configuration = editConfiguration();
 
-            switch (event.getState()) {
-                case INITIALIZING:
-                    updateStatus(ThingStatus.INITIALIZING);
-                    break;
-                case ALIVE:
-                    updateStatus(ThingStatus.ONLINE);
-                    break;
-                case DEAD:
-                case FAILED:
-                    updateStatus(ThingStatus.OFFLINE);
-                    break;
+            List<String> group = new ArrayList<String>();
+
+            // Build the configuration value
+            for (ZWaveAssociation groupMember : groupMembers) {
+                group.add("node_" + groupMember.getNode() + "_" + groupMember.getEndpoint());
             }
 
+            if (group.isEmpty()) {
+                configuration.put("group_" + groupId, "empty");
+            } else {
+                configuration.put("group_" + groupId, group);
+            }
+            updateConfiguration(configuration);
+        }
+    }
+
+    private void handleChannelEvent(final ZWaveCommandClassValueEvent event) {
+        // Process the channels to see if we're interested
+        for (ZWaveThingChannel channel : thingChannelsState) {
+            if (channel.getEndpoint() != event.getEndpoint()) {
+                continue;
+            }
+
+            // Is this command class associated with this channel?
+            if (!channel.getCommandClass().equals(event.getCommandClass().getLabel())) {
+                continue;
+            }
+
+            if (channel.converter == null) {
+                logger.warn("NODE {}: No converter set for {}", nodeId, channel.getUID());
+                return;
+            }
+
+            logger.debug("NODE {}: Processing event as channel {} {}", nodeId, channel.getUID(), channel.dataType);
+            State state = channel.converter.handleEvent(channel, event);
+            if (state != null) {
+                updateState(channel.getUID(), state);
+            }
+        }
+    }
+
+    private void handleTransactionCompletedEvent(final ZWaveTransactionCompletedEvent event) {
+        // Nothing to do ATM
+    }
+
+    private void handleWakeUpEvent(final ZWaveWakeUpEvent event) {
+        // Handle wakeup notification events.
+        if (event.getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_CAPABILITIES_REPORT
+                && event.getEvent() != ZWaveWakeUpCommandClass.WAKE_UP_INTERVAL_REPORT) {
             return;
         }
 
-        if (incomingEvent instanceof ZWaveInitializationCompletedEvent) {
-            updateStatus(ThingStatus.ONLINE);
+        ZWaveNode node = controllerHandler.getNode((event).getNodeId());
+        if (node == null) {
+            return;
         }
+
+        ZWaveWakeUpCommandClass commandClass = (ZWaveWakeUpCommandClass) node.getCommandClass(CommandClass.WAKE_UP);
+        Configuration configuration = editConfiguration();
+        configuration.put("wakeup_interval", commandClass.getInterval());
+        configuration.put("wakeup_node", commandClass.getTargetNodeId());
+        updateConfiguration(configuration);
+    }
+
+    private void handleNodeStatusEvent(final ZWaveNodeStatusEvent event) {
+        // Handle node state change events.
+
+        switch (event.getState()) {
+            case INITIALIZING:
+                updateStatus(ThingStatus.INITIALIZING);
+                break;
+            case ALIVE:
+                updateStatus(ThingStatus.ONLINE);
+                break;
+            case DEAD:
+            case FAILED:
+                updateStatus(ThingStatus.OFFLINE);
+                break;
+        }
+    }
+
+    private void handleInitalizationCompletedEvent(final ZWaveInitializationCompletedEvent event) {
+        updateStatus(ThingStatus.ONLINE);
     }
 
     public class ZWaveThingChannel {
