@@ -243,13 +243,16 @@ public class ZWaveThingHandler extends BaseThingHandler implements ZWaveEventLis
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         ZWaveNode node = controllerHandler.getNode(nodeId);
+        logger.debug("NODE {}: Configuration update received", nodeId);
 
         Configuration configuration = editConfiguration();
         for (Entry<String, Object> configurationParameter : configurationParameters.entrySet()) {
+            logger.debug("NODE {}: Configuration update {} to {}", nodeId, configurationParameter.getKey(),
+                    configurationParameter.getValue());
             String[] cfg = configurationParameter.getKey().split("_");
             if ("config".equals(cfg[0])) {
                 if (cfg.length < 3) {
-                    logger.warn("NODE{}: Configuration invalid {}", nodeId, configurationParameter.getKey());
+                    logger.warn("NODE {}: Configuration invalid {}", nodeId, configurationParameter.getKey());
                     continue;
                 }
 

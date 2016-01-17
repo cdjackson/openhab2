@@ -541,7 +541,7 @@ public class ZWaveDeviceClass {
                             CommandClass.MANUFACTURER_SPECIFIC };
                 case POWER_SWITCH_BINARY:
                 case POWER_SWITCH_MULTILEVEL:
-                    return new CommandClass[] { CommandClass.SWITCH_ALL };
+                    return new CommandClass[0];
                 case SCENE_SWITCH_BINARY:
                 case SCENE_SWITCH_BINARY_DISCONTINUED:
                 case SCENE_SWITCH_MULTILEVEL:
