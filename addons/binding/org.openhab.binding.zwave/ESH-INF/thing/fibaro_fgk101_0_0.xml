@@ -32,19 +32,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-      <parameter-group name="wakeup">
-        <context>sleep</context>
-        <label>Wakeup Configuration</label>
-      </parameter-group>
-
       <parameter name="config_1_2" type="integer" groupName="configuration"
                  min="0" max="65535">
         <label>1: IN1 Alarm Cancellation Delay</label>
@@ -183,6 +176,11 @@ Enable/Disable scene functionality. The device offers
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
         <label>1: Input IN1</label>
         <description></description>
@@ -198,15 +196,6 @@ Enable/Disable scene functionality. The device offers
       <parameter name="group_3" type="integer" groupName="association">
         <label>3: Condition</label>
         <description></description>
-      </parameter>
-
-      <parameter name="wakeup_interval" type="integer" groupName="wakeup">
-        <label>Wakeup Period</label>
-        <description>Set the wakeup period in seconds</description>
-      </parameter>
-      <parameter name="wakeup_node" type="integer" groupName="wakeup" readOnly="true">
-        <label>Wakeup Node</label>
-        <description>The node to which wakeup messages will be sent</description>
       </parameter>
 
     </config-description>

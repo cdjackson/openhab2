@@ -62,19 +62,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-      <parameter-group name="wakeup">
-        <context>sleep</context>
-        <label>Wakeup Configuration</label>
-      </parameter-group>
-
       <parameter name="config_2_1" type="integer" groupName="configuration"
                  min="0" max="255">
         <label>2: Stay Awake in Battery Mode
@@ -361,6 +354,11 @@ calibration value = 8 – 9 = -1 (0xFE).    !]]></description>
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
         <label>1: Group 1</label>
         <description></description>
@@ -377,15 +375,6 @@ calibration value = 8 – 9 = -1 (0xFE).    !]]></description>
         <label>3: Group 3</label>
         <description></description>
         <multipleLimit>5</multipleLimit>
-      </parameter>
-
-      <parameter name="wakeup_interval" type="integer" groupName="wakeup">
-        <label>Wakeup Period</label>
-        <description>Set the wakeup period in seconds</description>
-      </parameter>
-      <parameter name="wakeup_node" type="integer" groupName="wakeup" readOnly="true">
-        <label>Wakeup Node</label>
-        <description>The node to which wakeup messages will be sent</description>
       </parameter>
 
     </config-description>

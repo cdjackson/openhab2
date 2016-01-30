@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+  xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0
+                      http://eclipse.org/smarthome/schemas/thing-description/v1.0.0">
+  <thing-type id="aeon_zw098c55_00_000">
+    <label>ZW098-C55 LED Bulb</label>
+    <description>LED Bulb</description>
+
+    <channels>
+      <channel id="dimmer" typeId="switch_dimmer">
+        <label>Switch</label>
+        <properties>
+          <property name="binding:*:PercentType">SWITCH_MULTILEVEL</property>
+          <property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
+        </properties>
+      </channel>
+    </channels>
+
+    <properties>
+      <property name="vendor">Aeon Labs</property>
+      <property name="model">ZW098-C55</property>
+      <property name="manufacturerId">0086</property>
+      <property name="manufacturerRef">0003:0062</property>
+      <property name="DefaultAssociations">1,2</property>
+    </properties>
+
+    <config-description>
+
+
+      <!-- PARAMETER DEFINITIONS -->
+      <parameter-group name="configuration">
+        <context>setup</context>
+        <label>Configuration Parameters</label>
+      </parameter-group>
+      <parameter name="config_34_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>34: Turn on/off bulb</label>
+        <description><![CDATA[
+Enable/disable the function of using External Switch to turn on/off the bulb.
+                !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">disabled</option>
+          <option value="1">enabled</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_35_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>35: Change bulb color</label>
+        <description><![CDATA[
+Enable/disable the function of using External Switch to changes the bulb’s color.
+                !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">disabled</option>
+          <option value="1">enabled</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_50_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>50: Enable notifications</label>
+        <description><![CDATA[
+Enable to send notifications to associated devices (Group 1) when the state of LED Bulb is changed.
+                !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">Disable</option>
+          <option value="1">Hail</option>
+          <option value="1">Basic</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_252_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>252: Lock configuration</label>
+        <description><![CDATA[
+Enable/disable the ability to configure the device.
+                !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">disabled</option>
+          <option value="1">enabled</option>
+        </options>
+      </parameter>
+
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
+      <parameter name="group_1" type="integer" groupName="association"  multiple="true">
+        <label>1: Group 1</label>
+        <description></description>
+        <multipleLimit>5</multipleLimit>
+      </parameter>
+
+      <parameter name="group_2" type="integer" groupName="association"  multiple="true">
+        <label>2: Group 2</label>
+        <description></description>
+        <multipleLimit>5</multipleLimit>
+      </parameter>
+
+    </config-description>
+
+  </thing-type>
+</thing:thing-descriptions>

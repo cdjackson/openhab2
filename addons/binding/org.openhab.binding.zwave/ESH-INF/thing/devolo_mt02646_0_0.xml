@@ -63,15 +63,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-
       <parameter name="config_1_2" type="integer" groupName="configuration"
                  min="0" max="32767">
         <label>1: Watt Meter Report Period</label>
@@ -164,6 +161,11 @@ RF off command mode    !]]></description>
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association">
         <label>1: Reports</label>
         <description></description>

@@ -4,18 +4,29 @@
   xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
   xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0
                       http://eclipse.org/smarthome/schemas/thing-description/v1.0.0">
-  <thing-type id="tkb_tz78_00_000">
-    <label>TZ78 In Wall Micro Switch</label>
-    <description>In Wall Micro Switch</description>
+  <thing-type id="brk_zcombo_00_000">
+    <label>ZCOMBO Smoke and Carbon Monoxide Alarm</label>
+    <description>Smoke and Carbon Monoxide Alarm</description>
 
     <channels>
+      <channel id="alarm_general" typeId="alarm_general">
+        <label>Alarm</label>
+        <properties>
+          <property name="binding:*:OnOffType">ALARM,BASIC</property>
+        </properties>
+      </channel>
+      <channel id="battery-level" typeId="system.battery-level">
+        <properties>
+          <property name="binding:*:PercentType">BATTERY</property>
+        </properties>
+      </channel>
     </channels>
 
     <properties>
-      <property name="vendor">Wenzhou TKB Control System</property>
-      <property name="model">TZ78</property>
-      <property name="manufacturerId">0118</property>
-      <property name="manufacturerRef">0121:0133</property>
+      <property name="vendor">BRK Brands</property>
+      <property name="model">ZCOMBO</property>
+      <property name="manufacturerId">0138</property>
+      <property name="manufacturerRef">0001:0002</property>
       <property name="DefaultAssociations">1</property>
     </properties>
 
@@ -29,27 +40,13 @@
       </parameter-group>
       <parameter name="config_1_1" type="integer" groupName="configuration"
                  min="0" max="255">
-        <label>1: Selected endpoint</label>
+        <label>1: Send double alarms</label>
         <description><![CDATA[
-If Controller not using Multi_Channel command class
-							to access the endpoint of PAN06, you may configure
-							the endpoint value to react the Basic Command Class    !]]></description>
-        <default>1</default>
+Causes the device to send double alarm messages    !]]></description>
+        <default>0</default>
         <options>
-          <option value="1">Relay 1</option>
-        </options>
-      </parameter>
-
-      <parameter name="config_2_1" type="integer" groupName="configuration"
-                 min="0" max="255">
-        <label>2: Switch mode</label>
-        <description><![CDATA[
-Change the external switch mode    !]]></description>
-        <default>1</default>
-        <options>
-          <option value="1">Edge mode</option>
-          <option value="2">Pulse mode</option>
-          <option value="3">Edge-Toggle mode</option>
+          <option value="0">Single Alarm</option>
+          <option value="1">Double Alarm</option>
         </options>
       </parameter>
 
@@ -59,7 +56,7 @@ Change the external switch mode    !]]></description>
         <label>Association Groups</label>
       </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
-        <label>1: Target for automatic reports</label>
+        <label>1: Group 1</label>
         <description></description>
         <multipleLimit>5</multipleLimit>
       </parameter>

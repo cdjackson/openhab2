@@ -20,15 +20,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-
       <parameter name="config_1_1" type="integer" groupName="configuration"
                  min="0" max="255">
         <label>1: Dim Start Level</label>
@@ -113,6 +110,11 @@ The WD500Z-1 will flicker its LED when it is
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
         <label>1: UNKNOWN!!!</label>
         <description></description>

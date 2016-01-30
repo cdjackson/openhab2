@@ -36,11 +36,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-
       <parameter name="config_1_1" type="integer" groupName="configuration"
                  min="0" max="1">
         <label>1: Toggle LED mode</label>

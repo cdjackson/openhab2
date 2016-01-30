@@ -27,15 +27,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-
       <parameter name="config_1_1" type="integer" groupName="configuration"
                  min="0" max="3">
         <label>1: Set LED indication mode</label>
@@ -195,6 +192,11 @@ NB: Do not touch these settings if you are not sure what they mean!    !]]></des
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
         <label>1: Switch State</label>
         <description></description>

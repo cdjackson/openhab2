@@ -33,11 +33,12 @@ GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch<br />
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-
       <parameter name="config_4_1" type="integer" groupName="configuration"
                  min="0" max="1">
         <label>4: Invert switch</label>

@@ -44,15 +44,12 @@
 
     <config-description>
 
+
+      <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
         <context>setup</context>
         <label>Configuration Parameters</label>
       </parameter-group>
-      <parameter-group name="association">
-        <context>link</context>
-        <label>Association Groups</label>
-      </parameter-group>
-
       <parameter name="config_1_1" type="integer" groupName="configuration"
                  min="0" max="1">
         <label>1: Multilevel Sensor Report Content</label>
@@ -209,6 +206,11 @@ The time interval (in seconds) for sending report to Group 3    !]]></descriptio
         </options>
       </parameter>
 
+      <!-- ASSOCIATION DEFINITIONS -->
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
       <parameter name="group_1" type="integer" groupName="association"  multiple="true">
         <label>1: Status Reports</label>
         <description></description>

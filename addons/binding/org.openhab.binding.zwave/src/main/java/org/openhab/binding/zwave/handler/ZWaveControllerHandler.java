@@ -13,7 +13,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -126,6 +128,25 @@ public abstract class ZWaveControllerHandler extends BaseThingHandler implements
         if (controller != null) {
             this.controller = null;
             controller.removeEventListener(this);
+        }
+    }
+
+    @Override
+    public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+        logger.debug("NODE {}: Configuration update received", controller.getOwnNodeId());
+
+        Configuration configuration = editConfiguration();
+        for (Entry<String, Object> configurationParameter : configurationParameters.entrySet()) {
+            logger.debug("NODE {}: Configuration update {} to {}", controller.getOwnNodeId(),
+                    configurationParameter.getKey(), configurationParameter.getValue());
+            String[] cfg = configurationParameter.getKey().split("_");
+            if ("controller".equals(cfg[0])) {
+                if (cfg[1].equals("softreset")) {
+                    controller.requestSoftReset();
+                } else if (cfg[1].equals("hardreset")) {
+                    controller.requestHardReset();
+                }
+            }
         }
     }
 

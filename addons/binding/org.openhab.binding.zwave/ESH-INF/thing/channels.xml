@@ -109,10 +109,8 @@
         </state>
     </channel-type>
 
-
-
     <!-- Color Setting Channel -->
-    <channel-type id="color">
+    <channel-type id="color_color">
         <item-type>Color</item-type>
         <label>Color</label>
         <description>The color channel allows to control the color of a light.
