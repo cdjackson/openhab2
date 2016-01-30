@@ -87,8 +87,7 @@ public class ZWaveThermostatSetpointConverter extends ZWaveCommandClassConverter
         ZWaveThermostatSetpointValueEvent setpointEvent = (ZWaveThermostatSetpointValueEvent) event;
 
         // Don't trigger event if this item is bound to another setpoint type
-        if (setpointType != null
-                && SetpointType.getSetpointType(Integer.parseInt(setpointType)) != setpointEvent.getSetpointType()) {
+        if (setpointType != null && SetpointType.valueOf(setpointType) != setpointEvent.getSetpointType()) {
             return null;
         }
 
@@ -132,8 +131,7 @@ public class ZWaveThermostatSetpointConverter extends ZWaveCommandClassConverter
 
         BigDecimal value = ((DecimalType) command).toBigDecimal();
         if (setpointType != null) {
-            serialMessage = node.encapsulate(
-                    commandClass.setMessage(scale, SetpointType.getSetpointType(Integer.parseInt(setpointType)), value),
+            serialMessage = node.encapsulate(commandClass.setMessage(scale, SetpointType.valueOf(setpointType), value),
                     commandClass, channel.getEndpoint());
         } else {
             serialMessage = node.encapsulate(commandClass.setMessage(scale, value), commandClass,
@@ -152,8 +150,7 @@ public class ZWaveThermostatSetpointConverter extends ZWaveCommandClassConverter
 
         // Request an update so that OH knows when the setpoint has changed.
         if (setpointType != null) {
-            serialMessage = node.encapsulate(
-                    commandClass.getMessage(SetpointType.getSetpointType(Integer.parseInt(setpointType))), commandClass,
+            serialMessage = node.encapsulate(commandClass.getMessage(SetpointType.valueOf(setpointType)), commandClass,
                     channel.getEndpoint());
         } else {
             serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, channel.getEndpoint());

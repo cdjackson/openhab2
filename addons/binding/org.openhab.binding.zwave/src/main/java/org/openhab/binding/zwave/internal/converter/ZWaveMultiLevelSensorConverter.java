@@ -78,8 +78,7 @@ public class ZWaveMultiLevelSensorConverter extends ZWaveCommandClassConverter {
         ZWaveMultiLevelSensorValueEvent sensorEvent = (ZWaveMultiLevelSensorValueEvent) event;
 
         // Don't trigger event if this item is bound to another sensor type
-        if (sensorType != null
-                && SensorType.getSensorType(Integer.parseInt(sensorType)) != sensorEvent.getSensorType()) {
+        if (sensorType != null && SensorType.valueOf(sensorType) != sensorEvent.getSensorType()) {
             return null;
         }
 

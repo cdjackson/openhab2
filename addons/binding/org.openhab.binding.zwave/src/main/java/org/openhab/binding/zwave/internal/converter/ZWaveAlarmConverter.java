@@ -18,9 +18,9 @@ import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveNode;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass;
-import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass.AlarmType;
 import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveAlarmCommandClass.ZWaveAlarmValueEvent;
+import org.openhab.binding.zwave.internal.protocol.commandclass.ZWaveCommandClass;
 import org.openhab.binding.zwave.internal.protocol.event.ZWaveCommandClassValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +61,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter {
 
         SerialMessage serialMessage;
         if (alarmType != null) {
-            serialMessage = node.encapsulate(
-                    commandClass.getMessage(AlarmType.getAlarmType(Integer.parseInt(alarmType))), commandClass,
+            serialMessage = node.encapsulate(commandClass.getMessage(AlarmType.valueOf(alarmType)), commandClass,
                     channel.getEndpoint());
         } else {
             serialMessage = node.encapsulate(commandClass.getValueMessage(), commandClass, channel.getEndpoint());
@@ -86,7 +85,7 @@ public class ZWaveAlarmConverter extends ZWaveCommandClassConverter {
         ZWaveAlarmValueEvent alarmEvent = (ZWaveAlarmValueEvent) event;
 
         // Don't trigger event if this item is bound to another alarm type
-        if (alarmType != null && AlarmType.getAlarmType(Integer.parseInt(alarmType)) != alarmEvent.getAlarmType()) {
+        if (alarmType != null && AlarmType.valueOf(alarmType) != alarmEvent.getAlarmType()) {
             return null;
         }
 

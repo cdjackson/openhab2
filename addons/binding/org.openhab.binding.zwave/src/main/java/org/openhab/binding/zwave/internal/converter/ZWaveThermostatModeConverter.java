@@ -47,7 +47,7 @@ public class ZWaveThermostatModeConverter extends ZWaveCommandClassConverter {
     @Override
     public List<SerialMessage> executeRefresh(ZWaveThingChannel channel, ZWaveNode node) {
         ZWaveThermostatModeCommandClass commandClass = (ZWaveThermostatModeCommandClass) node
-                .getCommandClass(ZWaveCommandClass.CommandClass.THERMOSTAT_FAN_MODE);
+                .getCommandClass(ZWaveCommandClass.CommandClass.THERMOSTAT_MODE);
         if (commandClass == null) {
             return null;
         }
@@ -67,7 +67,7 @@ public class ZWaveThermostatModeConverter extends ZWaveCommandClassConverter {
     @Override
     public List<SerialMessage> receiveCommand(ZWaveThingChannel channel, ZWaveNode node, Command command) {
         ZWaveThermostatModeCommandClass commandClass = (ZWaveThermostatModeCommandClass) node
-                .resolveCommandClass(ZWaveCommandClass.CommandClass.SWITCH_BINARY, channel.getEndpoint());
+                .resolveCommandClass(ZWaveCommandClass.CommandClass.THERMOSTAT_MODE, channel.getEndpoint());
 
         int value = ((DecimalType) command).intValue();
         if (command instanceof OnOffType) {
