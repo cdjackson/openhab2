@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+  xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0
+                      http://eclipse.org/smarthome/schemas/thing-description/v1.0.0">
+  <thing-type id="tkb_tz78_00_000">
+    <label>TZ78 In Wall Micro Switch</label>
+    <description>In Wall Micro Switch</description>
+
+    <channels>
+    </channels>
+
+    <properties>
+      <property name="vendor">Wenzhou TKB Control System</property>
+      <property name="model">TZ78</property>
+      <property name="manufacturerId">0118</property>
+      <property name="manufacturerRef">0121:0133</property>
+      <property name="DefaultAssociations">1</property>
+    </properties>
+
+    <config-description>
+
+      <parameter-group name="configuration">
+        <context>setup</context>
+        <label>Configuration Parameters</label>
+      </parameter-group>
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
+
+      <parameter name="config_1_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>1: Selected endpoint</label>
+        <description><![CDATA[
+If Controller not using Multi_Channel command class
+							to access the endpoint of PAN06, you may configure
+							the endpoint value to react the Basic Command Class    !]]></description>
+        <default>1</default>
+        <options>
+          <option value="1">Relay 1</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_2_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>2: Switch mode</label>
+        <description><![CDATA[
+Change the external switch mode    !]]></description>
+        <default>1</default>
+        <options>
+          <option value="1">Edge mode</option>
+          <option value="2">Pulse mode</option>
+          <option value="3">Edge-Toggle mode</option>
+        </options>
+      </parameter>
+
+      <parameter name="group_1" type="integer" groupName="association"  multiple="true">
+        <label>1: Target for automatic reports</label>
+        <description></description>
+        <multipleLimit>5</multipleLimit>
+      </parameter>
+
+    </config-description>
+
+  </thing-type>
+</thing:thing-descriptions>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+  xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0
+                      http://eclipse.org/smarthome/schemas/thing-description/v1.0.0">
+  <thing-type id="aeon_dsb29zwus_00_000">
+    <label>DSB29ZWUS Door/Window sensor Gen2</label>
+    <description>Door/Window sensor Gen2</description>
+
+    <channels>
+      <channel id="alarm_general" typeId="alarm_general">
+        <label>Alarm (general)</label>
+        <properties>
+          <property name="binding:*:OnOffType">ALARM;sensorType=GENERAL</property>
+        </properties>
+      </channel>
+      <channel id="battery-level" typeId="system.battery-level">
+        <properties>
+          <property name="binding:*:PercentType">BATTERY</property>
+        </properties>
+      </channel>
+      <channel id="sensor_binary" typeId="sensor_binary">
+        <label>Binary Sensor</label>
+        <properties>
+          <property name="binding:*:OnOffType">SENSOR_BINARY</property>
+        </properties>
+      </channel>
+    </channels>
+
+    <properties>
+      <property name="vendor">Aeon Labs</property>
+      <property name="model">DSB29ZWUS</property>
+      <property name="manufacturerId">0086</property>
+      <property name="manufacturerRef">0002:0004,0002:001D</property>
+      <property name="DefaultAssociations">1</property>
+    </properties>
+
+    <config-description>
+
+      <parameter-group name="configuration">
+        <context>setup</context>
+        <label>Configuration Parameters</label>
+      </parameter-group>
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
+      <parameter-group name="wakeup">
+        <context>sleep</context>
+        <label>Wakeup Configuration</label>
+      </parameter-group>
+
+      <parameter name="config_1_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>1: Send Sensor binary report on open/close events</label>
+        <description></description>
+        <default>0</default>
+        <options>
+          <option value="0">On for opened, Off for closed</option>
+          <option value="1">Off for opened, On for closed</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_2_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>2: Enable wake up 10 minutes when power on</label>
+        <description></description>
+        <default>0</default>
+        <options>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_3_1" type="integer" groupName="configuration"
+                 min="0" max="255">
+        <label>3: Send Basic Set on open/close event</label>
+        <description></description>
+        <default>0</default>
+        <options>
+          <option value="0">On for opened, Off for closed</option>
+          <option value="1">Off for opened, On for closed</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_121_4" type="integer" groupName="configuration"
+                 min="0" max="4">
+        <label>121: Send those commands to associated devices on open/close/tamper events</label>
+        <description><![CDATA[
+Available Configurations<br>
+				0 -> Battery report<br>
+				4 -> Sensor binary report<br>
+				8 -> Basic Set      !]]></description>
+        <default>4</default>
+      </parameter>
+
+      <parameter name="group_1" type="integer" groupName="association"  multiple="true">
+        <label>1: Group 1</label>
+        <description></description>
+        <multipleLimit>5</multipleLimit>
+      </parameter>
+
+      <parameter name="wakeup_interval" type="integer" groupName="wakeup">
+        <label>Wakeup Period</label>
+        <description>Set the wakeup period in seconds</description>
+      </parameter>
+      <parameter name="wakeup_node" type="integer" groupName="wakeup" readOnly="true">
+        <label>Wakeup Node</label>
+        <description>The node to which wakeup messages will be sent</description>
+      </parameter>
+
+    </config-description>
+
+  </thing-type>
+</thing:thing-descriptions>

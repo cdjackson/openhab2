@@ -6,16 +6,15 @@
 	<name>ZWave Binding</name>
 	<description>
 	   <![CDATA[
-	   This is the binding for ZWave wireless home automation system.
-	   <br>
 	   ZWave is a wireless home automation protocol with reliable two way communications between nodes.
 	   It supports a mesh network where mains powered nodes can route messages between nodes that could otherwise
 	   not communicate with each other. The network supports hop distances of up to four hops.
-	   <br>
+	   <br/>
 	   A wide range of devices are supported from lights, switches and sensors to smoke alarms, window coverings
 	   and keyfobs. ZWave certification guarantees that certified devices will be compatible with each other and
 	   the network.
 	   ]]> 
 	</description>
 	<author>Chris Jackson</author>
+
 </binding:binding>

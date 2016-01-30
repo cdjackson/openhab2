@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zwave"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+  xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0
+                      http://eclipse.org/smarthome/schemas/thing-description/v1.0.0">
+  <thing-type id="aeon_dsb45_00_000">
+    <label>DSB45-ZWUS Water Sensor</label>
+    <description><![CDATA[
+Water Sensor<br />
+<h2>Wakeup Information<h2>
+<p><p>Press WakeUp button or hold z-wave button</p>
+<p> </p>
+<p>The Water Sensor will keep waking up for 8 seconds after sending the wake up notification command.<br />The Water Sensor will keep waking up for 8 seconds to waiting for the next command after receiving a<br />command.<br />The Water Sensor will be woken up for 10 minutes when power is on (configurable).<br />There are 3 ways to exit the Wake up 10 minutes state:<br />1. Triple click the tamper switch, and the Water Sensor will sleep immediately<br />2. Receive the “Wake up no more information CC” command , sleep right now;<br />3. Receive the other command except “Wake up no more information CC” , the Water Sensor will wake<br />up for 8 seconds and then go to sleep.</p></p>
+    !]]></description>
+
+    <channels>
+      <channel id="battery-level" typeId="system.battery-level">
+        <properties>
+          <property name="binding:*:PercentType">BATTERY</property>
+        </properties>
+      </channel>
+      <channel id="sensor_binary_0" typeId="sensor_binary">
+        <label>Binary Sensor</label>
+        <properties>
+          <property name="binding:*:OnOffType">SENSOR_BINARY</property>
+        </properties>
+      </channel>
+      <channel id="alarm_general_0" typeId="alarm_general">
+        <label>Alarm</label>
+        <properties>
+          <property name="binding:*:OnOffType">ALARM</property>
+        </properties>
+      </channel>
+    </channels>
+
+    <properties>
+      <property name="vendor">Aeon Labs</property>
+      <property name="model">DSB45-ZWUS</property>
+      <property name="manufacturerId">0086</property>
+      <property name="manufacturerRef">0002:002D</property>
+      <property name="versionMax">255.255</property>
+      <property name="DefaultAssociations">1</property>
+    </properties>
+
+    <config-description>
+
+      <parameter-group name="configuration">
+        <context>setup</context>
+        <label>Configuration Parameters</label>
+      </parameter-group>
+      <parameter-group name="association">
+        <context>link</context>
+        <label>Association Groups</label>
+      </parameter-group>
+      <parameter-group name="wakeup">
+        <context>sleep</context>
+        <label>Wakeup Configuration</label>
+      </parameter-group>
+
+      <parameter name="config_1_1" type="integer" groupName="configuration"
+                 min="0" max="1">
+        <label>1: Sensor Binary Report</label>
+        <description><![CDATA[
+Toggle the sensor binary report value 				when the Magnet switch is opened /closed.    !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">Open: 00, Close: FF</option>
+          <option value="1">Open: FF, Close: 00</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_2_1" type="integer" groupName="configuration"
+                 min="0" max="1">
+        <label>2: Wake up</label>
+        <description><![CDATA[
+Enable wake up 10 minutes when the power is switched on.    !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">Disable</option>
+          <option value="1">Enable</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_3_1" type="integer" groupName="configuration"
+                 min="0" max="1">
+        <label>3: Basic set value</label>
+        <description><![CDATA[
+Toggle the basic set value when the Magnet switch is opened /closed.    !]]></description>
+        <default>0</default>
+        <options>
+          <option value="0">Open: 00, Close: FF</option>
+          <option value="1">Open: FF, Close: 00</option>
+        </options>
+      </parameter>
+
+      <parameter name="config_121_1" type="integer" groupName="configuration"
+                 min="1" max="31">
+        <label>121: Reports that will be sent</label>
+        <description><![CDATA[
+0 - Batttery: determines whether the Water Sensor 
+			sends the battery Report when the probe touches the water. <br>
+			1 - 3 RESERVED  <br>
+			4  - Sensor Binary: determines whether the Water Sensor sends the Sensor Binary 
+			Report when the probe     !]]></description>
+        <default>4</default>
+      </parameter>
+
+      <parameter name="group_1" type="integer" groupName="association"  multiple="true">
+        <label>1: Group 1</label>
+        <description></description>
+        <multipleLimit>5</multipleLimit>
+      </parameter>
+
+      <parameter name="wakeup_interval" type="integer" groupName="wakeup">
+        <label>Wakeup Period</label>
+        <description>Set the wakeup period in seconds</description>
+      </parameter>
+      <parameter name="wakeup_node" type="integer" groupName="wakeup" readOnly="true">
+        <label>Wakeup Node</label>
+        <description>The node to which wakeup messages will be sent</description>
+      </parameter>
+
+    </config-description>
+
+  </thing-type>
+</thing:thing-descriptions>
