@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * When the controller has further data, it responds with a REQUEST.
  * <p>
  * These calls map to the handleResponse and handleRequest methods which must be overridden by the individual classes.
- * 
+ *
  * @author Chris Jackson
  */
 public abstract class ZWaveCommandProcessor {
@@ -41,7 +41,7 @@ public abstract class ZWaveCommandProcessor {
 
     /**
      * Checks if the processor marked the transaction as complete
-     * 
+     *
      * @return true is the transaction was completed.
      */
     public boolean isTransactionComplete() {
@@ -50,7 +50,7 @@ public abstract class ZWaveCommandProcessor {
 
     /**
      * Perform a check to see if this is the expected reply and we can complete the transaction
-     * 
+     *
      * @param lastSentMessage The original message we sent to the controller
      * @param incomingMessage The response from the controller
      */
@@ -77,7 +77,7 @@ public abstract class ZWaveCommandProcessor {
 
     /**
      * Method for handling the response from the controller
-     * 
+     *
      * @param zController the ZWave controller
      * @param lastSentMessage The original message we sent to the controller
      * @param incomingMessage The response from the controller
@@ -91,7 +91,7 @@ public abstract class ZWaveCommandProcessor {
 
     /**
      * Method for handling the request from the controller
-     * 
+     *
      * @param zController the ZWave controller
      * @param lastSentMessage The original message we sent to the controller
      * @param incomingMessage The response from the controller
@@ -105,7 +105,7 @@ public abstract class ZWaveCommandProcessor {
 
     /**
      * Returns the message processor for the specified message class
-     * 
+     *
      * @param serialMessage The message class required to be processed
      * @return The message processor
      */
@@ -131,6 +131,7 @@ public abstract class ZWaveCommandProcessor {
             messageMap.put(SerialMessage.SerialMessageClass.RemoveFailedNodeID, RemoveFailedNodeMessageClass.class);
             messageMap.put(SerialMessage.SerialMessageClass.IsFailedNodeID, IsFailedNodeMessageClass.class);
             messageMap.put(SerialMessage.SerialMessageClass.RemoveNodeFromNetwork, RemoveNodeMessageClass.class);
+            messageMap.put(SerialMessage.SerialMessageClass.ReplaceFailedNode, ReplaceFailedNodeMessageClass.class);
             messageMap.put(SerialMessage.SerialMessageClass.RequestNodeInfo, RequestNodeInfoMessageClass.class);
             messageMap.put(SerialMessage.SerialMessageClass.RequestNodeNeighborUpdate,
                     RequestNodeNeighborUpdateMessageClass.class);

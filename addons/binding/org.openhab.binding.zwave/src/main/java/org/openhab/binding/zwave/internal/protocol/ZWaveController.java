@@ -51,6 +51,7 @@ import org.openhab.binding.zwave.internal.protocol.serialmessage.IsFailedNodeMes
 import org.openhab.binding.zwave.internal.protocol.serialmessage.MemoryGetIdMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RemoveNodeMessageClass;
+import org.openhab.binding.zwave.internal.protocol.serialmessage.ReplaceFailedNodeMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeInfoMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.RequestNodeNeighborUpdateMessageClass;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.SendDataMessageClass;
@@ -780,6 +781,16 @@ public class ZWaveController {
      */
     public void requestRemoveFailedNode(int nodeId) {
         this.enqueue(new RemoveFailedNodeMessageClass().doRequest(nodeId));
+    }
+
+    /**
+     * Marks a node as failed
+     *
+     * @param nodeId
+     *            The address of the node to set failed
+     */
+    public void requestSetFailedNode(int nodeId) {
+        this.enqueue(new ReplaceFailedNodeMessageClass().doRequest(nodeId));
     }
 
     /**
