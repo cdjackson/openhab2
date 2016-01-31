@@ -8,6 +8,7 @@
     <label>CT100 Z-Wave Thermostat</label>
     <description>Z-Wave Thermostat</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="battery-level" typeId="system.battery-level">
         <properties>
@@ -64,6 +65,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Radio Thermostat Company of America</property>
       <property name="model">CT100</property>
@@ -73,7 +75,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- ASSOCIATION DEFINITIONS -->
       <parameter-group name="association">

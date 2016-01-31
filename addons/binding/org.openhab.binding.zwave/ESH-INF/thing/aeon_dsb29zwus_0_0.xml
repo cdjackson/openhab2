@@ -8,6 +8,7 @@
     <label>DSB29ZWUS Door/Window sensor Gen2</label>
     <description>Door/Window sensor Gen2</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="alarm_general" typeId="alarm_general">
         <label>Alarm (general)</label>
@@ -28,6 +29,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">DSB29ZWUS</property>
@@ -37,7 +39,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

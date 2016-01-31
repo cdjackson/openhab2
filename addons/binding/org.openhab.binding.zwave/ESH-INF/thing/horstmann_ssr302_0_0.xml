@@ -8,6 +8,7 @@
     <label>SSR302 Two Channel Boiler Actuator</label>
     <description>Two Channel Boiler Actuator</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="thermostat_mode" typeId="horstmann_ssr302_00_000_thermostat_mode">
         <label>Thermostat mode</label>
@@ -15,7 +16,7 @@
           <property name="binding:*:DecimalType">THERMOSTAT_MODE</property>
         </properties>
       </channel>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY</property>
@@ -27,7 +28,7 @@
           <property name="binding:*:DecimalType">THERMOSTAT_MODE:1</property>
         </properties>
       </channel>
-      <channel id="switch1" typeId="switch_binary">
+      <channel id="switch_binary1" typeId="switch_binary">
         <label>Switch 1</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:1</property>
@@ -39,7 +40,7 @@
           <property name="binding:*:DecimalType">THERMOSTAT_MODE:2</property>
         </properties>
       </channel>
-      <channel id="switch2" typeId="switch_binary">
+      <channel id="switch_binary2" typeId="switch_binary">
         <label>Switch 2</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:2</property>
@@ -47,6 +48,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Horstmann Controls</property>
       <property name="model">SSR302</property>

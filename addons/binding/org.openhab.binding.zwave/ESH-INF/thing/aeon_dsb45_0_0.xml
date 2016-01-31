@@ -17,6 +17,7 @@ Water Sensor<br />
 </ol></p>
     !]]></description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="battery-level" typeId="system.battery-level">
         <properties>
@@ -37,6 +38,7 @@ Water Sensor<br />
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">DSB45-ZWUS</property>
@@ -46,7 +48,6 @@ Water Sensor<br />
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

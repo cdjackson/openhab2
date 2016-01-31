@@ -18,8 +18,9 @@
 <p><p>mains device</p></p>
     !]]></description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
@@ -27,6 +28,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Enerwave</property>
       <property name="model">ZW20R</property>
@@ -35,7 +37,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

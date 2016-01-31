@@ -26,8 +26,9 @@ Aeon Labs Garage Door Controller  Gen5 <br />
 <p>Note: If Garage Door Controller is removed from Z-wave network, it will be reset to factory default.</p></p>
     !]]></description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
@@ -35,6 +36,7 @@ Aeon Labs Garage Door Controller  Gen5 <br />
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">ZW062</property>
@@ -43,7 +45,6 @@ Aeon Labs Garage Door Controller  Gen5 <br />
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

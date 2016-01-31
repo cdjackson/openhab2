@@ -8,8 +8,9 @@
     <label>TZ66D Dual Paddle Wall Switch</label>
     <description>Dual Paddle Wall Switch</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
@@ -17,6 +18,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Wenzhou TKB Control System</property>
       <property name="model">TZ66D</property>
@@ -26,7 +28,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

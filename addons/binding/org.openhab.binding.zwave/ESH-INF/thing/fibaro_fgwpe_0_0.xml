@@ -8,6 +8,7 @@
     <label>FGWPE Metered Wall Plug Switch</label>
     <description>Metered Wall Plug Switch</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="sensor_power" typeId="sensor_power">
         <label>Sensor (power)</label>
@@ -15,7 +16,7 @@
           <property name="binding:*:DecimalType">SENSOR_MULTILEVEL;sensorType=POWER</property>
         </properties>
       </channel>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY</property>
@@ -35,6 +36,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Fibaro System</property>
       <property name="model">FGWPE</property>
@@ -44,7 +46,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

@@ -8,6 +8,7 @@
     <label>FGFS101 Flood Sensor</label>
     <description>Flood Sensor</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="sensor_binary" typeId="sensor_binary">
         <label>Binary Sensor</label>
@@ -34,6 +35,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Fibaro System</property>
       <property name="model">FGFS101</property>
@@ -43,7 +45,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

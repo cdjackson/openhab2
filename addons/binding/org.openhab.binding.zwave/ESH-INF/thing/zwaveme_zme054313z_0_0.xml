@@ -8,8 +8,9 @@
     <label>ZME_054313Z Flush mountable switch</label>
     <description>Flush mountable switch</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
@@ -17,6 +18,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">ZWave.me</property>
       <property name="model">ZME_054313Z</property>
@@ -25,7 +27,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

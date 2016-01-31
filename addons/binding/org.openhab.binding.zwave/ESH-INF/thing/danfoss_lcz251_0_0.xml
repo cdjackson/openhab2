@@ -8,6 +8,7 @@
     <label>LCZ251 Living Connect Z Thermostat 2.51</label>
     <description>Living Connect Z Thermostat 2.51</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="battery-level" typeId="system.battery-level">
         <properties>
@@ -22,6 +23,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Danfoss</property>
       <property name="model">LCZ251</property>
@@ -31,7 +33,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- ASSOCIATION DEFINITIONS -->
       <parameter-group name="association">

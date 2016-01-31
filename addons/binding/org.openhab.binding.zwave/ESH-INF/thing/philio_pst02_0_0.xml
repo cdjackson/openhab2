@@ -8,6 +8,7 @@
     <label>PST-02 Slim Multi-Sensor</label>
     <description>Slim Multi-Sensor</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="sensor_binary" typeId="sensor_binary">
         <label>Binary Sensor</label>
@@ -40,6 +41,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Philio Technology Corporation</property>
       <property name="model">PST-02</property>
@@ -49,7 +51,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

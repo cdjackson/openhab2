@@ -8,6 +8,7 @@
     <label>ZW100-A MultiSensor 6</label>
     <description>MultiSensor 6</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="alarm_general" typeId="alarm_general">
         <label>Alarm (general)</label>
@@ -52,6 +53,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">ZW100-A</property>
@@ -61,7 +63,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

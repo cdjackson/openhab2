@@ -15,8 +15,9 @@ GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch<br />
 <p>3. Once your controller has confirmed that the device has been included, refresh the Z-wave network to optimize performance.</p></p>
     !]]></description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY,BASIC</property>
@@ -24,6 +25,7 @@ GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch<br />
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">GE</property>
       <property name="model">GE12727</property>
@@ -32,7 +34,6 @@ GE 12727 Z-Wave Wireless Lighting Control Smart Toggle Switch<br />
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

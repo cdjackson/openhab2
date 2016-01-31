@@ -8,6 +8,7 @@
     <label>TZ88 Energy Monitoring Wall Plug</label>
     <description>Energy Monitoring Wall Plug</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="meter_powerfactor" typeId="meter_powerfactor">
         <label>Electric meter (power factor)</label>
@@ -39,7 +40,7 @@
           <property name="binding:*:DecimalType">METER;meterScale=E_V</property>
         </properties>
       </channel>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY</property>
@@ -47,6 +48,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Wenzhou TKB Control System</property>
       <property name="model">TZ88</property>
@@ -56,7 +58,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

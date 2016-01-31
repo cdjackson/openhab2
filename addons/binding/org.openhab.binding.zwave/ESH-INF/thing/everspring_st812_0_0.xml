@@ -8,6 +8,7 @@
     <label>ST812 Flood Sensor</label>
     <description>Flood Sensor</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="alarm_general" typeId="alarm_general">
         <label>Alarm</label>
@@ -22,6 +23,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Everspring</property>
       <property name="model">ST812</property>
@@ -31,7 +33,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

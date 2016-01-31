@@ -8,6 +8,7 @@
     <label>SES3 Smart Energy Switch 3rd Edition</label>
     <description>Smart Energy Switch 3rd Edition</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="sensor_binary" typeId="sensor_binary">
         <label>Binary Sensor</label>
@@ -39,7 +40,7 @@
           <property name="binding:*:DecimalType">METER;meterScale=E_KWh</property>
         </properties>
       </channel>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY</property>
@@ -52,6 +53,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">SES3</property>
@@ -60,7 +62,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

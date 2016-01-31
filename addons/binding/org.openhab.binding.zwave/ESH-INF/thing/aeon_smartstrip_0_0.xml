@@ -12,8 +12,9 @@ Smart Strip<br />
 <p>Update command classes -:<br />METER:5  :: ADD<br />METER:6  :: ADD</p>
     !]]></description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="switch" typeId="switch_binary">
+      <channel id="switch_binary" typeId="switch_binary">
         <label>Switch</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY</property>
@@ -31,7 +32,7 @@ Smart Strip<br />
           <property name="binding:*:DecimalType">METER;meterScale=E_W</property>
         </properties>
       </channel>
-      <channel id="switch1" typeId="switch_binary">
+      <channel id="switch_binary1" typeId="switch_binary">
         <label>Switch 1</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:1</property>
@@ -49,7 +50,7 @@ Smart Strip<br />
           <property name="binding:*:DecimalType">METER:1;meterScale=E_W</property>
         </properties>
       </channel>
-      <channel id="switch2" typeId="switch_binary">
+      <channel id="switch_binary2" typeId="switch_binary">
         <label>Switch 2</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:2</property>
@@ -67,7 +68,7 @@ Smart Strip<br />
           <property name="binding:*:DecimalType">METER:2;meterScale=E_W</property>
         </properties>
       </channel>
-      <channel id="switch3" typeId="switch_binary">
+      <channel id="switch_binary3" typeId="switch_binary">
         <label>Switch 3</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:3</property>
@@ -85,7 +86,7 @@ Smart Strip<br />
           <property name="binding:*:DecimalType">METER:3;meterScale=E_W</property>
         </properties>
       </channel>
-      <channel id="switch4" typeId="switch_binary">
+      <channel id="switch_binary4" typeId="switch_binary">
         <label>Switch 4</label>
         <properties>
           <property name="binding:*:OnOffType">SWITCH_BINARY:4</property>
@@ -105,6 +106,7 @@ Smart Strip<br />
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Aeon Labs</property>
       <property name="model">SmartStrip</property>
@@ -114,7 +116,6 @@ Smart Strip<br />
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

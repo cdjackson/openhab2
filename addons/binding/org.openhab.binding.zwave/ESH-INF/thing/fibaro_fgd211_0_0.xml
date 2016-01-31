@@ -8,9 +8,10 @@
     <label>FGD211 Universal Dimmer 500W</label>
     <description>Universal Dimmer 500W</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
-      <channel id="dimmer" typeId="switch_dimmer">
-        <label>Switch</label>
+      <channel id="switch_dimmer" typeId="switch_dimmer">
+        <label>Dimmer</label>
         <properties>
           <property name="binding:*:PercentType">SWITCH_MULTILEVEL,BASIC</property>
           <property name="binding:Command:OnOffType">SWITCH_MULTILEVEL</property>
@@ -18,6 +19,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Fibaro System</property>
       <property name="model">FGD211</property>
@@ -28,7 +30,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">

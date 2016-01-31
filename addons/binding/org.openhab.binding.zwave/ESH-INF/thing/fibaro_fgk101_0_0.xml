@@ -8,6 +8,7 @@
     <label>FGK101 Door Opening Sensor</label>
     <description>Door Opening Sensor</description>
 
+    <!-- CHANNEL DEFINITIONS -->
     <channels>
       <channel id="battery-level" typeId="system.battery-level">
         <properties>
@@ -22,6 +23,7 @@
       </channel>
     </channels>
 
+    <!-- DEVICE PROPERTY DEFINITIONS -->
     <properties>
       <property name="vendor">Fibaro System</property>
       <property name="model">FGK101</property>
@@ -31,7 +33,6 @@
     </properties>
 
     <config-description>
-
 
       <!-- PARAMETER DEFINITIONS -->
       <parameter-group name="configuration">
