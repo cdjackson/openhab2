@@ -60,7 +60,7 @@ public class ZigBeeThingHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        final String configAddress = (String) getConfig().get(ZigBeeBindingConstants.PARAMETER_MACADDRESS);
+        final String configAddress = this.getThing().getProperties().get(ZigBeeBindingConstants.PARAMETER_MACADDRESS);
         logger.debug("Initializing ZigBee thing handler {}.", configAddress);
 
         if (configAddress == null || configAddress.length() == 0) {
