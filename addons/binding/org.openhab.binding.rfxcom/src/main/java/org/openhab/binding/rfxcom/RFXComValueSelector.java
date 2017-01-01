@@ -26,6 +26,8 @@ import org.eclipse.smarthome.core.library.items.SwitchItem;
  */
 public enum RFXComValueSelector {
 
+    RAW_MESSAGE(RFXComBindingConstants.CHANNEL_RAW_MESSAGE, StringItem.class),
+    RAW_PAYLOAD(RFXComBindingConstants.CHANNEL_RAW_PAYLOAD, StringItem.class),
     SHUTTER(RFXComBindingConstants.CHANNEL_SHUTTER, RollershutterItem.class),
     COMMAND(RFXComBindingConstants.CHANNEL_COMMAND, SwitchItem.class),
     MOOD(RFXComBindingConstants.CHANNEL_MOOD, NumberItem.class),
@@ -46,7 +48,7 @@ public enum RFXComValueSelector {
     INSTANT_POWER(RFXComBindingConstants.CHANNEL_INSTANT_POWER, NumberItem.class),
     TOTAL_USAGE(RFXComBindingConstants.CHANNEL_TOTAL_USAGE, NumberItem.class),
     INSTANT_AMPS(RFXComBindingConstants.CHANNEL_INSTANT_AMPS, NumberItem.class),
-    TOTAL_AMP_HOURS(RFXComBindingConstants.CHANNEL_TOTAL_AMP_HOURS, NumberItem.class),
+    TOTAL_AMP_HOUR(RFXComBindingConstants.CHANNEL_TOTAL_AMP_HOUR, NumberItem.class),
     STATUS(RFXComBindingConstants.CHANNEL_STATUS, StringItem.class),
     MOTION(RFXComBindingConstants.CHANNEL_MOTION, SwitchItem.class),
     CONTACT(RFXComBindingConstants.CHANNEL_CONTACT, ContactItem.class),
@@ -73,7 +75,7 @@ public enum RFXComValueSelector {
 
     /**
      * Procedure to validate selector string.
-     * 
+     *
      * @param valueSelector
      *            selector string e.g. Command, Temperature
      * @return true if item is valid.
@@ -102,7 +104,7 @@ public enum RFXComValueSelector {
 
     /**
      * Procedure to convert selector string to value selector class.
-     * 
+     *
      * @param valueSelectorText
      *            selector string e.g. RawData, Command, Temperature
      * @return corresponding selector value.

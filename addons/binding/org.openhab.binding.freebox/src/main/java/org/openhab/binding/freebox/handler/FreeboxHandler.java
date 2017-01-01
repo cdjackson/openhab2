@@ -10,6 +10,9 @@ package org.openhab.binding.freebox.handler;
 
 import static org.openhab.binding.freebox.FreeboxBindingConstants.*;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -182,51 +185,16 @@ public class FreeboxHandler extends BaseBridgeHandler {
     public void initialize() {
         logger.debug("initializing Freebox Server handler.");
 
-        String apiBaseUrl = null;
-        String apiVersion = null;
-        String hardwareVersion = null;
         FreeboxServerConfiguration configuration = getConfigAs(FreeboxServerConfiguration.class);
-        String result = HttpUtil.executeUrl("GET", "http://" + configuration.fqdn + "/api_version", 5000);
-        if (result != null) {
-            apiBaseUrl = StringUtils.trim(
-                    StringUtils.replace(StringUtils.substringBetween(result, "\"api_base_url\":\"", "\""), "\\/", "/"));
-            apiVersion = StringUtils.trim(StringUtils.substringBetween(result, "\"api_version\":\"", "\""));
-            hardwareVersion = StringUtils.trim(StringUtils.substringBetween(result, "\"device_type\":\"", "\""));
-        }
-
-        if ((apiBaseUrl != null) && (apiVersion != null) && (hardwareVersion != null)) {
+        if ((configuration != null) && (configuration.fqdn != null) && !configuration.fqdn.isEmpty()) {
             updateStatus(ThingStatus.OFFLINE);
 
-            logger.debug("Server OK, binding will schedule a job to establish a connection...");
+            logger.debug("Binding will schedule a job to establish a connection...");
             if (authorizeJob == null || authorizeJob.isCancelled()) {
                 authorizeJob = scheduler.schedule(authorizeRunnable, 1, TimeUnit.SECONDS);
             }
         } else {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
-        }
-
-        Map<String, String> properties = editProperties();
-        boolean update = false;
-        if ((apiBaseUrl != null) && !apiBaseUrl.isEmpty()
-                && ((properties.get(FreeboxBindingConstants.API_BASE_URL) == null)
-                        || !properties.get(FreeboxBindingConstants.API_BASE_URL).equals(apiBaseUrl))) {
-            update = true;
-            properties.put(FreeboxBindingConstants.API_BASE_URL, apiBaseUrl);
-        }
-        if ((apiVersion != null) && !apiVersion.isEmpty()
-                && ((properties.get(FreeboxBindingConstants.API_VERSION) == null)
-                        || !properties.get(FreeboxBindingConstants.API_VERSION).equals(apiVersion))) {
-            update = true;
-            properties.put(FreeboxBindingConstants.API_VERSION, apiVersion);
-        }
-        if ((hardwareVersion != null) && !hardwareVersion.isEmpty()
-                && ((properties.get(Thing.PROPERTY_HARDWARE_VERSION) == null)
-                        || !properties.get(Thing.PROPERTY_HARDWARE_VERSION).equals(hardwareVersion))) {
-            update = true;
-            properties.put(Thing.PROPERTY_HARDWARE_VERSION, hardwareVersion);
-        }
-        if (update) {
-            updateProperties(properties);
         }
     }
 
@@ -234,16 +202,63 @@ public class FreeboxHandler extends BaseBridgeHandler {
         @Override
         public void run() {
             logger.debug("Authorize job...");
-            if (authorize()) {
-                updateStatus(ThingStatus.ONLINE);
 
-                if (globalJob == null || globalJob.isCancelled()) {
-                    long polling_interval = getConfigAs(FreeboxServerConfiguration.class).refreshInterval;
-                    logger.debug("Scheduling server state update every {} seconds...", polling_interval);
-                    globalJob = scheduler.scheduleAtFixedRate(globalRunnable, 1, polling_interval, TimeUnit.SECONDS);
+            String apiBaseUrl = null;
+            String apiVersion = null;
+            String hardwareVersion = null;
+            FreeboxServerConfiguration configuration = getConfigAs(FreeboxServerConfiguration.class);
+            String result = null;
+            try {
+                result = HttpUtil.executeUrl("GET", "http://" + configuration.fqdn + "/api_version", 5000);
+            } catch (IOException e) {
+                logger.debug("Cann't connect to Freebox server {}", e);
+            }
+            if (result != null) {
+                apiBaseUrl = StringUtils.trim(StringUtils
+                        .replace(StringUtils.substringBetween(result, "\"api_base_url\":\"", "\""), "\\/", "/"));
+                apiVersion = StringUtils.trim(StringUtils.substringBetween(result, "\"api_version\":\"", "\""));
+                hardwareVersion = StringUtils.trim(StringUtils.substringBetween(result, "\"device_type\":\"", "\""));
+            }
+
+            if ((apiBaseUrl != null) && (apiVersion != null) && (hardwareVersion != null)) {
+                if (authorize()) {
+                    updateStatus(ThingStatus.ONLINE);
+
+                    if (globalJob == null || globalJob.isCancelled()) {
+                        long polling_interval = getConfigAs(FreeboxServerConfiguration.class).refreshInterval;
+                        logger.debug("Scheduling server state update every {} seconds...", polling_interval);
+                        globalJob = scheduler.scheduleAtFixedRate(globalRunnable, 1, polling_interval,
+                                TimeUnit.SECONDS);
+                    }
+                } else {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
                 }
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR);
+            }
+
+            Map<String, String> properties = editProperties();
+            boolean update = false;
+            if ((apiBaseUrl != null) && !apiBaseUrl.isEmpty()
+                    && ((properties.get(FreeboxBindingConstants.API_BASE_URL) == null)
+                            || !properties.get(FreeboxBindingConstants.API_BASE_URL).equals(apiBaseUrl))) {
+                update = true;
+                properties.put(FreeboxBindingConstants.API_BASE_URL, apiBaseUrl);
+            }
+            if ((apiVersion != null) && !apiVersion.isEmpty()
+                    && ((properties.get(FreeboxBindingConstants.API_VERSION) == null)
+                            || !properties.get(FreeboxBindingConstants.API_VERSION).equals(apiVersion))) {
+                update = true;
+                properties.put(FreeboxBindingConstants.API_VERSION, apiVersion);
+            }
+            if ((hardwareVersion != null) && !hardwareVersion.isEmpty()
+                    && ((properties.get(Thing.PROPERTY_HARDWARE_VERSION) == null)
+                            || !properties.get(Thing.PROPERTY_HARDWARE_VERSION).equals(hardwareVersion))) {
+                update = true;
+                properties.put(Thing.PROPERTY_HARDWARE_VERSION, hardwareVersion);
+            }
+            if (update) {
+                updateProperties(properties);
             }
         }
     };
@@ -276,14 +291,21 @@ public class FreeboxHandler extends BaseBridgeHandler {
 
             } catch (Throwable t) {
                 if (t instanceof FreeboxException) {
-                    logger.error("FreeboxException: {}", ((FreeboxException) t).getMessage());
+                    logger.error("Server state job - FreeboxException: {}", ((FreeboxException) t).getMessage());
                 } else if (t instanceof Exception) {
-                    logger.error("Exception: {}", ((Exception) t).getMessage());
+                    logger.error("Server state job - Exception: {}", ((Exception) t).getMessage());
                 } else if (t instanceof Error) {
-                    logger.error("Error: {}", ((Error) t).getMessage());
+                    logger.error("Server state job - Error: {}", ((Error) t).getMessage());
                 } else {
-                    logger.error("Unexpected error");
+                    logger.error("Server state job - Unexpected error");
                 }
+                StringWriter sw = new StringWriter();
+                if ((t instanceof RuntimeException) && (t.getCause() != null)) {
+                    t.getCause().printStackTrace(new PrintWriter(sw));
+                } else {
+                    t.printStackTrace(new PrintWriter(sw));
+                }
+                logger.error(sw.toString());
                 if (getThing().getStatus() == ThingStatus.ONLINE) {
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
                 }

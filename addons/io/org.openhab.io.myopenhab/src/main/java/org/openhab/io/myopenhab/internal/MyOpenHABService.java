@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,10 +61,11 @@ public class MyOpenHABService implements PersistenceService, ActionService, MyOp
     private Logger logger = LoggerFactory.getLogger(MyOpenHABService.class);
 
     private static final String SECRET_FILE_NAME = "myopenhab" + File.separator + "secret";
-
+    private static final String DEFAULT_URL = "https://my.openhab.org/";
     public static String myohVersion = null;
     private MyOpenHABClient myOHClient;
     private boolean persistenceEnabled = false;
+    private String myOpenHABBaseUrl = null;
     protected ItemRegistry itemRegistry = null;
     protected EventPublisher eventPublisher = null;
 
@@ -137,8 +139,20 @@ public class MyOpenHABService implements PersistenceService, ActionService, MyOp
         } else {
             logger.debug("config is null");
         }
+
+        if (config.get("baseURL") != null) {
+            myOpenHABBaseUrl = (String) config.get("baseURL");
+        } else {
+            myOpenHABBaseUrl = DEFAULT_URL;
+        }
+
         logger.debug("UUID = " + InstanceUUID.get() + ", secret = " + getSecret());
-        myOHClient = new MyOpenHABClient(InstanceUUID.get(), getSecret());
+
+        if (myOHClient != null) {
+            myOHClient.shutdown();
+        }
+
+        myOHClient = new MyOpenHABClient(InstanceUUID.get(), getSecret(), myOpenHABBaseUrl);
         myOHClient.setOpenHABVersion(OpenHAB.getVersion());
         myOHClient.connect();
         myOHClient.setListener(this);
@@ -222,14 +236,18 @@ public class MyOpenHABService implements PersistenceService, ActionService, MyOp
                     if (this.eventPublisher != null) {
                         if ("toggle".equalsIgnoreCase(commandString)
                                 && (item instanceof SwitchItem || item instanceof RollershutterItem)) {
-                            if (OnOffType.ON.equals(item.getStateAs(OnOffType.class)))
+                            if (OnOffType.ON.equals(item.getStateAs(OnOffType.class))) {
                                 command = OnOffType.OFF;
-                            if (OnOffType.OFF.equals(item.getStateAs(OnOffType.class)))
+                            }
+                            if (OnOffType.OFF.equals(item.getStateAs(OnOffType.class))) {
                                 command = OnOffType.ON;
-                            if (UpDownType.UP.equals(item.getStateAs(UpDownType.class)))
+                            }
+                            if (UpDownType.UP.equals(item.getStateAs(UpDownType.class))) {
                                 command = UpDownType.DOWN;
-                            if (UpDownType.DOWN.equals(item.getStateAs(UpDownType.class)))
+                            }
+                            if (UpDownType.DOWN.equals(item.getStateAs(UpDownType.class))) {
                                 command = UpDownType.UP;
+                            }
                         } else {
                             command = TypeParser.parseCommand(item.getAcceptedCommandTypes(), commandString);
                         }
@@ -264,7 +282,7 @@ public class MyOpenHABService implements PersistenceService, ActionService, MyOp
     }
 
     @Override
-    public String getName() {
+    public String getId() {
         return "myopenhab";
     }
 
@@ -300,5 +318,10 @@ public class MyOpenHABService implements PersistenceService, ActionService, MyOp
             ItemStateEvent ise = (ItemStateEvent) event;
             myOHClient.sendItemUpdate(ise.getItemName(), ise.getItemState().toString());
         }
+    }
+
+    @Override
+    public String getLabel(Locale locale) {
+        return "my.openHAB";
     }
 }

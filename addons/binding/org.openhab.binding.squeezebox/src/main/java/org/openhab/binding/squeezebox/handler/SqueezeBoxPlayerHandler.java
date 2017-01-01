@@ -18,7 +18,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.IncreaseDecreaseType;
 import org.eclipse.smarthome.core.library.types.NextPreviousType;
@@ -28,14 +27,15 @@ import org.eclipse.smarthome.core.library.types.PlayPauseType;
 import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.library.types.RewindFastforwardType;
 import org.eclipse.smarthome.core.library.types.StringType;
-import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
+import org.eclipse.smarthome.core.thing.ThingStatusInfo;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
-import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.squeezebox.config.SqueezeBoxPlayerConfig;
 import org.openhab.binding.squeezebox.internal.utils.HttpUtils;
@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * are sent to/from channels.
  *
  * @author Dan Cunningham - Initial contribution
+ * @author Mark Hilbush - Improved handling of player status, prevent REFRESH from causing exception
  */
 public class SqueezeBoxPlayerHandler extends BaseThingHandler implements SqueezeBoxPlayerEventListener {
 
@@ -106,25 +107,26 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
     public void initialize() {
         mac = getConfig().as(SqueezeBoxPlayerConfig.class).mac;
         timeCounter();
-    };
+        updateBridgeStatus();
+    }
 
     @Override
-    public void bridgeHandlerInitialized(ThingHandler thingHandler, Bridge bridge) {
-        if (thingHandler instanceof SqueezeBoxServerHandler) {
-            this.squeezeBoxServerHandler = (SqueezeBoxServerHandler) thingHandler;
-            updateStatus(ThingStatus.ONLINE);
-            logger.debug("bridgeHandlerInitialized for player mac {}", mac);
+    public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
+        updateBridgeStatus();
+    }
+
+    private void updateBridgeStatus() {
+        ThingStatus bridgeStatus = getBridge().getStatus();
+        if (bridgeStatus == ThingStatus.ONLINE && getThing().getStatus() != ThingStatus.ONLINE) {
+            updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE);
+            squeezeBoxServerHandler = (SqueezeBoxServerHandler) getBridge().getHandler();
+        } else if (bridgeStatus == ThingStatus.OFFLINE) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
         }
     }
 
     @Override
-    public void bridgeHandlerDisposed(ThingHandler thingHandler, Bridge bridge) {
-        this.squeezeBoxServerHandler = null;
-    }
-
-    @Override
     public void dispose() {
-
         // stop our duration counter
         if (timeCounterJob != null && !timeCounterJob.isCancelled()) {
             timeCounterJob.cancel(true);
@@ -134,17 +136,23 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
         if (squeezeBoxServerHandler != null) {
             squeezeBoxServerHandler.removePlayerCache(mac);
         }
-        logger.debug("Thing {} disposed.", getThing().getUID());
+        logger.debug("player thing {} disposed.", getThing().getUID());
         super.dispose();
     }
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (squeezeBoxServerHandler == null) {
-            logger.warn("Player has no server configured, ignoring command");
+            logger.info("player thing {} has no server configured, ignoring command: {}", getThing().getUID(), command);
             return;
         }
         String mac = getConfigAs(SqueezeBoxPlayerConfig.class).mac;
+
+        // Some of the code below is not designed to handle REFRESH
+        if (command == RefreshType.REFRESH) {
+            return;
+        }
+
         switch (channelUID.getIdWithoutGroup()) {
             case CHANNEL_POWER:
                 if (command.equals(OnOffType.ON)) {
@@ -229,6 +237,7 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
                 } else {
                     squeezeBoxServerHandler.syncPlayer(mac, command.toString());
                 }
+                break;
             case CHANNEL_UNSYNC:
                 if (command.equals(OnOffType.ON)) {
                     squeezeBoxServerHandler.unSyncPlayer(mac);
@@ -253,14 +262,7 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
 
     @Override
     public void playerAdded(SqueezeBoxPlayer player) {
-        if (isMe(player.getMacAddress())) {
-            Configuration configuration = editConfiguration();
-            configuration.put("modelId", player.getModel());
-            configuration.put("name", player.getName());
-            configuration.put("uid", player.getUuid());
-            configuration.put("ip", player.getIpAddr());
-            // updateConfiguration(configuration);
-        }
+        // Player properties are saved in SqueezeBoxPlayerDiscoveryParticipant
     }
 
     @Override
@@ -283,6 +285,8 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
 
     @Override
     public void volumeChangeEvent(String mac, int volume) {
+        volume = Math.min(100, volume);
+        volume = Math.max(0, volume);
         updateChannel(mac, CHANNEL_VOLUME, new PercentType(volume));
     }
 
@@ -382,7 +386,11 @@ public class SqueezeBoxPlayerHandler extends BaseThingHandler implements Squeeze
             if (prevState == null || !prevState.equals(state)) {
                 logger.trace("Updating channel {} for thing {} with mac {} to state {}", channelID, getThing().getUID(),
                         mac, state);
-                updateState(channelID, state);
+                try {
+                    updateState(channelID, state);
+                } catch (Exception e) {
+                    logger.error("Could not update channel", e);
+                }
             }
         }
     }
